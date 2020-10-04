@@ -1,8 +1,8 @@
 <?php
 
-$serverName = "localhost";
+$serverName = "cgnst.ddns.net";
 $dBUsername = "php";
-$dBPwd = "";
+$dBPwd = "!YouDontKnow!";
 $dBName = "cgnst";
 
 $conn = mysqli_connect($serverName, $dBUsername, $dBPwd, $dBName);
