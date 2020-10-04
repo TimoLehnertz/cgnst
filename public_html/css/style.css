@@ -1,15 +1,18 @@
-@import url('https://fonts.googleapis.com/css2?family=Mr+Bedfort&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
 :root {
     --color-1-1: rgb(24, 97, 116);
     --color-1-2: rgb(0, 95, 119);
   }
 
 body{
-    box-sizing: border-box;
     margin: 0;
     padding: 0;
     background-color: #EEE;
-    font-family: 'Mr Bedfort', cursive;
+    font-family: 'Roboto', sans-serif;
+}
+
+*::selection {
+    background: rgb(80, 148, 238); /* WebKit/Blink Browsers */
 }
 
 h2{
@@ -152,7 +155,7 @@ main form button{
     background-color: #333;
     border-radius: 5px;
     border: none;
-    margin: none;
+    margin: 0;
     font-size: 14pt;
     width: 100%;
     margin-left: 10px;

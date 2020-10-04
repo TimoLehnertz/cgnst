@@ -5,10 +5,12 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <meta name="Example of a meta description this will often show up in search results">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="Cologne Speed Team" content="width=device-width, initial-scale=1">
         <title>Cologne Speet team</title>
+        <link rel="icon" type="image/gif" href="/img/rolle2.gif">
         <link rel="stylesheet" href="/css/style.css">
+        <link rel="stylesheet" href="/css/ui.css">
+        <script src="/js/jquery-3.5.1.js"></script>
     </head>
     <body id="body">
         <?php
@@ -17,10 +19,11 @@
         <header>
             <nav>
                 <a href="/index.php">Home</a>
-                <a href="#">Profile</a>
+                <a href="/index.php">Profile</a>
                 <a href="/training">Training</a>
-                <a href="#">Kontakt</a>
-                <a href="#">About us</a>
+                <a href="/timing">Timing</a>
+                <a href="/index.php">Kontakt</a>
+                <a href="/index.php">About us</a>
             </nav>
             <div>
             <?php if (isset($_SESSION["username"])) {//Signed in?>
@@ -34,4 +37,5 @@
                 </form>
             <?php }?>
             </div>
+            <div style="color: white; line-height: 100%; font-size: 14pt; margin: 10px 20px;">Note this site is still undercunstruction</div>
         </header>

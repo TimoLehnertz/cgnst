@@ -1,5 +1,5 @@
 <?php
-    if(isset($_COOKIE["firstLoad"])){
+    if(!isset($_COOKIE["firstLoad"])){
         setcookie("firstLoad", "1");
 ?>
 <style>
