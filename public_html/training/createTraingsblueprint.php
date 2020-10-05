@@ -102,13 +102,12 @@
                     addExerciseGroup(preset.groups[i].exerciseGroupName);
                     for (let j = 0; j < preset.groups[i].exercises.length; j++) {
                         addExerciseFromObject(preset.groups[i].exercises[j]);
-                        structure[i].exercises[j] = preset.groups[i].exercises[j];
                     }
                 }
             }
 
             function clearAll(){
-                structure = [];
+                structure.splice(0, structure.length);
                 $(".exerciseGroup").hide(100, function(element){
                     $(".exerciseGroup").remove();
                 });
@@ -141,9 +140,7 @@
 
             function addExerciseFromObject(exerciseObject){
                 const exersizeGroupElement = getExerciseGroupElement(exerciseObject.groupName);
-                addExercise(exerciseObject.name, exersizeGroupElement, null);
-                //overwriting default
-                structure[getIndexOfGroupName(exerciseObject.groupName)]['exercises'][structure[getIndexOfGroupName(exerciseObject.groupName)]['exercises'].length] = exerciseObject;
+                addExercise(exerciseObject.name, exersizeGroupElement, null, exerciseObject);
             }
 
             function getExerciseGroupElement(name){
@@ -174,7 +171,7 @@
                 return null;
             }
 
-            function addExercise(name, exersizeGroupElement, inputElement){
+            function addExercise(name, exersizeGroupElement, inputElement, exerciseObject){
                 if(name.length > 0 && !doesNameExistInExerciseGroup(structure[getIndexOfGroupName(getGroupName(exersizeGroupElement))], name)){
                     const exercise = document.createElement("div");
                     exercise.classList.add("exerciseItem");
@@ -216,15 +213,19 @@
                     resizeAccordions();
                     //setting data
                     const groupName = getGroupName(exersizeGroupElement);
-                    structure[getIndexOfGroupName(groupName)]['exercises'].push({
-                        'name' : name,
-                        'time' : 60,
-                        'pauseAfter' : 30,
-                        'description' : "Exercise: " + name,
-                        'intensity' : 0,
-                        'aim' : "aim",
-                        'groupName' : groupName
-                    });
+                    if(exerciseObject != null){
+                        structure[getIndexOfGroupName(groupName)]['exercises'].push(exerciseObject);
+                    } else{
+                        structure[getIndexOfGroupName(groupName)]['exercises'].push({
+                            'name' : name,
+                            'time' : 60,
+                            'pauseAfter' : 30,
+                            'description' : "Exercise: " + name,
+                            'intensity' : 0,
+                            'aim' : "aim",
+                            'groupName' : groupName
+                        });
+                    }
                     console.log(structure);
                     if(inputElement != null){
                         inputElement.classList.remove("errorClass");
