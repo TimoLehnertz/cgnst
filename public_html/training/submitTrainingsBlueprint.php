@@ -13,7 +13,6 @@
     }
 
     function insertExercise($exercise){
-        /*
         $sql = "INSERT INTO exercise (time, pauseAfter, name, description, intensity, aim) VALUES (?,?,?,?,?,?);";
         $stmt = mysqli_stmt_init($conn);
         if(!mysqli_stmt_prepare($stmt, $sql)){
@@ -23,15 +22,6 @@
             mysqli_stmt_bind_param($stmt, "iissis", $exercise["time"], $exercise["pauseAfter"], $exercise["name"], $exercise["description"], $exercise["intensity"], $exercise["aim"]);
             mysqli_stmt_execute($stmt);
             return mysqli_insert_id();
-        }*/
-        $sql = "INSERT INTO exercise (time, pauseAfter, name, description, intensity, aim) VALUES (?,?,?,?,?,?);";
-        $stmt = mysqli_stmt_init($conn);
-        if(!mysqli_stmt_prepare($stmt, $sql)){
-            echo "error";
-            return false;
-        } else{
-            mysqli_stmt_bind_param($stmt, "iissis", $exercise["time"], $exercise["pauseAfter"], $exercise["name"], $exercise["description"], $exercise["intensity"], $exercise["aim"]);
-            mysqli_stmt_execute($stmt);
         }
     }
 ?>
