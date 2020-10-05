@@ -1,5 +1,5 @@
 <?php
-    include_once "../includes/dbh.inc.php";
+    include "../includes/dbh.inc.php";
     $data = json_decode(file_get_contents('php://input'), true);
     print_r($data);
     
@@ -8,20 +8,21 @@
         
         for ($exercise=0; $exercise < sizeof($data["groups"][$group]["exercises"]); $exercise++) { 
             echo "  ->  ".$data["groups"][$group]["exercises"][$exercise]["name"];
-            echo "ID: ".insertExercise($data["groups"][$group]["exercises"][$exercise])."\n";
+            echo "ID: ".insertExercise($data["groups"][$group]["exercises"][$exercise], $conn)."\n";
         }
     }
 
-    function insertExercise($exercise){
+    function insertExercise($exercise, $conn){
         $sql = "INSERT INTO exercise (time, pauseAfter, name, description, intensity, aim) VALUES (?,?,?,?,?,?);";
         $stmt = mysqli_stmt_init($conn);
         if(!mysqli_stmt_prepare($stmt, $sql)){
-            echo "error";
+            echo "error!!!!!!!!!";
             return false;
         } else{
             mysqli_stmt_bind_param($stmt, "iissis", $exercise["time"], $exercise["pauseAfter"], $exercise["name"], $exercise["description"], $exercise["intensity"], $exercise["aim"]);
             mysqli_stmt_execute($stmt);
-            return mysqli_insert_id();
+            echo "success!!!!!!!!!";
+            return mysqli_insert_id($conn);
         }
     }
 ?>
