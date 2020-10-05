@@ -37,5 +37,5 @@
                 </form>
             <?php }?>
             </div>
-            <div style="color: white; line-height: 100%; font-size: 14pt; margin: 10px 20px;">Note this site is still undercunstruction</div>
+            <div style="color: white; line-height: 100%; font-size: 14pt; margin: 10px 20px;">!!Note this site is still undercunstruction</div>
         </header>
