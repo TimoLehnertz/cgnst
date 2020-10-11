@@ -10,7 +10,16 @@
         <link rel="icon" type="image/gif" href="/img/rolle2.gif">
         <link rel="stylesheet" href="/css/style.css">
         <link rel="stylesheet" href="/css/ui.css">
+        <link rel="stylesheet" href="/css/normalize.css">
         <script src="/js/jquery-3.5.1.js"></script>
+        <?php
+            if(isset($dependency)){
+                if(in_array("kalender", $dependency)){
+                    echo "<link rel='stylesheet' href='/css/kalender.css'>";
+                    echo "<script src='/js/kalender.js'></script>";
+                }
+            }
+        ?>
     </head>
     <body id="body">
         <?php
@@ -19,7 +28,7 @@
         <header>
             <nav>
                 <a href="/index.php">Home</a>
-                <a href="/index.php">Profile</a>
+                <a href="/profile">Profile</a>
                 <a href="/training">Training</a>
                 <a href="/timing">Timing</a>
                 <a href="/index.php">Kontakt</a>

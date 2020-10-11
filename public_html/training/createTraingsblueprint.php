@@ -42,6 +42,20 @@
             </div>
         </div>
         <div id="createTrainingsBlueprint">
+            <label for="selectBlueprint">Vorlage laden</label>
+            <select name="selectBlueprint" id="selectBlueprint">
+                <?php
+                    include "getTrainingsBlueprints.php";
+                    $blueprints = getAllAvailableTrainingsBlueprints($conn);
+                    for ($i=0; $i < sizeof($blueprints); $i++) {
+                        echo "<option value='".$blueprints[$i]["idtrainingsBlueprint"]."'>".$blueprints[$i]["name"]."</option>";
+                    }
+                ?>
+            </select>
+            <button type="button" onclick="loadBlueprint()">Laden</button>
+            <br>
+            <label for="blueprintName">Vorlagen Name: </label>
+            <input id="blueprintName" type="text" placeholder="Vorlagen Name..." value="Vorlage">
             <p>Aufgabengruppen:</p>
             <div id="exerciseGroups" class="accordion">
                 <div id="addExerciseGroup">
@@ -67,37 +81,67 @@
 
             let structure = [];
             let trainingsBlueprint = {
-                name : "Vorlage",
+                name : 'Vorlage',
                 groups : structure
             };
-            let preset = {"name":"Vorlage","groups":[{"exerciseGroupName":"warmup","exercises":[{"name":"10 min skating","time":"600","pauseAfter":30,"description":"Exercise: 10 min skating testtesttest","intensity":0,"aim":"aim","groupName":"warmup"}]},{"exerciseGroupName":"training","exercises":[{"name":"accelerations","time":60,"pauseAfter":30,"description":"Exercise: accelerations","intensity":0,"aim":"aim","groupName":"training"},{"name":"relay","time":60,"pauseAfter":30,"description":"Exercise: relay","intensity":0,"aim":"aim","groupName":"training"},{"name":"doubin sprint","time":60,"pauseAfter":30,"description":"Exercise: doubin sprint","intensity":0,"aim":"aim","groupName":"training"}]},{"exerciseGroupName":"cooldown","exercises":[{"name":"wrong direction","time":"130","pauseAfter":30,"description":"Exercise: wrong direction","intensity":0,"aim":"aim","groupName":"cooldown"}]}]}
+            // let preset = {"name":"Vorlage","groups":[{"exerciseGroupName":"warmup","exercises":[{"name":"10 min skating","time":"600","pauseAfter":30,"description":"Exercise: 10 min skating testtesttest","intensity":0,"aim":"aim","groupName":"warmup"}]},{"exerciseGroupName":"training","exercises":[{"name":"accelerations","time":60,"pauseAfter":30,"description":"Exercise: accelerations","intensity":0,"aim":"aim","groupName":"training"},{"name":"relay","time":60,"pauseAfter":30,"description":"Exercise: relay","intensity":0,"aim":"aim","groupName":"training"},{"name":"doubin sprint","time":60,"pauseAfter":30,"description":"Exercise: doubin sprint","intensity":0,"aim":"aim","groupName":"training"}]},{"exerciseGroupName":"cooldown","exercises":[{"name":"wrong direction","time":"130","pauseAfter":30,"description":"Exercise: wrong direction","intensity":0,"aim":"aim","groupName":"cooldown"}]}]}
+            // let preset = {"name":"Taining 1","groups":[{"exerciseGroupName":"warmup","exercises":[{"name":"10 min skating","time":600,"pauseAfter":30,"description":"Exercise: 10 min skating testtesttest","intensity":0,"aim":"aim","groupName":"warmup"}]},{"exerciseGroupName":"training","exercises":[{"name":"accelerations","time":60,"pauseAfter":30,"description":"Exercise: accelerations","intensity":0,"aim":"aim","groupName":"training"},{"name":"relay","time":60,"pauseAfter":30,"description":"Exercise: relay","intensity":0,"aim":"aim","groupName":"training"},{"name":"doubin sprint","time":60,"pauseAfter":30,"description":"Exercise: doubin sprint","intensity":0,"aim":"aim","groupName":"training"}]},{"exerciseGroupName":"cooldown","exercises":[{"name":"wrong direction","time":130,"pauseAfter":30,"description":"Exercise: wrong direction","intensity":0,"aim":"aim","groupName":"cooldown"}]}]}
 
-            $(document).ready(function(){loadPreset(preset);});
+            // $(document).ready(function(){loadPreset(preset);});
 
-            function submit(){
-                console.log("submitting");
+            function loadBlueprint(){
+                let blueprintId =  $("#selectBlueprint").val();
                 $.ajax({
-                    type: "POST",
-                    url: 'submitTrainingsBlueprint.php',
+                    type: "GET",
+                    url: 'getTrainingsBlueprints.php?getTrainingsBlueprintJsonById=' + blueprintId,
                     dataType: 'text',
                     async: true,
-                    data: JSON.stringify(trainingsBlueprint),
                     success: function (response) {
-                        console.log("success");
-                        console.log(response);
+                        // console.log(response);
+                        loadPreset(JSON.parse(response));
+                        $("#selectBlueprint").removeClass("errorClass");
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
+                        alert("failed to load blueprint!");
+                        $("#selectBlueprint").addClass("errorClass");
                         console.log(jqXHR.status);
                         console.log(textStatus);
                         console.log(errorThrown);
                     }
                 });
-                console.log(JSON.stringify(trainingsBlueprint));
+            }
+
+            function submit(){
+                // console.log("submitting");
+                trainingsBlueprint.name = $("#blueprintName").val();
+                // console.log("val: " + trainingsBlueprint.name);
+                if(trainingsBlueprint.name.length > 0){
+                    $("#blueprintName").removeClass("errorClass");
+                    $.ajax({
+                        type: "POST",
+                        url: 'submitTrainingsBlueprint.php',
+                        dataType: 'text',
+                        async: true,
+                        data: JSON.stringify(trainingsBlueprint),
+                        success: function (response) {
+                            // console.log(response);
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            console.log(jqXHR.status);
+                            console.log(textStatus);
+                            console.log(errorThrown);
+                        }
+                    });
+                    // console.log(JSON.stringify(trainingsBlueprint));
+                } else{
+                    $("#blueprintName").addClass("errorClass");
+                }
             }
 
             function loadPreset(preset){
                 clearAll();
                 trainingsBlueprint.name = preset.name;
+                $("#blueprintName").val(preset.name);
                 for (let i = 0; i < preset.groups.length; i++) {
                     addExerciseGroup(preset.groups[i].exerciseGroupName);
                     for (let j = 0; j < preset.groups[i].exercises.length; j++) {
@@ -108,8 +152,12 @@
 
             function clearAll(){
                 structure.splice(0, structure.length);
-                $(".exerciseGroup").hide(100, function(element){
+                $(".exerciseGroup").hide(0, function(element){
                     $(".exerciseGroup").remove();
+                });
+                $("#exersice").children().hide(0, function(){
+                    $("#exersice").empty();
+                    $("#exersice").append(document.createElement("div"));
                 });
             }
 
@@ -124,7 +172,7 @@
             }
 
             function addExerciseGroup(name){
-                console.log(name);
+                // console.log(name);
                 if (!doesGroupNameExist(name) && name.length > 0){
                     structure.push({
                         'exerciseGroupName' : name,
@@ -134,7 +182,7 @@
                     setAccordionEvents();
                     resizeAccordions();
                 } else{
-                    console.log("Bitte ausfüllen");
+                    // console.log("Bitte ausfüllen");
                 }
             }
 
@@ -156,15 +204,14 @@
             }
 
             function getExerciseElement(exerciseName, groupName){
-                console.log(getExerciseGroupElement(groupName));
-
+                // console.log(getExerciseGroupElement(groupName));
                 const exerciseElements = getExerciseGroupElement(groupName).querySelectorAll(".exerciseItem");
-                console.log("trying to find groupname: " + groupName + ", exerciseName: " + exerciseName + ". found Goups");
-                console.log(exerciseElements)
+                // console.log("trying to find groupname: " + groupName + ", exerciseName: " + exerciseName + ". found Goups");
+                // console.log(exerciseElements)
                 for (const exerciseElement of exerciseElements) {
                     if(getExerciseName(exerciseElement) == exerciseName){
-                        console.log("found: ")
-                        console.log(exerciseElement);
+                        // console.log("found: ")
+                        // console.log(exerciseElement);
                         return exerciseElement;
                     }
                 }
@@ -226,7 +273,7 @@
                             'groupName' : groupName
                         });
                     }
-                    console.log(structure);
+                    // console.log(structure);
                     if(inputElement != null){
                         inputElement.classList.remove("errorClass");
                     }
@@ -265,14 +312,14 @@
                 if(index >= 0){
                     structure.splice(index, 1);
                 }
-                console.log(structure);
+                // console.log(structure);
             }
 
             function moveExersizeGroup(exersizeGroupElement, up){
                 const index = getIndexOfGroupName(getGroupName(exersizeGroupElement));
-                console.log("name: " + getGroupName(exersizeGroupElement));
+                // console.log("name: " + getGroupName(exersizeGroupElement));
                 let tmp = structure[index];
-                console.log("move " + up + ", index: " + index)
+                // console.log("move " + up + ", index: " + index)
                 if(up && index > 0){
                     structure[index] = structure[index - 1];
                     structure[index - 1] = tmp;
@@ -282,15 +329,15 @@
                     structure[index + 1] = tmp;
                     exersizeGroupElement.parentNode.insertBefore(exersizeGroupElement.nextSibling, exersizeGroupElement);
                 }
-                console.log(structure);
+                // console.log(structure);
             }
 
             function moveExersize(exerciseElement, exersizeGroupElement, up){
                 const groupIndex = getIndexOfGroupName(getGroupName(exersizeGroupElement));
                 const exerciseIndex = getIndexOfExerciseName(getGroupName(exersizeGroupElement), getExerciseName(exerciseElement));
-                console.log("exerciseIndex: " + exerciseIndex);
+                // console.log("exerciseIndex: " + exerciseIndex);
                 let tmp = structure[groupIndex]['exercises'][exerciseIndex];
-                console.log("move " + up + ", index: " + exerciseIndex)
+                // console.log("move " + up + ", index: " + exerciseIndex)
                 if(up && exerciseIndex > 0){
                     structure[groupIndex]['exercises'][exerciseIndex] = structure[groupIndex]['exercises'][exerciseIndex - 1];
                     structure[groupIndex]['exercises'][exerciseIndex - 1] = tmp;
@@ -301,7 +348,7 @@
                     exerciseElement.parentNode.insertBefore(exerciseElement.nextSibling, exerciseElement);
                 }
                 $(exerciseElement).slideDown(400);
-                console.log(structure);
+                // console.log(structure);
             }
 
             function getIndexOfGroupName(groupName){
@@ -338,7 +385,7 @@
                 const exerciseName = exerciseElement.querySelector(".exerciseName").innerText;
                 const groupName = exersizeGroupElement.querySelector(".exerciseGroupName").innerText;
                 structure[getIndexOfGroupName(groupName)]['exercises'].splice([getIndexOfExerciseName(groupName, exerciseName)], 1);
-                console.log(structure);
+                // console.log(structure);
             }
 
             function getNewExerciseGroupElement(name){
@@ -397,17 +444,17 @@
             function getExerciseElementFromObject(exerciseObject){
                 const exercise = document.createElement("div");
                 if(exerciseObject != undefined){
-                    exercise.innerHTML =    "<div class='exerciseInputRow'><label for='name'>Name: </label><input required onkeyup='exerciseValueChanged(this)' name='name' type='text' placeholder='Name' value='" + exerciseObject.name + "'></div>" +
-                                            "<div class='exerciseInputRow'><label for='description'>Beschreibung: </label><textarea required onkeyup='exerciseValueChanged(this)' rows='5' name='description' placeholder='Beschreibung'>" + exerciseObject.description + "</textarea ></div>" +
-                                            "<div class='exerciseInputRow'><label for='intensity'>Intensität: </label><input required onkeyup='exerciseValueChanged(this)' name='intensity' min='0' step='1' max='10' type='number' placeholder='Intensität' value='" + exerciseObject.intensity + "'></div>" +
-                                            "<div class='exerciseInputRow'><label for='time'>Dauer(sek): </label><input required onkeyup='exerciseValueChanged(this)' name='time' min='0' step='1' type='number' placeholder='Dauer' value='" + exerciseObject.time + "'></div>" +
-                                            "<div class='exerciseInputRow'><label for='pauseAfter'>Pause im Anschluss: </label><input required onkeyup='exerciseValueChanged(this)' name='pauseAfter' min='0' step='1' type='number' placeholder='Pause' value='" + exerciseObject.pauseAfter + "'></div>";
+                    exercise.innerHTML =    "<div class='exerciseInputRow'><label for='name'>Name: </label><input required onchange='exerciseValueChanged(this)' onkeyup='exerciseValueChanged(this)' name='name' type='text' placeholder='Name' value='" + exerciseObject.name + "'></div>" +
+                                            "<div class='exerciseInputRow'><label for='description'>Beschreibung: </label><textarea required onchange='exerciseValueChanged(this)' onkeyup='exerciseValueChanged(this)' rows='5' name='description' placeholder='Beschreibung'>" + exerciseObject.description + "</textarea ></div>" +
+                                            "<div class='exerciseInputRow'><label for='intensity'>Intensität: </label><input required onchange='exerciseValueChanged(this)' onkeyup='exerciseValueChanged(this)' name='intensity' min='0' step='1' max='10' type='number' placeholder='Intensität' value='" + exerciseObject.intensity + "'></div>" +
+                                            "<div class='exerciseInputRow'><label for='time'>Dauer(sek): </label><input required onchange='exerciseValueChanged(this)' onkeyup='exerciseValueChanged(this)' name='time' min='0' step='1' type='number' placeholder='Dauer' value='" + exerciseObject.time + "'></div>" +
+                                            "<div class='exerciseInputRow'><label for='pauseAfter'>Pause im Anschluss: </label><input required onchange='exerciseValueChanged(this)' onkeyup='exerciseValueChanged(this)' name='pauseAfter' min='0' step='1' type='number' placeholder='Pause' value='" + exerciseObject.pauseAfter + "'></div>";
                 }
                 return exercise;
             }
 
             function exerciseValueChanged(changedInputElement){
-                console.log(changedInputElement.name + " changed!")
+                // console.log(changedInputElement.name + " changed!")
                 if(!changedInputElement.checkValidity()){
                     $(changedInputElement).addClass('errorClass');
                     return false;
@@ -425,13 +472,13 @@
             }
 
             function doesNameExistInExerciseGroup(groupObj, name){
-                console.log(groupObj);
+                // console.log(groupObj);
                 let groupIndex = getIndexOfGroupName(groupObj.exerciseGroupName);
-                console.log("groupIndex: " + groupIndex);
+                // console.log("groupIndex: " + groupIndex);
                 groupExercises = structure[groupIndex].exercises;   
                 for (let index = 0; index < groupExercises.length; index++) {
                     if(groupExercises[index].name == name){
-                        console.log("exerciseName taken!");
+                        // console.log("exerciseName taken!");
                         return true;
                     }
                 }

@@ -34,7 +34,7 @@ if (isset($_POST["login-submit"])) {
                         #setcookie('userpw', $row['password'], time() + 60 * 60 * 30);
                     }
                     session_start();
-                    $_SESSION['userId'] = $row['id'];
+                    $_SESSION['userId'] = $row['iduser'];
                     $_SESSION['username'] = $row['username'];
                     header("location: ../index.php?login=success$message");
                     exit();

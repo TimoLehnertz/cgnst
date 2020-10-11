@@ -1,14 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap');
 :root {
     --color-1-1: rgb(24, 97, 116);
     --color-1-2: rgb(0, 95, 119);
-  }
+}
+
+*{
+    padding: 0;
+    margin: 0;
+    font-family: 'Open Sans', sans-serif;
+}
 
 body{
     margin: 0;
     padding: 0;
     background-color: #EEE;
-    font-family: 'Roboto', sans-serif;
 }
 
 *::selection {
@@ -122,8 +127,6 @@ header #signIn-sign-Out-form button{
 */
 
 main{
-    width: 70%;
-    margin-left: 15%;
     background-color: #FFF;
     padding: 10px;
     padding-top: 80px;
@@ -172,11 +175,10 @@ main form button{
 }
 
 footer{
-    margin-top: 10px;
     text-align: center;
     color: gray;
     background-color: #FFF;
-    padding: 20px;
+    padding: 50px;
 }
 
 /*
