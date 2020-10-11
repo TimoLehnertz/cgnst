@@ -7,11 +7,14 @@
 .kalender__header{
     border-bottom: 1px solid #DDD;
     padding: 10px;
-}
-
-.kalender__header{
     padding-left: 20px;
     position: relative;
+}
+
+.kalender__main{
+    width: 100%;
+    height: calc(100vh - 120px);
+    outline: 1px solid black;
 }
 
 .kalender__header > * > *{
