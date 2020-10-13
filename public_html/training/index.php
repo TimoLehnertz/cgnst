@@ -11,15 +11,7 @@
             }
         ?>
         <a href="createTraingsblueprint.php">Erstelle eine Trainingsvorlage</a>
-        <div class="kalender">
-            <!--<div class="kalender__header"></div>
-            <div class="kalender__body">
-                <div class="kalender__aside">
-                    <div class="kalender__aside__enter-new">Eintragen</div>
-                </div>
-                <div class="kalender__main"></div>
-            </div>-->
-        </div>
+        <div class="kalender"></div>
     </main>
 <?php
     #include "../footer.php"

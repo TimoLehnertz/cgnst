@@ -1,11 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
 
+:root {
+    --color-border: #BBB;
+}
+
+main{
+    min-width: 700px;
+}
+
 .kalender{
     margin-top: 100px;
 }
 
 .kalender__header{
-    border-bottom: 1px solid #DDD;
+    border-bottom: 1px solid var(--color-border);
     padding: 10px;
     padding-left: 20px;
     position: relative;
@@ -13,8 +21,34 @@
 
 .kalender__main{
     width: 100%;
-    height: calc(100vh - 120px);
-    outline: 1px solid black;
+    height: calc(100vh - 280px);
+    min-height: 400px;
+    display: flex;
+}
+
+.kalender__aside{
+    box-sizing: border-box;
+    position: relative;
+    border-right: 1px solid var(--color-border);
+    height: 100%;
+    width: 250px;
+    transition: width 0.3s, padding 0.3s, left 0.2s;
+    padding: 20px;
+    overflow: hidden;
+    left: 0px;
+}
+
+.kalender__aside--hidden{
+    padding: 0;
+    width: 0;
+    left: -200px;
+    overflow: hidden;
+}
+
+.kalender__body{
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
 }
 
 .kalender__header > * > *{
@@ -44,8 +78,9 @@
 .kalender__burger-label{
     height: 100%;
     width: 35px;
-    border-radius: 10px;
+    background: transparent;
     transform: scaleX(1);
+    padding-bottom: 4px;
 }
 
 .kalender__burger-label:hover *{
@@ -64,7 +99,7 @@
     display: block;
     background: #555;
     width: 20px;
-    height: 3px;
+    height: 2px;
     margin-left: auto;
     margin-right: auto;
     margin-top: 4px;
@@ -72,7 +107,12 @@
     transition: margin 0.2s;
 }
 
-.kalender__month button{
+.kalender__header__month{
+    margin-right: 100px;
+    transition: margin 0.3s;
+}
+
+.kalender__header__month button{
     color: #555;
     background: #FFF;
     border: none;
@@ -85,14 +125,18 @@
     transform: scale(1);
 }
 
-.kalender__month button:active{
+.kalender__header__month button:active{
     transform: scale(0.7);
     background-color: #DDD;
 }
 
-.kalender__current-month{
-    font-size: 15pt;
+.kalender__header__current-month{
+    font-size: 21pt;
     color: #666;
+    margin-left: 20px;
+    width: 250px;
+    height: auto;
+    display: inline-block;
 }
 
 .kalender__view-dropdown{
@@ -110,9 +154,11 @@
 }
 
 .kalender__search-input{
+    width: 200px;
     padding: 8px;
     border: none;
-    border-bottom: 2px solid #AAA;
+    font-size: 15pt;
+    background-color: #F1F1F1;
 }
 
 .kalender_interactive-shadow{
@@ -130,16 +176,185 @@
     box-shadow: 2px 2px 22px -2px rgba(184,184,184,1);
 }
 
-@media only screen and (max-width: 950px) {
-    .kalender__header__right { 
+/*
+    Kalender__body
+*/
+
+.kalender__month{
+    height: 100%;
+    display: flex;
+    position: relative;
+    flex-direction: column;
+}
+.kalender__week{
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+.kalender__day{
+    width: 100%;
+    height: 100%;
+    border: 1px solid var(--color-border);
+    border-top: none;
+    border-left: none;
+    font-size: 9pt;
+}
+
+.kalender__day--out-of-month{
+    color: #777;
+}
+
+.day__name, .day__number{
+    width: 100%;
+    text-align: center;
+    margin: 2px;
+}
+
+.kalender__week ~ .kalender__week .day__name{/*Hiding all daynames that are not in the first week of the month*/
+    display: none;
+}
+
+/*
+    Kalender Entry
+*/
+
+.kalender__entry{
+    height: 25px;
+    line-height: 25px;
+    padding-left: 5px;
+    box-sizing: border-box;
+    color: white;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 10pt;
+    font-weight: 600;
+}
+
+.kalender__entry--start-cap{
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.kalender__entry--end-cap{
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+/*
+    Kalender entry info
+*/
+
+.kalender__entry-info{
+    display: none;
+    opacity: 0;
+    position: absolute;
+    background: white;
+    width: 400px;
+    z-index: 10000;
+    margin: 0 auto;
+    padding: 30px;
+    border-radius: 8px;
+    -webkit-box-shadow: 14px 11px 76px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 14px 11px 76px 0px rgba(0,0,0,0.75);
+    box-shadow: 14px 11px 76px 0px rgba(0,0,0,0.75);
+}
+
+.kalender__entry-info__header{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.kalender__entry-info__header *{
+    margin: 0 10px;
+}
+
+.kalender__more-optios__dot{
+    height: 4px;
+    width: 4px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    border-radius: 50%;
+    background-color: #555;
+}
+
+.kalender__entry-info__close-button{
+    background: none;
+    border: none;
+    font-size: 15pt;
+    transition: transform 0.2s;
+}
+
+.kalender__entry-info__close-button:active{
+    transform: scale(0.7);
+}
+
+.kalender__entry-info__close-button:hover{
+    transform: scale(1.5);
+}
+
+.kalender__entry-info__name{
+    font-weight: 600;
+    font-size: 15pt;
+    color: #333;
+    margin: 5px;
+}
+
+.kalender__entry-info__color{
+    content: " dsad";
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    top: 62px;
+    left: 30px;
+    background-color: green;
+    border-radius: 3px;
+}
+
+.kalender__entry__body{
+    padding-left: 20px;
+}
+
+.kalender__entry-info__date{
+    color: #444;
+    font-size: 11pt;
+    margin-left: 5px;
+}
+
+.kalender__entry-info__content{
+    margin-top: 20px;
+}
+
+@media only screen and (max-width: 1100px) {
+    .kalender__header__right {
         position: static;
-        display: block;
+        display: flex;
+        justify-content: center;
         width: 100%;
         margin-top: 20px;
+    }
+
+    .kalender__header__left { 
+        width: 100%;
     }
 
     .kalender__header__headline{
         color: #444;
         margin-right: 30px;
+    }
+
+    .kalender__header__month{
+        padding-right: 100px;
+        margin-right: 0;
+        float: right;
+    }
+}
+
+/* smartphones, touchscreens */
+@media (hover: none) and (pointer: coarse) {
+    .kalender__entry-info{
+        width: 80vw !important;
+        height: 80vh !important;
+        top: 10vh !important;
+        left: 10vw !important;
     }
 }

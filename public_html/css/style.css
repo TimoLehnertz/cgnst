@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@600;700&display=swap');
+
 :root {
     --color-1-1: rgb(24, 97, 116);
     --color-1-2: rgb(0, 95, 119);
@@ -7,10 +9,10 @@
 *{
     padding: 0;
     margin: 0;
-    font-family: 'Open Sans', sans-serif;
 }
 
 body{
+    font-family: 'Open Sans', sans-serif;
     margin: 0;
     padding: 0;
     background-color: #EEE;
@@ -41,11 +43,13 @@ h3{
 */
 
 header{
+    font-weight: 600;
     height: 50px;
     width: 100%;
     position: fixed;
     background-color: #333;
     border-bottom: 5px solid var(--color-1-1);
+    z-index: 100;
  }
 
 header nav{
@@ -128,7 +132,6 @@ header #signIn-sign-Out-form button{
 
 main{
     background-color: #FFF;
-    padding: 10px;
     padding-top: 80px;
 }
 
