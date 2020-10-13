@@ -356,7 +356,6 @@ main{
         height: 80vh !important;
         top: 10vh !important;
         left: 10vw !important;
-
-        font-size: 20pt;
+        font-size: 40pt;
     }
 }
