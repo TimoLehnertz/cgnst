@@ -49,6 +49,7 @@ main{
     height: 100%;
     width: 100%;
     overflow: hidden;
+    position: relative;
 }
 
 .kalender__header > * > *{
@@ -180,11 +181,18 @@ main{
     Kalender__body
 */
 
-.kalender__month{
+.kalender__body > div{
     height: 100%;
+    width: 100%;
+    position: absolute;
+
+    top: 0;
+}
+
+.kalender__month{
     display: flex;
-    position: relative;
     flex-direction: column;
+    
 }
 .kalender__week{
     width: 100%;
@@ -201,14 +209,27 @@ main{
     font-size: 9pt;
 }
 
+.kalender__day.kalender__today .day__number{
+    background-color: #1a73e8;
+    color: white;
+    font-weight: 600;
+}
+
 .kalender__day--out-of-month{
-    color: #777;
+    color: #999;
 }
 
 .day__name, .day__number{
-    width: 100%;
+    font-weight: 500;
     text-align: center;
+    line-height: 20px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
     margin: 2px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
 }
 
 .kalender__week ~ .kalender__week .day__name{/*Hiding all daynames that are not in the first week of the month*/
@@ -228,6 +249,13 @@ main{
     font-family: 'Open Sans', sans-serif;
     font-size: 10pt;
     font-weight: 600;
+    margin-bottom: 3px;
+}
+
+.kalender__entry:not(.kalender__entry--placeholder){
+    -webkit-box-shadow: 0px 9px 25px -5px rgba(0,0,0,0.3);
+    -moz-box-shadow: 0px 9px 25px -5px rgba(0,0,0,0.3);
+    box-shadow: 0px 9px 25px -5px rgba(0,0,0,0.3);
 }
 
 .kalender__entry--start-cap{
@@ -252,7 +280,7 @@ main{
     width: 400px;
     z-index: 10000;
     margin: 0 auto;
-    padding: 30px;
+    padding: 20px;
     border-radius: 8px;
     -webkit-box-shadow: 14px 11px 76px 0px rgba(0,0,0,0.75);
     -moz-box-shadow: 14px 11px 76px 0px rgba(0,0,0,0.75);
@@ -271,8 +299,8 @@ main{
 .kalender__more-optios__dot{
     height: 4px;
     width: 4px;
-    margin-top: 2px;
-    margin-bottom: 2px;
+    margin-top: 3px;
+    margin-bottom: 3px;
     border-radius: 50%;
     background-color: #555;
 }
@@ -281,6 +309,8 @@ main{
     background: none;
     border: none;
     font-size: 15pt;
+    font-weight: 600;
+    color: #444;
     transition: transform 0.2s;
 }
 
@@ -304,19 +334,27 @@ main{
     position: absolute;
     width: 15px;
     height: 15px;
-    top: 62px;
+    top: 53px;
     left: 30px;
     background-color: green;
     border-radius: 3px;
+    transition: background-color ease 0.4s;
+    -moz-box-shadow: 0px 9px 28px -1px rgba(0,0,0,0.52);
+    box-shadow: 0px 9px 28px -1px rgba(0,0,0,0.52);
 }
 
 .kalender__entry__body{
-    padding-left: 20px;
+    padding-left: 35px;
+}
+
+.kalender__entry__name{
+    position: absolute;
+    text-shadow: 2px 3px 6px #303030;
 }
 
 .kalender__entry-info__date{
-    color: #444;
-    font-size: 11pt;
+    color: #555;
+    font-size: 12pt;
     margin-left: 5px;
 }
 

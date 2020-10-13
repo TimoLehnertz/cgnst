@@ -15,6 +15,9 @@ let currentElements = [];
 
 let infoElementVisible = false;
 
+let infoElementEntry;
+let infoElementEntryElement;
+
 $(function(){
     kalender = $(".kalender");
     
@@ -40,19 +43,30 @@ $(function(){
     kalender__body.append(getMonthElement(currentDate));
 
     entries = getEntrys();
-    console.log(calcEntriesOffset(getEntrys()))
     addEntries(calcEntriesOffset(getEntrys()));
 
     crateEntryInfoElement();
 
     $(".kalender").click(hideInfoElement);
+    $(window).keyup(keyUpHandler);
+    $(window).resize(kalenderResize);
+
+    reloadPage();
 });
+
+function keyUpHandler(e){
+    if(e.keyCode == 39){//arrow Right
+        turnPage(true);
+    } else if(e.keyCode == 37){
+        turnPage(false);
+    }
+}
 
 function getEntrys(){
     return [{
         name: "Geisingen Kader1",
         startDate: new Date("10/3/2020"),
-        endDate: new Date("11/1/2020"),
+        endDate: new Date("11/2/2020"),
         initiator: "CST1",//ToDO
         type: "training",
         color: "red"
@@ -65,7 +79,7 @@ function getEntrys(){
     },{
         name: "Geisingen Kader3",
         startDate: new Date("10/12/2020"),
-        endDate: new Date("10/10/2020"),
+        endDate: new Date("10/12/2020"),
         initiator: "CST",//ToDO
         type: "training",
         color: "pink"
@@ -79,8 +93,14 @@ function getEntrys(){
     }];
 }
 
+function kalenderResize(){
+    if(infoElementEntry != undefined && infoElementEntryElement != undefined && infoElementVisible){
+        blendInfoElementIn(infoElementEntry, infoElementEntryElement);
+    }
+}
+
 function calcEntriesOffset(entries){
-    entries.sort((a, b) => {return Math.abs(b.endDate - a.endDate) - Math.abs(a.endDate - a.startDate)});
+    entries.sort((a, b) => {return (getLastDate(b.endDate, b.startDate) - getFirstDate(b.endDate, b.startDate)) - (getLastDate(a.endDate, a.startDate) - getFirstDate(a.endDate, a.startDate))});
     for (const entry of entries) {
         let date = new Date(getFirstDate(entry.startDate, entry.endDate));
         let offset = 0;
@@ -122,17 +142,22 @@ function insertEntry(entry){
             if(entry.offset != undefined){
                 let existing = element.find(".kalender__entry").length;
                 for (let index = existing; index < entry.offset; index++) {
-                    console.log("entering placeholder")
                     element.append(`<div class="kalender__entry kalender__entry--placeholder"></div>`);
                 }
             }
             element.append(entryElement);
-        } else{
-            console.log("didnt found on page");
-            console.log(date.toLocaleDateString());
         }
         date.setDate(date.getDate() + 1);
+        if(compareDatesDayly(date, getIncrementedDate(getLastDate(entry.startDate, entry.endDate)))){
+            break;
+        }
     }
+}
+
+function getIncrementedDate(date){
+    let cpy = new Date(date);
+    cpy.setDate(cpy.getDate() + 1);
+    return cpy;
 }
 
 function getFirstDate(dateA, dateB){
@@ -183,38 +208,51 @@ function crateEntryInfoElement(){
 }
 
 function blendInfoElementIn(entry, entryElement){
-    infoElementVisible = true;
+    infoElementEntry = entry;
+    infoElementEntryElement = entryElement;
+    $(".kalender__entry-info").stop(true, false);
     const width = 400;
     var rect = entryElement.offset();
     right = window.innerWidth - (rect.left);
-    if(rect.left + width / 2 < window.innerWidth / 2){
+    const fromRight = rect.left + (entryElement.width() / 2) < window.innerWidth / 2;
+    if(fromRight){
         right = right - entryElement.width() - 70 - width;
     } if($(".kalender__view-dropdown").val() == "day"){
         right = (window.innerWidth / 2) - width / 2;
     }
-    let top = rect.top;
+    let top = Math.min(rect.top, window.innerHeight - $(".kalender__entry-info").height() - 60);
     $(".kalender__entry-info").css("display", "block");
     $(".kalender__entry-info__name").text(entry.name);
     $(".kalender__entry-info__date").text(getStartEndString(entry.startDate, entry.endDate));
     $(".kalender__entry-info__initiator").text(entry.initiator);
     $(".kalender__entry-info__color").css("background-color", $(entryElement).css("background-color"));
+    let duration = 300;
+    if(!infoElementVisible){
+        $(".kalender__entry-info").css("right", right + (fromRight ? 20 : -20));
+        $(".kalender__entry-info").css("top", top);
+        duration = 200;
+    }
     $(".kalender__entry-info").animate({
         opacity: 1,
         right: right,
-        top: Math.min(top, window.innerHeight - $(".kalender__entry-info").height() - 60)
-      }, 300);
+        top: top
+      }, duration);
+      infoElementVisible = true;
 }
 
 function hideInfoElement(){
     infoElementVisible = false;
     $(".kalender__entry-info").animate({
         opacity: 0
-    }, 200, function(){
+    }, 100, function(){
         $(".kalender__entry-info").css("display", "none");
     });
 }
 
 function getStartEndString(from, to){
+    let tmp = new Date(from);
+    from = getFirstDate(from, to);
+    to = getLastDate(tmp, to);
     let out = "";
     if(from.getMonth() == to.getMonth()){
         out = from.getDate() + ". - " + to.getDate() + " " + monthsLong[from.getMonth()]
@@ -248,28 +286,34 @@ function reloadPage(){
     setCurrentDate(currentDate)
     const nextPage = getPage(currentDate);
     $(".kalender__body").append(nextPage).show("fast");
-    addEntries(calcEntriesOffset(getEntrys())); console.log("changed");
+    addEntries(calcEntriesOffset(getEntrys()));
 }
 
 function turnPage(forewards){
     currentElements = [];
     $(".kalender__body > div").animate({
-        left: (forewards ? "-100%" : "100%"), // animate slideUp
-        opacity: 0,
-    }, 140, "swing", function() {
+        left: (forewards ? "-80%" : "80%"), // animate slideUp
+        opacity: 0
+    }, 200, function() {
         $(this).remove();
     });
     turnCurrentDate(forewards);
     const nextPage = getPage(currentDate);
-    $(".kalender__body").append(nextPage).show("fast");
-    addEntries(calcEntriesOffset(getEntrys())); console.log("changed");
+    $(".kalender__body").append(nextPage);
+    nextPage.css("left" , (forewards ?  "80%" : "-80%"));
+    nextPage.css("opacity" , 0);
+    nextPage.animate({
+        left: 0,
+        opacity: 1
+    }, 200);
+    addEntries(calcEntriesOffset(getEntrys()));
 }
 
 function turnCurrentDate(forewards){
     switch($(".kalender__view-dropdown").val()){
         case "day": currentDate.setDate(currentDate.getDate() + (forewards ? 1 : -1)); break;
         case "week": currentDate.setDate(currentDate.getDate() + (forewards ? 7 : -7)); break;
-        case "month": currentDate.setMonth(currentDate.getMonth() + (forewards ? 0 : -2)); break;
+        case "month": currentDate.setMonth(currentDate.getMonth() + (forewards ? 1 : -1)); break;
     }
     setCurrentDate(currentDate);
 }
@@ -331,7 +375,7 @@ function getDayElement(date, month){
     if(month == undefined){
         month = date.getMonth();
     }
-    const day = $(`<div class="kalender__day${date.getMonth() == month ? "" : " kalender__day--out-of-month"}">
+    const day = $(`<div class="kalender__day${date.getMonth() == month ? "" : " kalender__day--out-of-month"}${compareDatesDayly(new Date(), date) ? " kalender__today" : ""}">
         <div class="day__name">${daysShort[date.getDay()]}</div>
         <div class="day__number">${date.getDate()}</div>
     </div>`);
@@ -344,7 +388,7 @@ function getWeekElement(date, month){
         month = date.getMonth();
     }
     let dateCpy = new Date(date);
-    dateCpy.setDate(dateCpy.getDate() - (dateCpy.getDay() - 1));//resetting to last monday
+    dateCpy.setDate(dateCpy.getDate() - (dateCpy.getDay() == 0 ? 6 : dateCpy.getDay() - 1));//resetting to last monday
     const week = $(`<div class="kalender__week"></div>`);
     for (let day = 0; day < 7; day++){
         week.append(getDayElement(dateCpy, month));
@@ -353,11 +397,12 @@ function getWeekElement(date, month){
     return week;
 }
 
-function getMonthElement(date){
+function getMonthElement(date1){
+    let date = new Date(date1);
     date.setDate(1);//resetting to first day of month
     const month = date.getMonth();
     const week = $(`<div class="kalender__month"></div>`);
-    for (let i = 0; i < 5; i++){
+    for (let i = 0; i < 6; i++){
         week.append(getWeekElement(date, month));
         date.setDate(date.getDate() + 7);
     }
