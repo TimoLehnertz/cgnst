@@ -359,6 +359,11 @@ main{
         font-size: 40pt;
     }
     .kalender__entry-info__close-button{
-        font-size: 80pt;
+        font-size: 60pt;
+    }
+    .kalender__more-optios__dot{
+        width: 10px;
+        height: 10px;
+        margin: 5px;
     }
 }
