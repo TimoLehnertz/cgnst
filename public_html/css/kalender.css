@@ -358,4 +358,7 @@ main{
         left: 10vw !important;
         font-size: 40pt;
     }
+    .kalender__entry-info__close-button{
+        font-size: 80pt;
+    }
 }
