@@ -20,12 +20,13 @@ let infoElementEntryElement;
 
 $(function(){
     kalender = $(".kalender");
-    
+
     kalender.append(kalender__header_Html());
     kalender__header = $(".kalender__header");
     
     kalender.append('<div class="kalender__main"></div>');
     kalender__main = $(".kalender__main");
+    kalender__main.prepend(getEnterElement());
 
     kalender__main.append(kalender__aside_html());
     kalender__aside = $(".kalender__aside");
@@ -37,9 +38,12 @@ $(function(){
     $(".kalender__header__month__forewards").click(function(){turnPage(true)});
     $(".kalender__header__month__backwards").click(function(){turnPage(false)});
 
-    $(".kalender__view-dropdown").change(reloadPage);
+    $(".kalender__view-dropdown").change(()=>{reloadPage(); $(".kalender__view-dropdown").blur()});
 
-    $(".kalender__burger-label").click(()=>{$(".kalender__aside").toggleClass("kalender__aside--hidden")});
+    $(".kalender__burger-label").click(()=>{
+        $(".kalender__aside").toggleClass("kalender__aside--hidden");
+        $(".kalender__enter").toggleClass("kalender__enter--bigger")
+    });
     kalender__body.append(getMonthElement(currentDate));
 
     entries = getEntrys();
@@ -47,12 +51,27 @@ $(function(){
 
     crateEntryInfoElement();
 
-    $(".kalender").click(hideInfoElement);
+    $(".kalender__enter.kalender__enter--minimized").click((e)=>{
+        maximizeEnter();
+        e.stopPropagation();
+    });
+    $(".kalender__enter__close-btn").click((e)=>{minimizeEnter(); e.stopPropagation();});
+    $(".kalender").click(()=>{hideInfoElement(); minimizeEnter();});
     $(window).keyup(keyUpHandler);
     $(window).resize(kalenderResize);
 
     reloadPage();
 });
+
+function maximizeEnter(){
+    $(".kalender__enter").removeClass("kalender__enter--minimized");
+    $(".kalender__enter").addClass("kalender__enter--maximized");
+}
+
+function minimizeEnter(){
+    $(".kalender__enter").addClass("kalender__enter--minimized");
+    $(".kalender__enter").removeClass("kalender__enter--maximized");
+}
 
 function keyUpHandler(e){
     if(e.keyCode == 39){//arrow Right
@@ -363,6 +382,91 @@ function kalender__header_Html(){
         </div>
     </div>`;
     return html;
+}
+
+function getEnterElement(){
+    const enterElement = $(`
+    <div class="kalender__enter kalender__enter--bigger kalender__enter--minimized">
+        <img class="kalender__enter__img" alt="Eintragen" src="/img/plus.svg">
+        <span class="kalender__enter__text">Eintragen</span>
+        <button class="kalender__enter__close-btn kalender_interactive-shadow">X</button>
+        <div class="kalender__enter__header">
+            <div class="kalender__enter__choices">
+                <div class="kalender__enter-choice" color="green">Training</div>
+                <div class="kalender__enter-choice" color="red">Wettkampf</div>
+                <div class="kalender__enter-choice" color="gray">Trainingslager</div>
+                <div class="kalender__enter-choice" color="orange">Andere</div>
+            </div>
+        </div>
+        <div class="kalender__enter__content"></div>
+    </div>`);
+    enterElement.find(".kalender__enter__choices").append(`<div class="kalender__enter-chosen"></div>`);
+    enterElement.find(".kalender__enter-choice").click(function(){
+        loadEnterChoice(this);
+    });
+    enterElement.find(".kalender__enter-choice").each((i, e)=>{
+        $(e).css("color", $(e).attr("color"));
+    })
+    return enterElement;
+}
+
+function loadEnterChoice(element){
+    if($(".kalender__enter-chosen").position().left == $(element).position().left){
+        return;
+    }
+    const toRight = $(".kalender__enter-chosen").position().left > $(element).position().left;
+    const parentWIdth = $(".kalender__enter__content").width();
+    console.log(($(element).position().left / parentWIdth * 90) + "%");
+    $(".kalender__enter-chosen").animate({
+        left: ($(element).position().left / parentWIdth * 110) + "%",
+        width: $(element).width() + ($(element).css("padding-left").split("px")[0] * 2)
+    }, 100);
+    $(".kalender__enter-choice").each((i, e)=>{$(e).css("color", $(e).attr("color"));})//resetting
+    $(element).css("color", "white");
+    $(".kalender__enter-chosen").css("background-color", $(element).attr("color"));
+    $(".kalender__enter__choices").css("border-color", $(element).attr("color"));
+    switch($(element).text()){
+        case "Training": changeEnterContent(enterTrainingslagerElement, toRight); break;
+        case "Wettkampf": changeEnterContent(enterWettkampfElement, toRight); break;
+        case "Trainingslager": changeEnterContent(enterTrainingslagerElement, toRight); break;
+        case "Andere": changeEnterContent(enterAndereElement,toRight); break;
+    }
+}
+
+function changeEnterContent(newElement, toRight){
+    $(".kalender__enter__content > div").animate({
+        left: toRight ? "50%" : "-50%",
+        opacity: 0
+    }, 200, "swing", function(){
+        $(this).remove();
+    });
+    $(".kalender__enter__content").append(newElement);
+    newElement.css("left", toRight ? "-50%" : "50%")
+    newElement.css("opacity", 0)
+    newElement.animate({
+        left: 0,
+        opacity: 1
+    }, 200, "swing");
+}
+
+const enterTrainingslagerElement = $(`<div class="kalender__enter__properties kalender__enter__trainings-lager">
+</div`);
+enterTrainingslagerElement.append(getDateSelector(true));
+
+const enterWettkampfElement = $(`<div class="kalender__enter__properties kalender__enter__wettkampf"></div`);
+enterWettkampfElement.append(getDateSelector(true));
+
+const enterTrainingElement = $(`<div class="kalender__enter__properties kalender__enter__training"></div`);
+enterTrainingElement.append(getDateSelector(false));
+
+const enterAndereElement = $(`<div class="kalender__enter__properties kalender__enter__andere"></div`);
+enterAndereElement.append(getDateSelector(true));
+
+function getDateSelector(twoDates){
+    const selector = $(`<div class="kalender__date-selector">
+    
+    </div>`);
+    return selector;
 }
 
 function kalender__aside_html(){

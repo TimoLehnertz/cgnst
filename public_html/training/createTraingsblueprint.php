@@ -503,7 +503,9 @@
             };
         </script>
         <style>
-
+            main{
+                padding: 100px;
+            }
             .accordionContent{
                 -webkit-box-shadow: inset 0px -11px 130px -128px rgba(0,0,0,0.75);
                 -moz-box-shadow: inset 0px -11px 130px -128px rgba(0,0,0,0.75);

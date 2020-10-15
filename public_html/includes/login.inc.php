@@ -36,6 +36,7 @@ if (isset($_POST["login-submit"])) {
                     session_start();
                     $_SESSION['userId'] = $row['iduser'];
                     $_SESSION['username'] = $row['username'];
+                    $_SESSION['permission_administration'] = true;
                     header("location: ../index.php?login=success$message");
                     exit();
                 } else{

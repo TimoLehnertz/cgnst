@@ -43,6 +43,7 @@ if (isset($_POST["signup-submit"])) {
                     header("Location: ../signup.php?error=sqlError2");
                     exit();
                 } else{
+                    echo "success<br>";
                     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
                     mysqli_stmt_bind_param($stmt, "sss", $username, $email, $hashedPassword);

@@ -12,11 +12,16 @@
         <link rel="stylesheet" href="/css/ui.css">
         <link rel="stylesheet" href="/css/normalize.css">
         <script src="/js/jquery-3.5.1.js"></script>
+        <script src="/js/ui.js"></script>
         <?php
             if(isset($dependency)){
                 if(in_array("kalender", $dependency)){
                     echo "<link rel='stylesheet' href='/css/kalender.css'>";
                     echo "<script src='/js/kalender.js'></script>";
+                }
+                if(in_array("user-list", $dependency)){
+                    echo "<link rel='stylesheet' href='/css/user-list.css'>";
+                    echo "<script src='/js/user-list.js'></script>";
                 }
             }
         ?>
@@ -33,6 +38,7 @@
                 <a href="/timing">Timing</a>
                 <a href="/index.php">Kontakt</a>
                 <a href="/index.php">About us</a>
+                <?php if(isset($_SESSION["permission_administration"])){echo '<a href="/administration">Administration</a>';}?>
             </nav>
             <div>
             <?php if (isset($_SESSION["username"])) {//Signed in?>

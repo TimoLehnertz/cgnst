@@ -12,8 +12,12 @@
         </div>
     </div>
 */
+$(window).ready(()=>{
+    setAccordionEvents();
+    window.addEventListener('resize', resizeAccordions);
+    functionInitAll();
+});
 
-setAccordionEvents();
 
 function setAccordionEvents(){
     document.querySelectorAll(".accordionButton:not(.listener)").forEach(button =>{
@@ -32,8 +36,6 @@ function setAccordionEvents(){
     });
 }
 
-window.addEventListener('resize', resizeAccordions);
-
 function resizeAccordions(){
     document.querySelectorAll(".accordionButtonActive").forEach(button =>{
         const accordionContent = button.nextElementSibling;
@@ -44,5 +46,3 @@ function resizeAccordions(){
 function functionInitAll(){
     setAccordionEvents();
 }
-
-functionInitAll();
