@@ -652,6 +652,7 @@ i{
 }
 
 .kalender__time-selector-field{
+    width: 220px;
     padding: 5px;
 }
 
@@ -661,6 +662,10 @@ i{
     background: #EEE;
     border: 1px solid #AAA;
     width: 50px;
+}
+
+.kalender__time-selector-field * {
+    display: inline;
 }
 
 .kalender__time-selector-field__check{
@@ -733,6 +738,10 @@ i{
 
 .kalender__date-selector-field .kalender__day:hover > .day__number{
     background-color: #CCC;
+}
+
+.errorClass{
+    outline: 2px solid salmon;
 }
 
 @media only screen and (max-width: 1100px) {

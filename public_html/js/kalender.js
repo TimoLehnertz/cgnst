@@ -118,8 +118,7 @@ function loadTrainingsBlueprints(){
                 console.log(result);
                 trainingsBlueprints = [];
             } else{
-                trainingsBlueprints = JSON.parse(result)
-                console.log(trainingsBlueprints);
+                trainingsBlueprints = JSON.parse(result);
             }
         }
     });
@@ -627,6 +626,7 @@ function getBlueprintElement(blueprintName){
 }
 
 function getPropertyJson(propertieElem){   
+    const entryType = propertieElem.attr("entryType");
     const title = propertieElem.find(".kalender__termin__name__input").val();
     const startDate = new Date(parseInt($(propertieElem.find(".kalender__date-selector")[0]).attr("date")));
     const endDate = new Date(parseInt($(propertieElem.find(".kalender__date-selector")[1]).attr("date")));
@@ -640,6 +640,7 @@ function getPropertyJson(propertieElem){
     });
 
     const json = {
+        entryType: entryType,
         title: title,
         startDate: startDate,
         endDate: endDate,
@@ -652,10 +653,23 @@ function getPropertyJson(propertieElem){
 }
 
 function validateNewEntry(properties){
+    $(".kalender__enter__properties *").removeClass("errorClass");
     console.log(properties);
+    let success = true;
+    if(properties.title.length == 0){
+        success = false;
+        $(".kalender__termin__name__input").addClass("errorClass");
+    }
+    if(properties.entryType == "training" || properties.entryType == "andere"){
+        if(properties.groups.length == 0){
+            success = false;
+            $(".kalender__enter__properties .group-select").addClass("errorClass");
+        }
+    }
+    return success;
 }
 
-const enterTrainingslagerElement = $(`<div class="kalender__enter__properties kalender__enter__trainings-lager"></div`);
+const enterTrainingslagerElement = $(`<div class="kalender__enter__properties kalender__enter__trainings-lager" entryType="trainingslager"></div`);
 enterTrainingslagerElement.append(getTerminTitelElement)
 enterTrainingslagerElement.append(getDateSelector("Von"));
 enterTrainingslagerElement.append(getTimeSelector("Von"));
@@ -663,7 +677,7 @@ enterTrainingslagerElement.append(getDateSelector("Bis"));
 enterTrainingslagerElement.append(getTimeSelector("Bis"));
 enterTrainingslagerElement.append(getEnterEnterSection);
 
-const enterWettkampfElement = $(`<div class="kalender__enter__properties kalender__enter__wettkampf"></div`);
+const enterWettkampfElement = $(`<div class="kalender__enter__properties kalender__enter__wettkampf" entryType="wettkampf"></div`);
 enterWettkampfElement.append(getTerminTitelElement)
 enterWettkampfElement.append(getDateSelector("Von"));
 enterWettkampfElement.append(getTimeSelector("Von"));
@@ -671,7 +685,7 @@ enterWettkampfElement.append(getDateSelector("Bis"));
 enterWettkampfElement.append(getTimeSelector("Bis"));
 enterWettkampfElement.append(getEnterEnterSection);
 
-const enterTrainingElement = $(`<div class="kalender__enter__properties kalender__enter__training"></div`);
+const enterTrainingElement = $(`<div class="kalender__enter__properties kalender__enter__training" entryType="training"></div`);
 enterTrainingElement.append(getTerminTitelElement)
 enterTrainingElement.append(getDateSelector());
 enterTrainingElement.append(getTimeSelector("Von"));
@@ -680,7 +694,7 @@ enterTrainingElement.append(getTrainingsBlueprintSelectElem(false));
 enterTrainingElement.append(getGroupSelectElem(true, false, false, "In Gruppen teilen"));
 enterTrainingElement.append(getEnterEnterSection);
 
-const enterAndereElement = $(`<div class="kalender__enter__properties kalender__enter__andere"></div`);
+const enterAndereElement = $(`<div class="kalender__enter__properties kalender__enter__andere" entryType="andere"></div`);
 enterAndereElement.append(getTerminTitelElement)
 enterAndereElement.append(getDateSelector("Von"));
 enterAndereElement.append(getTimeSelector("Von"));
@@ -700,7 +714,6 @@ function getEnterEnterSection(){
 }
 
 function getGroupSelectElem(onlyAdminGroups, selected, expanded, name){
-    console.log("expanded: " + expanded);
     const elem = $(`<div class="group-select" initialSelect="${selected}">
             <div class="kalender_interactive-shadow group-select__header">
                 <i class="fas fa-users"></i>
@@ -886,7 +899,22 @@ function timeSelectorFieldAt(xPos, yPos, callback, time){
     $(".kalender__time-selector-field__check").click(function(){
         hideTimeSelector();
     });
-    $(".kalender__time-selector-field__hours, .kalender__time-selector-field__minutes").change(()=>{
+    $(".kalender__time-selector-field__hours, .kalender__time-selector-field__minutes").change(function(){
+        if($(this).hasClass("kalender__time-selector-field__minutes")){
+            if($(this).val() == 60){
+                $(this).val(0);
+                $(".kalender__time-selector-field__hours").val((parseInt($(".kalender__time-selector-field__hours").val()) + 1) % 24);
+            } else if($(this).val() == -1){
+                $(this).val(59);
+                $(".kalender__time-selector-field__hours").val((parseInt($(".kalender__time-selector-field__hours").val()) - 1) % 24);
+            }
+        } else{
+            if($(this).val() == 24){
+                $(this).val(0);
+            } else if($(this).val() == -1){
+                $(this).val(23);
+            }
+        }
         if(timeSelectorCallback != undefined){
             timeSelectorCallback(getTimeSelectorDate());
         }
@@ -944,10 +972,10 @@ function getDateSelectorElement(){
 }
 
 function getTimeSelectorElement(){
-    const element = $(`<div class="kalender__time-selector-field">
-        <input class="kalender__time-selector-field__hours" type="number" min="0" max="24"><span>:</span>
-        <input class="kalender__time-selector-field__minutes" type="number" min="0" max="59"><span class="kalender__time-selector-field__check"><i class="fas fa-check"></i></span>
-    </div>`);
+    const element = $(`<form class="kalender__time-selector-field">
+        <input class="kalender__time-selector-field__hours" size="2" type="number" min="-1" max="24"><span>:</span>
+        <input class="kalender__time-selector-field__minutes" size="2" type="number" min="-1" max="60"><span class="kalender__time-selector-field__check"><i class="fas fa-check"></i></span>
+    </form>`);
     element.find(".kalender__time-selector-field__hours").val(new Date().getHours());
     element.find(".kalender__time-selector-field__minutes").val(new Date().getMinutes());
     element.click((e)=>{e.stopPropagation()})
