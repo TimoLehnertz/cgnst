@@ -12,6 +12,7 @@
         <link rel="stylesheet" href="/css/ui.css">
         <link rel="stylesheet" href="/css/normalize.css">
         <script src="/js/jquery-3.5.1.js"></script>
+        <script src="/js/jquery.mobile-1.4.5.min.js"></script>
         <script src="/js/ui.js"></script>
         <script src="https://kit.fontawesome.com/bb5d468397.js" crossorigin="anonymous"></script>
         <?php
