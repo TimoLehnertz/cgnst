@@ -15,6 +15,16 @@ if(isset($_GET["getUserList"])){
     undoGroups($conn, $mysqli);
 } else if(isset($_GET["redoGroups"])){
     redoGroups($conn, $mysqli);
+} else if(isset($_GET["getUsername"])){
+    echo getUsername();
+}
+
+function getUsername(){
+    if(isset($_SESSION["username"])){
+        return $_SESSION["username"];
+    } else{
+        return "NOT LOGGED IN YET";
+    }
 }
 
 
