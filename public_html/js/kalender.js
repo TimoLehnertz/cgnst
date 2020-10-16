@@ -629,11 +629,24 @@ function getPropertyJson(propertieElem){
     const entryType = propertieElem.attr("entryType");
     const title = propertieElem.find(".kalender__termin__name__input").val();
     const startDate = new Date(parseInt($(propertieElem.find(".kalender__date-selector")[0]).attr("date")));
-    const endDate = new Date(parseInt($(propertieElem.find(".kalender__date-selector")[1]).attr("date")));
+    let endDate = new Date(parseInt($(propertieElem.find(".kalender__date-selector")[1]).attr("date")));
     const startTime = new Date(parseInt($(propertieElem.find(".kalender__time-selector")[0]).attr("time")))
     const endTime = new Date(parseInt($(propertieElem.find(".kalender__time-selector")[1]).attr("time")))
     const trainingsBlueprint = propertieElem.find(".blueprint--checked .trainings-blueprint__name").text();
     const groups = [];
+
+    startDate.setHours(startTime.getHours());
+    startDate.setMinutes(startTime.getMinutes());
+
+
+    if(isNaN(endDate.getTime())){
+        endDate = new Date(startDate);
+        endDate.setHours(endTime.getHours());
+        endDate.setMinutes(endTime.getMinutes());
+    } else{
+        endDate.setHours(endTime.getHours());
+        endDate.setMinutes(endTime.getMinutes());
+    }
 
     propertieElem.find(".group-select__group--checked").each(function(){
         groups.push($(this).find(".group-select__group-name").text());
@@ -644,8 +657,6 @@ function getPropertyJson(propertieElem){
         title: title,
         startDate: startDate,
         endDate: endDate,
-        startTime: startTime,
-        endTime: endTime,
         trainingsBlueprint: trainingsBlueprint,
         groups: groups
     }
@@ -654,7 +665,6 @@ function getPropertyJson(propertieElem){
 
 function validateNewEntry(properties){
     $(".kalender__enter__properties *").removeClass("errorClass");
-    console.log(properties);
     let success = true;
     if(properties.title.length == 0){
         success = false;
@@ -667,6 +677,25 @@ function validateNewEntry(properties){
         }
     }
     return success;
+}
+
+function submitEntry(entryProperties){
+    console.log("submitting:");
+    console.log(entryProperties);
+    $.ajax({
+        type: "POST",
+        url: '/kalender/kalenderAPI.php?submitEntry=1',
+        dataType: 'text',
+        data: JSON.stringify(entryProperties),
+        success: function (response) {
+            console.log(response)
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR.status);
+            console.log(textStatus);
+            console.log(errorThrown);
+        }
+    });
 }
 
 const enterTrainingslagerElement = $(`<div class="kalender__enter__properties kalender__enter__trainings-lager" entryType="trainingslager"></div`);
@@ -708,7 +737,9 @@ function getEnterEnterSection(){
         <button class="enter__enter-btn">Eintragen</button>
     </div`);
     elem.find("button").click(()=>{
-        validateNewEntry(getPropertyJson(elem.parent()));
+        if(validateNewEntry(getPropertyJson(elem.parent()))){
+            submitEntry(getPropertyJson(elem.parent()));
+        }
     })
     return elem;
 }
@@ -1029,7 +1060,7 @@ function getWeekElement(date, month, register){
     const week = $(`<div class="kalender__week"></div>`);
     for (let day = 0; day < 7; day++){
         week.append(getDayElement(dateCpy, month, register));
-        dateCpy.setDate(dateCpy.getDate() + 1)
+        dateCpy.setDate(dateCpy.getDate() + 1);
     }
     return week;
 }

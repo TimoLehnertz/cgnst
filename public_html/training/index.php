@@ -1,6 +1,6 @@
 <?php
     $dependency = ["kalender"];
-    include "../header.php"
+    include_once "../header.php"
 ?>
     <main>
         <a href="createTraingsblueprint.php">Erstelle eine Trainingsvorlage</a>

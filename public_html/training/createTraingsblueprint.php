@@ -1,5 +1,5 @@
 <?php
-    include "../header.php";
+    include_once "../header.php";
     if(!isset($_SESSION["username"])){
         header("location: /youNeedToLogin.php");
         exit();

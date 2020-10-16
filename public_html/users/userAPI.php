@@ -2,7 +2,7 @@
 
 session_start();
 
-include "../includes/dbh.inc.php";
+include_once "../includes/dbh.inc.php";
 
 if(isset($_GET["getUserList"])){
     echo json_encode(getUserList($mysqli));
