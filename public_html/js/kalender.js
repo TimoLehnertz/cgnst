@@ -41,6 +41,9 @@ $(function(){
     $(".kalender__header__month__forewards").click(function(){turnPage(true)});
     $(".kalender__header__month__backwards").click(function(){turnPage(false)});
 
+    $(".kalender__body").on("swipeleft", ()=>{turnPage(true);})
+    $(".kalender__body").on("swiperight", ()=>{turnPage(false);})
+
     $(".kalender__view-dropdown").change(()=>{reloadPage(); $(".kalender__view-dropdown").blur()});
 
     $(".kalender__burger-label").click(()=>{
