@@ -41,9 +41,6 @@ $(function(){
     $(".kalender__header__month__forewards").click(function(){turnPage(true)});
     $(".kalender__header__month__backwards").click(function(){turnPage(false)});
 
-    // $(".kalender__body").on("swipeleft", ()=>{turnPage(true);})
-    // $(".kalender__body").on("swiperight", ()=>{turnPage(false);})
-
     $(".kalender__view-dropdown").change(()=>{reloadPage(); $(".kalender__view-dropdown").blur()});
 
     $(".kalender__burger-label").click(()=>{
@@ -67,6 +64,13 @@ $(function(){
     changeEnterContent(enterTrainingElement, true);
     reloadPage();
 });
+
+$(document).on('mobileinit', function(event){
+    $(".kalender__body").on("swipeleft", ()=>{turnPage(true);})
+    $(".kalender__body").on("swiperight", ()=>{turnPage(false);})
+
+    $(window).swipeleft(console.log);
+ });
 
 function maximizeEnter(){
     $(".kalender__enter").removeClass("kalender__enter--minimized");
