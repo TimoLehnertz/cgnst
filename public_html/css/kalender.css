@@ -9,7 +9,7 @@ main{
 }
 
 .kalender{
-    margin-top: 100px;
+    margin-top: 10px;
 }
 
 .kalender__header{
@@ -188,7 +188,8 @@ main{
     position: absolute;
     height: 80px;
     width: 80px;
-    transition: all 0.2s;
+    transition: all 0.2s, outline 0.2s;
+    outline: 10000px solid rgba(0,0,0,0);
     border-radius: 40px;
     background: white;
     overflow: hidden;
@@ -245,15 +246,17 @@ main{
 */
 
 .kalender__enter--maximized{
+    border-radius: 0;
     min-width: 600px;
     width: 60vw;
     height: 80vh;
     max-width: 800px;
     margin-left: 20vw;
-    margin-top: -200px;
+    margin-top: -80px;
     position: fixed;
     padding: 0 30px;
     opacity: 1;
+    outline: 10000px solid rgba(0,0,0,0.5);
 }
 
 .kalender__enter--maximized .kalender__enter__text{
@@ -322,15 +325,28 @@ main{
 }
 
 .kalender__enter__content{
+    padding-top: 30px;
     width: 90%;
     height: 70%;
     position: absolute;
-    /* border: 1px solid #AAA; */
+    font-size: 1.4rem;
+    line-height: 2rem;
+    color: #444;
+}
+
+.kalender__enter__content i{
+    margin-right: 20px;
+    font-size: 2rem;
 }
 
 .kalender__enter__properties{
-
     position: absolute;
+}
+
+.kalender__date-selector, .kalender__time-selector{
+    padding: 10px;
+    border-radius: 10px;
+    margin: 5px;
 }
 
 /*
@@ -516,6 +532,84 @@ main{
 
 .kalender__entry-info__content{
     margin-top: 20px;
+}
+
+/*
+    Date selector
+*/
+
+.kalender__date-selector-field, .kalender__time-selector-field{
+    position: absolute;
+    opacity: 0;
+    display: none;
+    z-index: 1100;
+    background: white;
+    -webkit-box-shadow: 10px 10px 84px -1px rgba(0,0,0,0.26);
+    -moz-box-shadow: 10px 10px 84px -1px rgba(0,0,0,0.26);
+    box-shadow: 10px 10px 84px -1px rgba(0,0,0,0.26);
+}
+
+.kalender__time-selector-field{
+    padding: 10px;
+}
+
+.kalender__time-selector-field input{
+    padding: 10px;
+    border: none;
+    background: #EEE;
+    width: 50px;
+}
+
+.kalender__time-selector-field__check{
+    font-size: 1.8rem;
+    margin-left: 20px;
+    transition: all 0.2s;
+}
+
+.kalender__time-selector-field__check:hover{
+    transform: scale(0.8);
+}
+
+.kalender__date-selector-field__back-btn, .kalender__date-selector-field__forewards-btn{
+    color: #555;
+    background: #FFF;
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    transition: box-shadow 0.1s, transform 0.2s, background-color 0.2s;
+    font-size: 20pt;
+    font-family: 'Anton', sans-serif;
+    transform: scale(1);
+}
+
+.kalender__date-selector-field__forewards-btn{
+    float: right;
+}
+
+.kalender__date-selector-field__date{
+    display: inline-block;
+    width: 150px;
+    text-align: center;
+    color: #333;
+    font-size: 1rem;
+    padding: 10px;
+    font-weight: 500;
+}
+
+.kalender__date-selector-field .kalender__day{
+    cursor: pointer;
+    padding: 5px;
+    border: 1px solid #DDD;
+    font-size: 0.9rem;
+}
+
+.kalender__date-selector-field .day__number{
+    transition: all 0.2s;
+}
+
+.kalender__date-selector-field .kalender__day:hover > .day__number{
+    background-color: #CCC;
 }
 
 @media only screen and (max-width: 1100px) {

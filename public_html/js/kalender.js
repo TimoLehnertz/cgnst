@@ -1,3 +1,4 @@
+"use strict";
 let kalender;
     let kalender__header;
     let kalender__main;
@@ -20,6 +21,8 @@ let infoElementEntryElement;
 
 $(function(){
     kalender = $(".kalender");
+    kalender.append(getDateSelectorElement());
+    kalender.append(getTimeSelectorElement());
 
     kalender.append(kalender__header_Html());
     kalender__header = $(".kalender__header");
@@ -44,9 +47,8 @@ $(function(){
         $(".kalender__aside").toggleClass("kalender__aside--hidden");
         $(".kalender__enter").toggleClass("kalender__enter--bigger")
     });
-    kalender__body.append(getMonthElement(currentDate));
+    kalender__body.append(getMonthElement(currentDate), true);
 
-    entries = getEntrys();
     addEntries(calcEntriesOffset(getEntrys()));
 
     crateEntryInfoElement();
@@ -56,10 +58,10 @@ $(function(){
         e.stopPropagation();
     });
     $(".kalender__enter__close-btn").click((e)=>{minimizeEnter(); e.stopPropagation();});
-    $(".kalender").click(()=>{hideInfoElement(); minimizeEnter();});
+    $(".kalender").click(()=>{hideInfoElement(); minimizeEnter();hideDateSelector();hideTimeSelector()});
     $(window).keyup(keyUpHandler);
     $(window).resize(kalenderResize);
-
+    changeEnterContent(enterTrainingElement, true);
     reloadPage();
 });
 
@@ -69,6 +71,7 @@ function maximizeEnter(){
 }
 
 function minimizeEnter(){
+    hideDateSelector();
     $(".kalender__enter").addClass("kalender__enter--minimized");
     $(".kalender__enter").removeClass("kalender__enter--maximized");
 }
@@ -232,7 +235,7 @@ function blendInfoElementIn(entry, entryElement){
     $(".kalender__entry-info").stop(true, false);
     const width = 400;
     var rect = entryElement.offset();
-    right = window.innerWidth - (rect.left);
+    let right = window.innerWidth - (rect.left);
     const fromRight = rect.left + (entryElement.width() / 2) < window.innerWidth / 2;
     if(fromRight){
         right = right - entryElement.width() - 70 - width;
@@ -285,6 +288,14 @@ function getElementToDate(date){
     for (const element of currentElements) {
         if(compareDatesDayly(element.date, date)){
             return element.element;
+        }
+    }
+}
+
+function getDateSelectorDateToElement(dayElement){
+    for (const element of dateRegisterSelectorField) {
+        if($(dayElement).is($(element.element))){
+            return element.date;
         }
     }
 }
@@ -345,11 +356,27 @@ function setCurrentDate(date){
     }
 }
 
+function getDateStringAll(date){
+    return date.getDate() + "." + monthsLong[date.getMonth()] + " " + (date.getYear() + 1900);
+}
+
+function getDateStringAllDay(date){
+    return daysLong[date.getDay()] + ", " + date.getDate() + "." + monthsLong[date.getMonth()] + " " + (date.getYear() + 1900);
+}
+
+function getTimeString(date){
+    return date.getHours() + ":" + (date.getMinutes() < 10 ? date.getMinutes() + "0" : date.getMinutes());
+}
+
+function getDateStringMonth(date){
+    return monthsLong[date.getMonth()] + " " + (date.getYear() + 1900);
+}
+
 function getPage(date){
     switch($(".kalender__view-dropdown").val()){
-        case "day": return getDayElement(date)
-        case "week": return getWeekElement(date)
-        case "month": return getMonthElement(date)
+        case "day": return getDayElement(date, true)
+        case "week": return getWeekElement(date, true)
+        case "month": return getMonthElement(date, true)
     }
 }
 
@@ -407,6 +434,7 @@ function getEnterElement(){
     enterElement.find(".kalender__enter-choice").each((i, e)=>{
         $(e).css("color", $(e).attr("color"));
     })
+    enterElement.click(()=>{hideDateSelector(); hideTimeSelector()});
     return enterElement;
 }
 
@@ -415,18 +443,22 @@ function loadEnterChoice(element){
         return;
     }
     const toRight = $(".kalender__enter-chosen").position().left > $(element).position().left;
-    const parentWIdth = $(".kalender__enter__content").width();
-    console.log(($(element).position().left / parentWIdth * 90) + "%");
     $(".kalender__enter-chosen").animate({
-        left: ($(element).position().left / parentWIdth * 110) + "%",
+        left: $(element).position().left,
         width: $(element).width() + ($(element).css("padding-left").split("px")[0] * 2)
     }, 100);
+    $(window).resize(()=>{
+        // window.setTimeout(()=>{
+        //     $(".kalender__enter-chosen").css("left", $(element).position().left);
+        //     $(".kalender__enter-chosen").css("width", $(element).width() + ($(element).css("padding-left").split("px")[0] * 2));
+        // }, 400);
+    });
     $(".kalender__enter-choice").each((i, e)=>{$(e).css("color", $(e).attr("color"));})//resetting
     $(element).css("color", "white");
     $(".kalender__enter-chosen").css("background-color", $(element).attr("color"));
     $(".kalender__enter__choices").css("border-color", $(element).attr("color"));
     switch($(element).text()){
-        case "Training": changeEnterContent(enterTrainingslagerElement, toRight); break;
+        case "Training": changeEnterContent(enterTrainingElement, toRight); break;
         case "Wettkampf": changeEnterContent(enterWettkampfElement, toRight); break;
         case "Trainingslager": changeEnterContent(enterTrainingslagerElement, toRight); break;
         case "Andere": changeEnterContent(enterAndereElement,toRight); break;
@@ -437,9 +469,7 @@ function changeEnterContent(newElement, toRight){
     $(".kalender__enter__content > div").animate({
         left: toRight ? "50%" : "-50%",
         opacity: 0
-    }, 200, "swing", function(){
-        $(this).remove();
-    });
+    }, 200, "swing");
     $(".kalender__enter__content").append(newElement);
     newElement.css("left", toRight ? "-50%" : "50%")
     newElement.css("opacity", 0)
@@ -449,24 +479,177 @@ function changeEnterContent(newElement, toRight){
     }, 200, "swing");
 }
 
-const enterTrainingslagerElement = $(`<div class="kalender__enter__properties kalender__enter__trainings-lager">
-</div`);
-enterTrainingslagerElement.append(getDateSelector(true));
+const enterTrainingslagerElement = $(`<div class="kalender__enter__properties kalender__enter__trainings-lager"></div`);
+enterTrainingslagerElement.append(getDateSelector("Von"));
+enterTrainingslagerElement.append(getDateSelector("Bis"));
+enterTrainingslagerElement.append(getTimeSelector("Von"));
+enterTrainingslagerElement.append(getTimeSelector("Bis"));
 
 const enterWettkampfElement = $(`<div class="kalender__enter__properties kalender__enter__wettkampf"></div`);
-enterWettkampfElement.append(getDateSelector(true));
+enterWettkampfElement.append(getDateSelector("Von"));
+enterWettkampfElement.append(getDateSelector("Bis"));
+enterWettkampfElement.append(getTimeSelector("Von"));
+enterWettkampfElement.append(getTimeSelector("Bis"));
 
 const enterTrainingElement = $(`<div class="kalender__enter__properties kalender__enter__training"></div`);
-enterTrainingElement.append(getDateSelector(false));
+enterTrainingElement.append(getDateSelector());
+enterTrainingElement.append(getTimeSelector("Von"));
+enterTrainingElement.append(getTimeSelector("Bis"));
 
 const enterAndereElement = $(`<div class="kalender__enter__properties kalender__enter__andere"></div`);
-enterAndereElement.append(getDateSelector(true));
+enterAndereElement.append(getDateSelector("Von"));
+enterAndereElement.append(getDateSelector("Bis"));
+enterAndereElement.append(getTimeSelector("Von"));
+enterAndereElement.append(getTimeSelector("Bis"));
 
-function getDateSelector(twoDates){
-    const selector = $(`<div class="kalender__date-selector">
-    
+function getDateSelector(name){
+    const selector = $(`<div class="kalender__date-selector kalender_interactive-shadow kalender__date-selector-${name}" date="${new Date().getTime()}">
+        <span><i class="far fa-calendar-alt"></i></i>${name != undefined ? name + " " : ""} </span>
+        <span class="kalender__date-selector__date">${getDateStringAllDay(new Date())}</span
     </div>`);
+    selector.on("click", function(e){
+        e.stopPropagation();
+        const rect = selector.offset();
+        dateSelectorFieldAt(rect.left, rect.top + selector.height() + 30, (date)=>{
+            selector.find(".kalender__date-selector__date").text(getDateStringAllDay(date));
+            selector.attr("date", date.getTime());
+        });
+    });
     return selector;
+}
+
+function getTimeSelector(name){
+    const selector = $(`<div class="kalender__time-selector kalender__time-selector${name != undefined ? name : ""} kalender_interactive-shadow" time="${new Date().getTime()}">
+        <i class="far fa-clock"></i></i>
+        <span>${name != undefined ? name + " " : ""}</span><span class="kalender__time-selector__time">${getTimeString(new Date())}</span
+    </div>`);
+    selector.on("click", function(e){
+        e.stopPropagation();
+        const rect = selector.offset();
+        timeSelectorFieldAt(rect.left, rect.top + selector.height() + 30, (date)=>{
+            selector.find(".kalender__time-selector__time").text(getTimeString(date));
+            selector.attr("time", date.getTime());
+        }, selector.attr("time"));
+    });
+    return selector;
+}
+
+let dateRegisterSelectorField = [];
+let dateSelectorCallback;
+
+function dateSelectorFieldAt(xPos, yPos, callback){
+    dateSelectorCallback = callback;
+    dateRegisterSelectorField = [];
+    changeDateSelectorMonth(new Date())
+    $(".kalender__date-selector-field").css("top", yPos);
+    $(".kalender__date-selector-field").css("left", xPos - 50);
+    $(".kalender__date-selector-field").css("display", "block");
+    $(".kalender__date-selector-field").animate({
+        left: xPos,
+        opacity: 1
+    },200, "swing");
+    $(".kalender__date-selector-field .kalender__day").click(function(){
+        hideDateSelector();
+        dateSelectorCallback(getDateSelectorDateToElement(this));
+    });
+}
+
+let timeSelectorCallback;
+
+function timeSelectorFieldAt(xPos, yPos, callback, time){
+    const date = new Date(parseInt(time));
+    $(".kalender__time-selector-field__hours").val(date.getHours());
+    $(".kalender__time-selector-field__minutes").val(date.getMinutes());
+    timeSelectorCallback = callback;
+    $(".kalender__time-selector-field").css("top", yPos);
+    $(".kalender__time-selector-field").css("left", xPos - 50);
+    $(".kalender__time-selector-field").css("display", "block");
+    $(".kalender__time-selector-field").animate({
+        left: xPos,
+        opacity: 1
+    },200, "swing");
+    $(".kalender__time-selector-field__check").click(function(){
+        hideTimeSelector();
+    });
+    $(".kalender__time-selector-field__hours, .kalender__time-selector-field__minutes").change(()=>{
+        if(timeSelectorCallback != undefined){
+            timeSelectorCallback(getTimeSelectorDate());
+        }
+    });
+}
+
+function getTimeSelectorDate(){
+    const date = new Date();
+    date.setHours($(".kalender__time-selector-field__hours").val());
+    date.setMinutes($(".kalender__time-selector-field__minutes").val());
+    return date;
+}
+
+function hideDateSelector(){
+    $(".kalender__date-selector-field").animate({
+        left: "+=50px",
+        opacity: 0
+    },100, ()=>{
+        $(".kalender__date-selector-field").css("display", "none");
+    });
+}
+
+function hideTimeSelector(){
+    $(".kalender__time-selector-field").animate({
+        left: "+=50px",
+        opacity: 0
+    },100, ()=>{
+        $(".kalender__time-selector-field").css("display", "none");
+    });
+}
+
+let dateSelectorCurrentMonth = new Date();
+
+function getDateSelectorElement(){
+    const element = $(`<div class="kalender__date-selector-field">
+        <div class="kalender__date-selector-field__header">
+            <button class="kalender__date-selector-field__back-btn kalender_interactive-shadow"><</button>
+            <span class="kalender__date-selector-field__date"></span>
+            <button class="kalender__date-selector-field__forewards-btn kalender_interactive-shadow">></button>
+        </div>
+    </div>`);
+    element.find(".kalender__date-selector-field__back-btn").click(()=>{
+        element.find(".kalender__month").remove();
+        dateSelectorCurrentMonth.setMonth(dateSelectorCurrentMonth.getMonth() - 1);
+        changeDateSelectorMonth(dateSelectorCurrentMonth);
+    })
+    element.find(".kalender__date-selector-field__forewards-btn").click(()=>{
+        element.find(".kalender__month").remove();
+        dateSelectorCurrentMonth.setMonth(dateSelectorCurrentMonth.getMonth() + 1);
+        changeDateSelectorMonth(dateSelectorCurrentMonth);
+    });
+    element.append(getMonthElement(dateSelectorCurrentMonth, false));
+    element.click((e)=>{e.stopPropagation()})
+    return element;
+}
+
+function getTimeSelectorElement(){
+    const element = $(`<div class="kalender__time-selector-field">
+        <input class="kalender__time-selector-field__hours" type="number" min="0" max="24"><span>:</span>
+        <input class="kalender__time-selector-field__minutes" type="number" min="0" max="59"><span class="kalender__time-selector-field__check"><i class="fas fa-check"></i></span>
+    </div>`);
+    element.find(".kalender__time-selector-field__hours").val(new Date().getHours());
+    element.find(".kalender__time-selector-field__minutes").val(new Date().getMinutes());
+    element.click((e)=>{e.stopPropagation()})
+    return element;
+}
+
+function changeDateSelectorMonth(date){
+    dateRegisterSelectorField = [];
+    const element = $(".kalender__date-selector-field");
+    element.find(".kalender__month").remove();
+    dateSelectorCurrentMonth = date;
+    element.append(getMonthElement(date));
+    element.find(".kalender__date-selector-field__date").text(getDateStringMonth(date));
+    $(".kalender__date-selector-field .kalender__day").click(function(){
+        hideDateSelector();
+        dateSelectorCallback(getDateSelectorDateToElement(this));
+    });
 }
 
 function kalender__aside_html(){
@@ -475,19 +658,23 @@ function kalender__aside_html(){
     </div>`;
 }
 
-function getDayElement(date, month){
+function getDayElement(date, month, register){
     if(month == undefined){
         month = date.getMonth();
     }
     const day = $(`<div class="kalender__day${date.getMonth() == month ? "" : " kalender__day--out-of-month"}${compareDatesDayly(new Date(), date) ? " kalender__today" : ""}">
-        <div class="day__name">${daysShort[date.getDay()]}</div>
+        <div class="day__name">${date.getDay() == 0 ? "<b>" : ""}${daysShort[date.getDay()]}${date.getDay() == 0 ? "<b>" : ""}</div>
         <div class="day__number">${date.getDate()}</div>
     </div>`);
-    currentElements.push({date: new Date(date), element: day});
+    if(register){
+        currentElements.push({date: new Date(date), element: day});
+    } else{
+        dateRegisterSelectorField.push({date: new Date(date), element: day});
+    }
     return day;
 }
 
-function getWeekElement(date, month){
+function getWeekElement(date, month, register){
     if(month == undefined){
         month = date.getMonth();
     }
@@ -495,19 +682,19 @@ function getWeekElement(date, month){
     dateCpy.setDate(dateCpy.getDate() - (dateCpy.getDay() == 0 ? 6 : dateCpy.getDay() - 1));//resetting to last monday
     const week = $(`<div class="kalender__week"></div>`);
     for (let day = 0; day < 7; day++){
-        week.append(getDayElement(dateCpy, month));
+        week.append(getDayElement(dateCpy, month, register));
         dateCpy.setDate(dateCpy.getDate() + 1)
     }
     return week;
 }
 
-function getMonthElement(date1){
+function getMonthElement(date1, register){
     let date = new Date(date1);
     date.setDate(1);//resetting to first day of month
     const month = date.getMonth();
     const week = $(`<div class="kalender__month"></div>`);
     for (let i = 0; i < 6; i++){
-        week.append(getWeekElement(date, month));
+        week.append(getWeekElement(date, month, register));
         date.setDate(date.getDate() + 7);
     }
     return week;

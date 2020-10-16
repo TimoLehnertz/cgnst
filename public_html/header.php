@@ -13,6 +13,7 @@
         <link rel="stylesheet" href="/css/normalize.css">
         <script src="/js/jquery-3.5.1.js"></script>
         <script src="/js/ui.js"></script>
+        <script src="https://kit.fontawesome.com/bb5d468397.js" crossorigin="anonymous"></script>
         <?php
             if(isset($dependency)){
                 if(in_array("kalender", $dependency)){
