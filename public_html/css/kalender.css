@@ -971,16 +971,16 @@ i{
     .kalender__enter__text{
         line-height: 120px;
         left: 140px;
-        font-size: 2rem;
+        font-size: 1.5rem;
     }
 
     .kalender__enter--minimized:hover, .kalender__enter--bigger{
-        width: 250px;
+        width: 280px;
         opacity: 1;
     }
     
     .kalender__enter--minimized:hover .kalender__enter__text, .kalender__enter--bigger .kalender__enter__text{
-        left: 120px;
+        left: 100px;
     }
     
     .kalender__enter--minimized:hover .kalender__enter__img{
@@ -1012,5 +1012,9 @@ i{
     .kalender__enter--maximized .kalender__enter__text{
         left: 120px;
         font-size: 2rem;
+    }
+
+    .kalender__enter-choice__name{
+        font-size: 1rem;
     }
 }
