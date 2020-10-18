@@ -1017,4 +1017,15 @@ i{
     .kalender__enter-choice__name{
         font-size: 1rem;
     }
+
+    .kalender__entry-info__content > div{
+        margin: 50px;
+        font-size: 1.3rem;
+        line-height: 100%;
+    }
+
+    .kalender__entry-info__content{
+        padding-left: 100px;
+        margin-top: 20px;
+    }
 }
