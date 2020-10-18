@@ -557,13 +557,13 @@ i{
 */
 
 .kalender__entry{
-    height: 25px;
-    line-height: 25px;
+    height: 1.5rem;
+    line-height: 1.5rem;
     padding-left: 5px;
     box-sizing: border-box;
     color: white;
     font-family: 'Open Sans', sans-serif;
-    font-size: 10pt;
+    font-size: 1rem;
     font-weight: 600;
     margin-bottom: 3px;
 }
@@ -625,7 +625,7 @@ i{
 .kalender__entry-info__close-button{
     background: none;
     border: none;
-    font-size: 15pt;
+    font-size: 1.2rem;
     font-weight: 600;
     color: #444;
     transition: transform 0.2s;
@@ -641,7 +641,7 @@ i{
 
 .kalender__entry-info__name{
     font-weight: 600;
-    font-size: 15pt;
+    font-size: 1.2rem;
     color: #333;
     margin: 5px;
 }
@@ -671,7 +671,7 @@ i{
 
 .kalender__entry-info__date{
     color: #555;
-    font-size: 12pt;
+    font-size: 1rem;
     margin-left: 5px;
 }
 
@@ -832,7 +832,7 @@ i{
     width: 35px;
     height: 35px;
     transition: box-shadow 0.1s, transform 0.2s, background-color 0.2s;
-    font-size: 20pt;
+    font-size: 1.8rem;
     font-family: 'Anton', sans-serif;
     transform: scale(1);
 }
@@ -904,10 +904,10 @@ i{
         height: 80vh !important;
         top: 10vh !important;
         left: 10vw !important;
-        font-size: 40pt;
+        font-size: 3rem;
     }
     .kalender__entry-info__close-button{
-        font-size: 60pt;
+        font-size: 3rem;
     }
     .kalender__more-optios__dot{
         width: 10px;
