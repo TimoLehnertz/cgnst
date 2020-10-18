@@ -928,15 +928,17 @@ i{
     }
 
     .kalender__entry{
-        height: 2rem;
-        line-height: 1rem;
+        height: 1.89rem;
         padding-left: 5px;
-        font-size: 1rem;
+    }
+
+    .kalender__aside{
+        padding-top : 200px;
     }
 
     .kalender__entry__name{
         font-size: 0.66rem;
-        height: 2rem;
+        height: 1.89rem;
         line-height: 0.66rem;
         white-space: normal;
         text-overflow: ellipsis;
