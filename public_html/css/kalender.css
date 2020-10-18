@@ -667,6 +667,7 @@ i{
 
 .kalender__entry__name{
     position: relative;
+    overflow: hidden;
     text-shadow: 2px 3px 6px #303030;
 }
 
