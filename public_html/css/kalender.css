@@ -928,7 +928,7 @@ i{
     }
 
     .kalender__entry{
-        height: 1.89rem;
+        height: 1.25rem;
         padding-left: 5px;
     }
 
@@ -938,7 +938,7 @@ i{
 
     .kalender__entry__name{
         font-size: 0.66rem;
-        height: 1.89rem;
+        height: 1.25rem;
         line-height: 0.66rem;
         white-space: normal;
         text-overflow: ellipsis;
