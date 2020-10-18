@@ -6,9 +6,13 @@
 
 main{
     min-width: 700px;
+    height: calc(100vh - 100px);
 }
 
 .kalender{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
     margin-top: 10px;
 }
 
@@ -21,9 +25,9 @@ main{
 
 .kalender__main{
     width: 100%;
-    height: calc(100vh - 280px);
     display: flex;
     position: relative;
+    flex-grow: 100;
 }
 
 .kalender__aside{
@@ -427,7 +431,9 @@ main{
     border-radius: 10px;
     transition: all 0.2s;
     bottom: 0px;
+    height: 50px;
     width: 150px;
+    font-weight: 700;
 }
 
 .enter__enter-btn:hover{
@@ -436,6 +442,7 @@ main{
     -webkit-box-shadow: 6px 5px 24px -11px rgba(0,0,0,0.75);
     -moz-box-shadow: 6px 5px 24px -11px rgba(0,0,0,0.75);
     box-shadow: 6px 5px 24px -11px rgba(0,0,0,0.75);
+    transform: scale(1.05   );
 }
 
 .enter__enter-btn:active{
@@ -448,6 +455,36 @@ i{
 
 .rotate-reverse{
     transform: rotate(180deg);
+}
+
+.comment-input{
+    padding: 10px;
+    width: 100%;
+    resize: vertical;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.loading-circle{
+    height: 30px;
+    width: 30px;
+    animation: rotate infinite 1s linear;
+    border-right: 3px solid #FFF;
+    border-radius: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@keyframes rotate{
+    from{
+        transform: rotate(0deg);
+    } to{
+        transform: rotate(360deg);
+    }
+}
+
+.error-message{
+    color: coral;
 }
 
 /*
@@ -480,6 +517,10 @@ i{
     border-top: none;
     border-left: none;
     font-size: 9pt;
+}
+
+.kalender__month .kalender__day{
+    max-height: 200px;
 }
 
 .kalender__day.kalender__today .day__number{
@@ -556,9 +597,9 @@ i{
     margin: 0 auto;
     padding: 20px;
     border-radius: 8px;
-    -webkit-box-shadow: 14px 11px 76px 0px rgba(0,0,0,0.75);
-    -moz-box-shadow: 14px 11px 76px 0px rgba(0,0,0,0.75);
-    box-shadow: 14px 11px 76px 0px rgba(0,0,0,0.75);
+    -webkit-box-shadow: 4px 5px 46px -5px rgba(0,0,0,0.5);
+    -moz-box-shadow: 4px 5px 46px -5px rgba(0,0,0,0.5);
+    box-shadow: 4px 5px 46px -5px rgba(0,0,0,0.5);
 }
 
 .kalender__entry-info__header{
@@ -622,7 +663,7 @@ i{
 }
 
 .kalender__entry__name{
-    position: absolute;
+    position: relative;
     text-shadow: 2px 3px 6px #303030;
 }
 
@@ -633,7 +674,90 @@ i{
 }
 
 .kalender__entry-info__content{
+    left: -20px;
+    position: relative;
+    padding-left: 40px;
     margin-top: 20px;
+    height: 0;
+    overflow: hidden;
+    transition: all 0.2s;
+}
+
+.kalender__entry-info__content > div{
+    margin-top: 20px;
+    font-size: 1.2rem;
+    line-height: 100%;
+}
+
+.kalender__entry-info__content i{
+    position: absolute;
+    color: #444;
+    font-size: 1.3rem;
+    left: 0;
+}
+
+.kalender__entry-info__content--expanded{
+    height: 200px;
+}
+
+.initiator{
+    color: #111;
+}
+
+.kalender__entry-info__initiator{
+    margin-left: 10px;
+    color: #777;
+}
+
+.entry-expand-btn{
+    transition: all 0.2s;
+    color: #333;
+    float: right;
+    font-size: 1.3rem;
+    border: none;
+    background: white;
+    border-radius: 5px;
+    transform: rotate(0deg);
+}
+
+.entry-expand-btn--expanded{
+    transform: rotate(180deg);
+}
+
+.comment{
+    overflow: auto;
+}
+
+/*
+    more options
+*/  
+
+.more-options{
+    position: absolute;
+    z-index: 11000;
+    background: white;
+    transition: all 0.2s;
+    border-radius: 7px;
+    padding: 10px;
+    flex-direction: column;
+    font-size: 1rem;
+    border: 2px solid #CCC;
+    -webkit-box-shadow: 10px 10px 84px -1px rgba(0,0,0,0.26);
+    -moz-box-shadow: 10px 10px 84px -1px rgba(0,0,0,0.26);
+    box-shadow: 10px 10px 84px -1px rgba(0,0,0,0.26);
+}
+
+.more-options .option{
+    padding: 10px;
+    color: #333;
+    transition: all 0.2s;
+    border-radius: 0;
+}
+
+.more-options .option:hover{
+    color: black;
+    background: #DDD;
+    border-radius: 10px;
 }
 
 /*
@@ -743,6 +867,8 @@ i{
 .errorClass{
     outline: 2px solid salmon;
 }
+
+
 
 @media only screen and (max-width: 1100px) {
     .kalender__header__right {

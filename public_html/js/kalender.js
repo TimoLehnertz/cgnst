@@ -19,6 +19,8 @@ let infoElementVisible = false;
 let infoElementEntry;
 let infoElementEntryElement;
 
+let entries = [];
+
 $(function(){
     kalender = $(".kalender");
     kalender.append(getDateSelectorElement());
@@ -50,23 +52,33 @@ $(function(){
     });
     kalender__body.append(getMonthElement(currentDate), true);
 
-    addEntries(calcEntriesOffset(getEntrys()));
-
     crateEntryInfoElement();
+    crateInfoMoreOptionsElement();
 
     $(".kalender__enter.kalender__enter--minimized").click((e)=>{
         maximizeEnter();
         e.stopPropagation();
     });
     $(".kalender__enter__close-btn").click((e)=>{minimizeEnter(); e.stopPropagation();});
-    $(".kalender").click(()=>{hideInfoElement(); minimizeEnter();hideDateSelector();hideTimeSelector()});
+    $(".kalender").click(()=>{hideInfoElement(); minimizeEnter();hideDateSelector();hideTimeSelector();hideMoreOptionsElement();});
     $(window).keyup(keyUpHandler);
     $(window).resize(kalenderResize);
+    loadEntries();
     loadGroups();
     loadUsername();
+    hideMoreOptionsElement();
     loadTrainingsBlueprints();
     reloadPage();
 });
+
+// Colors
+
+const colorTraining = "green";
+const colorWettkampf = "red";
+const colorNote = "orange";
+const colorTrainingslager = "gray";
+
+let enableddGroups = [];
 
 let username;
 let groups;
@@ -79,14 +91,32 @@ const interval = window.setInterval(function(){
         ajaxDataLoaded();
         clearInterval(interval);
     }
-})
+});
+
+function loadEntries(){
+    $.ajax({
+        url: "/kalender/kalenderAPI.php?getEntries=1",
+        success: function(result){
+            entries = prepareEntries(JSON.parse(result));
+            reloadPage();
+        }
+    });
+}
+
+function prepareEntries(entries){
+    for (const entry of entries) {
+        entry.startDate = new Date(entry.startDate * 1000);
+        entry.endDate = new Date(entry.endDate * 1000);
+    }
+    calcEntriesOffset(entries);
+    return entries;
+}
 
 function loadUsername(){
     $.ajax({
         url: "/users/userAPI.php?getUsername=1",
         success: function(result){
             if(result.includes("NOT LOGGED IN YET")){
-                console.log(result);
                 username = "";
                 userLoggedIn = false;
             } else{
@@ -102,7 +132,6 @@ function loadGroups(){
         url: "/users/userAPI.php?getGroupList=1",
         success: function(result){
             if(result.includes("Error message")){
-                console.log(result);
             } else{
                 groups = JSON.parse(result)
             }
@@ -115,7 +144,6 @@ function loadTrainingsBlueprints(){
         url: "/training/getTrainingsBlueprints.php?getAvailableTrainingsBlueprints=1",
         success: function(result){
             if(result.includes("Error message")){
-                console.log(result);
                 trainingsBlueprints = [];
             } else{
                 trainingsBlueprints = JSON.parse(result);
@@ -124,9 +152,24 @@ function loadTrainingsBlueprints(){
     });
 }
 
+function getColorOfEntryType(type){
+    switch(type){
+        case "training": return colorTraining;
+        case "wettkampf": return colorWettkampf;
+        case "trainingslager": return colorTrainingslager;
+        case "note": return colorNote;
+        default: return "black";
+    }
+}
+
 let hasBeenMaximized = false;
 
+let enterMaximized = false;
+
 function maximizeEnter(){
+    enterMaximized = true;
+    hideMoreOptionsElement();
+    hideInfoElement();
     if(userLoggedIn){
         $(".kalender__enter").removeClass("kalender__enter--minimized");
         $(".kalender__enter").addClass("kalender__enter--maximized");
@@ -142,6 +185,7 @@ function maximizeEnter(){
 }
 
 function minimizeEnter(){
+    enterMaximized = false;
     hideDateSelector();
     $(".kalender__enter").addClass("kalender__enter--minimized");
     $(".kalender__enter").removeClass("kalender__enter--maximized");
@@ -156,36 +200,36 @@ function keyUpHandler(e){
     }
 }
 
-function getEntrys(){
-    return [{
-        name: "Geisingen Kader1",
-        startDate: new Date("10/3/2020"),
-        endDate: new Date("11/2/2020"),
-        initiator: "CST1",//ToDO
-        type: "training",
-        color: "red"
-    },{
-        name: "Geisingen Kader2",
-        startDate: new Date("10/25/2020"),
-        endDate: new Date("10/23/2020"),
-        initiator: "CST",//ToDO
-        type: "training"
-    },{
-        name: "Geisingen Kader3",
-        startDate: new Date("10/12/2020"),
-        endDate: new Date("10/12/2020"),
-        initiator: "CST",//ToDO
-        type: "training",
-        color: "pink"
-    },{
-        name: "Geisingen Kader4",
-        startDate: new Date("10/2/2020"),
-        endDate: new Date("10/11/2020"),
-        initiator: "CST",//ToDO
-        type: "training",
-        color: "green"
-    }];
-}
+// function getEntrys(){
+//     return [{
+//         name: "Geisingen Kader1",
+//         startDate: new Date("10/3/2020"),
+//         endDate: new Date("11/2/2020"),
+//         initiator: "CST1",//ToDO
+//         type: "training",
+//         color: "red"
+//     },{
+//         name: "Geisingen Kader2",
+//         startDate: new Date("10/25/2020"),
+//         endDate: new Date("10/23/2020"),
+//         initiator: "CST",//ToDO
+//         type: "training"
+//     },{
+//         name: "Geisingen Kader3",
+//         startDate: new Date("10/12/2020"),
+//         endDate: new Date("10/12/2020"),
+//         initiator: "CST",//ToDO
+//         type: "training",
+//         color: "pink"
+//     },{
+//         name: "Geisingen Kader4",
+//         startDate: new Date("10/2/2020"),
+//         endDate: new Date("10/11/2020"),
+//         initiator: "CST",//ToDO
+//         type: "training",
+//         color: "green"
+//     }];
+// }
 
 function kalenderResize(){
     if(infoElementEntry != undefined && infoElementEntryElement != undefined && infoElementVisible){
@@ -222,8 +266,19 @@ function dateInRange(check, from, to){
 
 function addEntries(entries){
     for (const entry of entries) {
-        insertEntry(entry);
+        if(isEntryEnabledByGroup(entry)){
+            insertEntry(entry);
+        }
     }
+}
+
+function isEntryEnabledByGroup(entry){
+    for (const group of entry.groups) {
+        if(enableddGroups.indexOf(group) != -1){
+            return true;
+        }
+    }
+    return false;
 }
 
 function insertEntry(entry){
@@ -271,7 +326,8 @@ function getEntryElement(entry, date, kalenderView){
     const showName = kalenderView == "day" || compareDatesDayly(date, getFirstDate(entry.startDate, entry.endDate)) || date.getDay() == 1;
     const startCap = kalenderView == "day" || compareDatesDayly(date, getFirstDate(entry.startDate, entry.endDate));
     const endCap = kalenderView == "day" || compareDatesDayly(date, getLastDate(entry.startDate, entry.endDate));
-    const entryElement = $(`<div class="kalender__entry${startCap ? " kalender__entry--start-cap" : ""}${endCap ? " kalender__entry--end-cap" : ""}" style="background-color: ${entry.color == undefined ? "#333" : entry.color};">
+    let color = getColorOfEntryType(entry.type);
+    const entryElement = $(`<div class="kalender__entry${startCap ? " kalender__entry--start-cap" : ""}${endCap ? " kalender__entry--end-cap" : ""}" style="background-color: ${color};">
         ${ showName ? `<div class="kalender__entry__name">${entry.name}</div>` : ""}
     </div>`);
     entryElement.click((e)=>{blendInfoElementIn(entry, entryElement); e.stopPropagation()});
@@ -292,16 +348,121 @@ function crateEntryInfoElement(){
             <div class="kalender__entry-info__color"></div>
             <div class="kalender__entry-info__name"></div>
             <div class="kalender__entry-info__date"></div>
+            <button class="entry-expand-btn kalender_interactive-shadow"><i class="fas fa-chevron-down"></i></button>
             <div class="kalender__entry-info__content">
-                <div class="kalender__entry-info__initiator"></div>
+                <div><i class="fas fa-user-alt"></i><div class="initiator">Initiator: <span class="kalender__entry-info__initiator"></span></div></div>
+                <div><i class="fas fa-users"></i></i><div class="groups"></div></div>
+                <div><i class="far fa-comment"></i><div class="comment"></div></div>
             </div>
         </div>
     </div>`));
-    $(".kalender__entry-info__close-button").click((e)=>{hideInfoElement(); e.stopPropagation();});
-    $(".kalender__entry-info").click((e)=>{e.stopPropagation();});
+    $(".kalender__entry-info__close-button").click((e)=>{hideInfoElement(); hideMoreOptionsElement(); e.stopPropagation();});
+    $(".kalender__entry-info").click((e)=>{e.stopPropagation();hideMoreOptionsElement();});
+    $(".entry-expand-btn").click(function(){
+        toggleMaximizeEntryinfo()
+    });
+    $(".kalender__more-options").click((e)=>{
+        const rect = $(".kalender__more-options").offset();
+        moreOptionsElemeAt(rect.left, rect.top + 25);
+        e.stopPropagation();
+    })
 }
 
+function toggleMaximizeEntryinfo(){
+    if($(".entry-expand-btn").hasClass("entry-expand-btn--expanded")){
+        minimizeEntryInfo();
+    } else{
+        maximizeEntryInfo();
+    }
+}
+
+function maximizeEntryInfo(){
+    $(".entry-expand-btn").addClass("entry-expand-btn--expanded");
+    $(".kalender__entry-info__content").addClass("kalender__entry-info__content--expanded");
+    $(".kalender__entry-info").animate({
+        top: Math.min(lastEntryElement.offset().top, window.innerHeight - $(".kalender__entry-info").height() - 260)
+    }, 200);
+}
+
+function minimizeEntryInfo(){
+    $(".entry-expand-btn").removeClass("entry-expand-btn--expanded");
+    $(".kalender__entry-info__content").removeClass("kalender__entry-info__content--expanded");
+    $(".kalender__entry-info").animate({
+        top: Math.min(lastEntryElement.offset().top, window.innerHeight - 200)
+    }, 200);
+}
+
+function crateInfoMoreOptionsElement(){
+    $("main").append($(`<div class="more-options kalender_interactive-shadow">
+        <div class="more-options__delete option" style="color: firebrick;">Löschen</div>
+    </div>`));
+    $(".more-options__delete").click((e)=>{
+        if(lastClickedEntry != undefined){
+            deleteEntry(lastClickedEntry);
+        }
+    });
+}
+
+function deleteEntry(entry){
+    $(".more-options__delete").html("");
+    $(".more-options__delete").append(getLoadingCircle());
+    $.ajax({
+        type: "POST",
+        url: '/kalender/kalenderAPI.php?deleteEntry=1',
+        dataType: 'text',
+        data: JSON.stringify(entry),
+        success: function (response) {
+            console.log(response);
+            $(".more-options__delete").html('<i class="fas fa-check"></i>');
+            window.setTimeout(()=>{
+                $(".more-options__delete").html('Löschen');
+            },1000);
+            window.setTimeout(()=>{
+                hideMoreOptionsElement();
+                hideInfoElement();
+            },300);
+            loadEntries();
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR.status);
+            console.log(textStatus);
+            console.log(errorThrown);
+            $(".more-options__delete").html('Löschen');
+        }
+    });
+}
+
+function hideMoreOptionsElement(){
+    $(".more-options").animate({
+        left: "+=100",
+        opacity: 0
+    }, 100, function(){
+        $(this).css("display", "none");
+    });
+}
+
+function moreOptionsElemeAt(xPos, yPos){
+    $(".more-options").css("display", "block");
+    $(".more-options").css("opacity", 0);
+    $(".more-options").css("left", xPos - 30);
+    $(".more-options").css("top", yPos);
+    $(".more-options").animate({
+        left: xPos,
+        opacity: 1
+    }, 60, "swing");
+}
+
+let lastClickedEntry;
+
+let lastEntryElement;
+
 function blendInfoElementIn(entry, entryElement){
+    if(enterMaximized){
+        return;
+    }
+    lastEntryElement = entryElement;
+    minimizeEntryInfo();
+    lastClickedEntry = entry;
     infoElementEntry = entry;
     infoElementEntryElement = entryElement;
     $(".kalender__entry-info").stop(true, false);
@@ -314,11 +475,13 @@ function blendInfoElementIn(entry, entryElement){
     } if($(".kalender__view-dropdown").val() == "day"){
         right = (window.innerWidth / 2) - width / 2;
     }
-    let top = Math.min(rect.top, window.innerHeight - $(".kalender__entry-info").height() - 60);
+    let top = Math.min(rect.top, window.innerHeight - 200);
     $(".kalender__entry-info").css("display", "block");
     $(".kalender__entry-info__name").text(entry.name);
     $(".kalender__entry-info__date").text(getStartEndString(entry.startDate, entry.endDate));
     $(".kalender__entry-info__initiator").text(entry.initiator);
+    $(".comment").text(entry.comment);
+    $(".groups").text(entry.groups.toString());
     $(".kalender__entry-info__color").css("background-color", $(entryElement).css("background-color"));
     let duration = 300;
     if(!infoElementVisible){
@@ -349,7 +512,11 @@ function getStartEndString(from, to){
     to = getLastDate(tmp, to);
     let out = "";
     if(from.getMonth() == to.getMonth()){
-        out = from.getDate() + ". - " + to.getDate() + " " + monthsLong[from.getMonth()]
+        if(compareDatesDayly(from, to)){
+            out = to.getDate() + " " + monthsLong[from.getMonth()];
+        } else{
+            out = from.getDate() + ". - " + to.getDate() + " " + monthsLong[from.getMonth()]
+        }
     }else{
         out = from.getDate() + ". " + monthsLong[from.getMonth()] + " - " + to.getDate() + ". " + monthsLong[to.getMonth()];
     }
@@ -388,7 +555,7 @@ function reloadPage(){
     setCurrentDate(currentDate)
     const nextPage = getPage(currentDate);
     $(".kalender__body").append(nextPage).show("fast");
-    addEntries(calcEntriesOffset(getEntrys()));
+    addEntries(calcEntriesOffset(entries));
 }
 
 function turnPage(forewards){
@@ -408,7 +575,7 @@ function turnPage(forewards){
         left: 0,
         opacity: 1
     }, 200);
-    addEntries(calcEntriesOffset(getEntrys()));
+    addEntries(calcEntriesOffset(entries));
 }
 
 function turnCurrentDate(forewards){
@@ -446,9 +613,9 @@ function getDateStringMonth(date){
 
 function getPage(date){
     switch($(".kalender__view-dropdown").val()){
-        case "day": return getDayElement(date, true)
-        case "week": return getWeekElement(date, true)
-        case "month": return getMonthElement(date, true)
+        case "day": return getDayElement(date, null, true);
+        case "week": return getWeekElement(date, null, true);
+        case "month": return getMonthElement(date, true);
     }
 }
 
@@ -491,10 +658,10 @@ function getEnterElement(){
         <button class="kalender__enter__close-btn kalender_interactive-shadow">X</button>
         <div class="kalender__enter__header">
             <div class="kalender__enter__choices">
-                <div class="kalender__enter-choice" color="green"><span class="kalender__enter-choice__name">Training</span><i class="fas fa-dumbbell"></i></i></div>
-                <div class="kalender__enter-choice" color="red"><span class="kalender__enter-choice__name">Wettkampf</span><i class="fas fa-flag-checkered"></i></i></i></div>
-                <div class="kalender__enter-choice" color="gray"><span class="kalender__enter-choice__name">Trainingslager</span><i class="fas fa-campground"></i></div>
-                <div class="kalender__enter-choice" color="orange"><span class="kalender__enter-choice__name">Andere</span><i class="fas fa-bookmark"></i></div>
+                <div class="kalender__enter-choice" color="${colorTraining}"><span class="kalender__enter-choice__name">Training</span><i class="fas fa-dumbbell"></i></i></div>
+                <div class="kalender__enter-choice" color="${colorWettkampf}"><span class="kalender__enter-choice__name">Wettkampf</span><i class="fas fa-flag-checkered"></i></i></i></div>
+                <div class="kalender__enter-choice" color="${colorTrainingslager}"><span class="kalender__enter-choice__name">Trainingslager</span><i class="fas fa-campground"></i></div>
+                <div class="kalender__enter-choice" color="${colorNote}"><span class="kalender__enter-choice__name">Hinweis</span><i class="fas fa-bookmark"></i></div>
             </div>
         </div>
         <div class="kalender__enter__content"></div>
@@ -533,7 +700,7 @@ function loadEnterChoice(element){
         case "Training": changeEnterContent(enterTrainingElement, toRight); break;
         case "Wettkampf": changeEnterContent(enterWettkampfElement, toRight); break;
         case "Trainingslager": changeEnterContent(enterTrainingslagerElement, toRight); break;
-        case "Andere": changeEnterContent(enterAndereElement,toRight); break;
+        case "Hinweis": changeEnterContent(enterAndereElement,toRight); break;
     }
 }
 
@@ -564,16 +731,26 @@ function changeEnterContent(newElement, toRight){
 function ajaxDataLoaded(){
     initGroupSelectors();
     initTrainingsBlueprintSelectors();
+    enableddGroups = getGroupNames(false, false);
+    reloadPage();
 }
 
 function initGroupSelectors(){
     $(".group-select__groups").each(function(){
         if($(this).children().length > 0){return;}
         const initialSelect = $(this).parent().attr("initialSelect") == "true";
-        const onlyAdmin = $(this).parent().attr("onlyAdmin");
-        const groupNames = getGroupNames(onlyAdmin);
+        const onlyAdmin = $(this).attr("onlyAdmin") == "true";
+        const noDefault = $(this).attr("nodefault") == "true";
+        const groupNames = getGroupNames(onlyAdmin, noDefault);
+        let callback = undefined;
+        for (const groupSelectCallback of groupSelectCallbacks) {
+            if($(groupSelectCallback.elem).is($(this))){
+                callback = groupSelectCallback.callback;
+                break;
+            }
+        }
         for (const grpName of groupNames) {
-            $(this).prepend(getGroupsElement(grpName, initialSelect));
+            $(this).prepend(getGroupsElement(grpName, initialSelect, callback));
         }
     });
 }
@@ -588,17 +765,24 @@ function initTrainingsBlueprintSelectors(){
     });
 }
 
-function getGroupsElement(grpName, selected){
+function getGroupsElement(grpName, selected, callback){
     const ranId = Math.random();
     const elem = $(`<div class="group-select__group kalender_interactive-shadow">
         <input id="${ranId}" type="checkbox" class="group-select__group-check" ${selected ? "checked" : ""}>
         <label for="${ranId}" class="group-select__group-name">${grpName}</label>
     </div>`);
     elem.find(".group-select__group-check").change(function(){
+        const name = $(this).parent().find(".group-select__group-name").text();
         if($(this).prop("checked")){
-            elem.addClass("group-select__group--checked")
+            elem.addClass("group-select__group--checked");
+            if(callback != undefined){
+                callback(name, true);
+            }
         } else{
             elem.removeClass("group-select__group--checked")
+            if(callback != undefined){
+                callback(name, false);
+            }
         }
     });
     if(elem.find(".group-select__group-check").prop("checked")){
@@ -625,6 +809,17 @@ function getBlueprintElement(blueprintName){
     return elem;
 }
 
+function getIdBlueprint(name){
+    if(trainingsBlueprints != undefined){
+        for (const blueprint of trainingsBlueprints) {
+            if(blueprint.name == name){
+                return blueprint.idtrainingsBlueprint;
+            }
+        }
+    }
+    return "";
+}
+
 function getPropertyJson(propertieElem){   
     const entryType = propertieElem.attr("entryType");
     const title = propertieElem.find(".kalender__termin__name__input").val();
@@ -632,8 +827,13 @@ function getPropertyJson(propertieElem){
     let endDate = new Date(parseInt($(propertieElem.find(".kalender__date-selector")[1]).attr("date")));
     const startTime = new Date(parseInt($(propertieElem.find(".kalender__time-selector")[0]).attr("time")))
     const endTime = new Date(parseInt($(propertieElem.find(".kalender__time-selector")[1]).attr("time")))
-    const trainingsBlueprint = propertieElem.find(".blueprint--checked .trainings-blueprint__name").text();
+    let idTrainingsBlueprint = getIdBlueprint(propertieElem.find(".blueprint--checked .trainings-blueprint__name").text());
+    const comment = propertieElem.find(".comment-input").val();
     const groups = [];
+
+    if(idTrainingsBlueprint.length == 0){
+        idTrainingsBlueprint = "-";
+    };
 
     startDate.setHours(startTime.getHours());
     startDate.setMinutes(startTime.getMinutes());
@@ -657,8 +857,10 @@ function getPropertyJson(propertieElem){
         title: title,
         startDate: startDate,
         endDate: endDate,
-        trainingsBlueprint: trainingsBlueprint,
-        groups: groups
+        idTrainingsBlueprint: idTrainingsBlueprint,
+        groups: groups,
+        comment: comment,
+        idtrainingFacility: "-"
     }
     return json;
 }
@@ -680,85 +882,159 @@ function validateNewEntry(properties){
 }
 
 function submitEntry(entryProperties){
-    console.log("submitting:");
-    console.log(entryProperties);
     $.ajax({
         type: "POST",
         url: '/kalender/kalenderAPI.php?submitEntry=1',
         dataType: 'text',
         data: JSON.stringify(entryProperties),
         success: function (response) {
-            console.log(response)
+            if(response.includes("Error")){
+                $(".kalender__enter__properties .error-message").html(response);
+                $(".enter__enter-btn").html("Eintragen");
+            } else{
+                $(".kalender__enter__properties .error-message").html("");
+                $(".enter__enter-btn").html('<i class="fas fa-check"></i>');
+                window.setTimeout(()=>{minimizeEnter();}, 400);
+                window.setTimeout(()=>{reloadEnterContent()}, 600);
+                loadEntries();
+                reloadPage();
+            }
         },
         error: function(jqXHR, textStatus, errorThrown) {
             console.log(jqXHR.status);
             console.log(textStatus);
             console.log(errorThrown);
+            $(".enter__enter-btn").html("Eintragen");
+            $(".kalender__enter__properties .error-message").html("Der Server konnte <b>nicht</b> erreicht werden :(");
         }
     });
 }
 
+function enterTrainingslagerContent(){
+    const arr = [];
+    arr.push(getTerminTitelElement());
+    arr.push(getDateSelector("Von"));
+    arr.push(getTimeSelector("Von"));
+    arr.push(getDateSelector("Bis"));
+    arr.push(getTimeSelector("Bis"));
+    arr.push(getCommentElem());
+    arr.push(getEnterEnterSection());
+    return arr;
+}
+
 const enterTrainingslagerElement = $(`<div class="kalender__enter__properties kalender__enter__trainings-lager" entryType="trainingslager"></div`);
-enterTrainingslagerElement.append(getTerminTitelElement)
-enterTrainingslagerElement.append(getDateSelector("Von"));
-enterTrainingslagerElement.append(getTimeSelector("Von"));
-enterTrainingslagerElement.append(getDateSelector("Bis"));
-enterTrainingslagerElement.append(getTimeSelector("Bis"));
-enterTrainingslagerElement.append(getEnterEnterSection);
+enterTrainingslagerElement.append(enterWettkampfContent());
+
+function enterWettkampfContent(){
+    const arr = [];
+    arr.push(getTerminTitelElement());
+    arr.push(getDateSelector("Von"));
+    arr.push(getTimeSelector("Von"));
+    arr.push(getDateSelector("Bis"));
+    arr.push(getTimeSelector("Bis"));
+    arr.push(getCommentElem());
+    arr.push(getEnterEnterSection());
+    return arr;
+}
 
 const enterWettkampfElement = $(`<div class="kalender__enter__properties kalender__enter__wettkampf" entryType="wettkampf"></div`);
-enterWettkampfElement.append(getTerminTitelElement)
-enterWettkampfElement.append(getDateSelector("Von"));
-enterWettkampfElement.append(getTimeSelector("Von"));
-enterWettkampfElement.append(getDateSelector("Bis"));
-enterWettkampfElement.append(getTimeSelector("Bis"));
-enterWettkampfElement.append(getEnterEnterSection);
+enterWettkampfElement.append(enterWettkampfContent());
+
+function enterTrainingContent(){
+    const arr = [];
+    arr.push(getTerminTitelElement());
+    arr.push(getDateSelector());
+    arr.push(getTimeSelector("Von"));
+    arr.push(getTimeSelector("Bis"));
+    arr.push(getTrainingsBlueprintSelectElem(false));
+    arr.push(getGroupSelectElem(true, false, false, "In Gruppen teilen", undefined, false));
+    arr.push(getCommentElem());
+    arr.push(getEnterEnterSection());
+    return arr;
+}
 
 const enterTrainingElement = $(`<div class="kalender__enter__properties kalender__enter__training" entryType="training"></div`);
-enterTrainingElement.append(getTerminTitelElement)
-enterTrainingElement.append(getDateSelector());
-enterTrainingElement.append(getTimeSelector("Von"));
-enterTrainingElement.append(getTimeSelector("Bis"));
-enterTrainingElement.append(getTrainingsBlueprintSelectElem(false));
-enterTrainingElement.append(getGroupSelectElem(true, false, false, "In Gruppen teilen"));
-enterTrainingElement.append(getEnterEnterSection);
+enterTrainingElement.append(enterTrainingContent());
+
+function enterAndereContent(){
+    const arr = [];
+    arr.push(getTerminTitelElement());
+    arr.push(getDateSelector("Von"));
+    arr.push(getTimeSelector("Von"));
+    arr.push(getTimeSelector("Bis"));
+    arr.push(getDateSelector("Bis"));
+    arr.push(getGroupSelectElem(true, false, false, "In Gruppen teilen", undefined, false));
+    arr.push(getCommentElem());
+    arr.push(getEnterEnterSection());
+    return arr;
+}
 
 const enterAndereElement = $(`<div class="kalender__enter__properties kalender__enter__andere" entryType="andere"></div`);
-enterAndereElement.append(getTerminTitelElement)
-enterAndereElement.append(getDateSelector("Von"));
-enterAndereElement.append(getTimeSelector("Von"));
-enterAndereElement.append(getTimeSelector("Bis"));
-enterAndereElement.append(getDateSelector("Bis"));
-enterAndereElement.append(getGroupSelectElem(true, false, false, "In Gruppen teilen"));
-enterAndereElement.append(getEnterEnterSection);
+enterAndereElement.append(enterAndereContent());
+
+function reloadEnterContent(){
+    enterTrainingslagerElement.empty();
+    enterWettkampfElement.empty();
+    enterTrainingElement.empty();
+    enterAndereElement.empty();
+
+    enterTrainingslagerElement.append(enterWettkampfContent());
+    enterWettkampfElement.append(enterWettkampfContent());
+    enterTrainingElement.append(enterTrainingContent());
+    enterAndereElement.append(enterAndereContent());
+    initGroupSelectors();
+    initTrainingsBlueprintSelectors();
+}
+
+reloadEnterContent();
+
+function getCommentElem(){
+    const elem = $(`<div class="comment kalender_interactive-shadow">
+        </i><textarea class="comment-input" rows="4" placeholder="Kommentar"></textarea>
+    </div`);
+    return elem;
+}
 
 function getEnterEnterSection(){
     const elem = $(`<div>
+        <div class="error-message"></div>
         <button class="enter__enter-btn">Eintragen</button>
     </div`);
     elem.find("button").click(()=>{
         if(validateNewEntry(getPropertyJson(elem.parent()))){
+            elem.find("button").html("");
+            elem.find("button").append(getLoadingCircle());
             submitEntry(getPropertyJson(elem.parent()));
         }
     })
     return elem;
 }
 
-function getGroupSelectElem(onlyAdminGroups, selected, expanded, name){
+function getLoadingCircle(){
+    const elem = $(`<div class="loading-circle"></div>`);
+    return elem;
+}
+
+let groupSelectCallbacks = [];
+
+function getGroupSelectElem(onlyAdminGroups, selected, expanded, name, callback, noDefault){
     const elem = $(`<div class="group-select" initialSelect="${selected}">
             <div class="kalender_interactive-shadow group-select__header">
                 <i class="fas fa-users"></i>
                 <span classs="group-select__title">${name}</span>
                 <i class="far fa-caret-square-down"></i>
             </div>
-            <div class="group-select__groups" onlyAdmin="${onlyAdminGroups ? "true" : "fasle"}" ${expanded ? "" : 'expanded="true"'}></div>
+            <div class="group-select__groups" onlyAdmin="${onlyAdminGroups ? "true" : "false"}" nodefault="${noDefault ? "true" : "false"}" ${expanded ? "" : 'expanded="true"'}></div>
         </div>`);
         const content = elem.find(".group-select__groups");
         elem.find(".group-select__header").click(()=>{
             updateGroupSelect(content);
             elem.find(".fa-caret-square-down").toggleClass("rotate-reverse");
         });
-        updateGroupSelect(content)
+        updateGroupSelect(content);
+    if(callback != undefined){
+        groupSelectCallbacks.push({elem: elem.find(".group-select__groups"), callback: callback});
+    }
     return elem;
 }
 
@@ -778,7 +1054,7 @@ function getTrainingsBlueprintSelectElem(expanded){
             updateGroupSelect(content);
             elem.find(".fa-caret-square-down").toggleClass("rotate-reverse");
         });
-        updateGroupSelect(content)
+        updateGroupSelect(content);
     return elem;
 }
 
@@ -814,23 +1090,40 @@ function getBlueprintName(){
     return names;
 }
 
-function getGroupNames(onlyAdminGroups){
+function getGroupNames(onlyAdminGroups, nodefault){
+    if(nodefault == undefined){
+        nodefault = false;
+    }
     const names = [];
     if(groups != undefined){
         for (const grpName in groups) {
             if (groups.hasOwnProperty(grpName)) {
                 const group = groups[grpName];
-                if(onlyAdminGroups){
-                    if(userAdminInGroup(username, group)){
+                if(group.isDefaultGroup && nodefault){
+                    continue;
+                }
+                if(userInGroup(username, group) || group.isDefaultGroup){
+                    if(onlyAdminGroups){
+                        if(userAdminInGroup(username, group)){
+                            names.push(grpName);
+                        }
+                    }else{
                         names.push(grpName);
                     }
-                }else{
-                    names.push(grpName);
                 }
             }
         }
     }
     return names;
+}
+
+function userInGroup(username, group){
+    for (const user of group.users) {
+        if(user.username == username){
+            return true;
+        }
+    }
+    return false;
 }
 
 function userAdminInGroup(username, group){
@@ -1031,8 +1324,22 @@ function kalender__aside_html(){
         <h4>Gruppen</h4>
         <hr>
     </div>`);
-    elem.append(getGroupSelectElem(false, true, true, "Gruppen anzeigen"));
+    elem.append(getGroupSelectElem(false, true, true, "Gruppen anzeigen", groupSelectChanged, true));
     return elem;
+}
+
+function groupSelectChanged(name, value){
+    const index = enableddGroups.indexOf(name);
+    if(value){
+        if(index == -1){
+            enableddGroups.push(name);
+        }
+    } else{
+        if(index > -1){
+            enableddGroups.splice(index, 1);
+        }
+    }
+    reloadPage();
 }
 
 function getDayElement(date, month, register){

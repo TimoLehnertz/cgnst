@@ -27,6 +27,30 @@ function getUsername(){
     }
 }
 
+/*
+    Group Element:
+    {"idgroup" : "", "users" : [], "name" : ""}
+
+    user Element:
+    {"username": "", "iduser" : "", "isAdmin" : ""}
+*/
+
+
+function getDefaulGroupName(){
+    return "--Public--";//Default not to be ever changed!
+}
+
+function getDefaultGroup($mysqli){
+    $defaultName = getDefaulGroupName();
+    $groups = getGroupList($mysqli);
+    if(!doesGroupExistByName($mysqli, $defaultName)){
+        addGroup($mysqli, $defaultName);
+        $groups = getGroupList($mysqli);
+    }
+    $defraultGroup = getGroupByName($defaultName, $groups);
+    $defraultGroup["isDefaultGroup"] = true;
+    return $defraultGroup;
+}
 
 function undoGroups($conn, $mysqli){
     if(isset($_SESSION["groupconfigurationUndo"])){
@@ -128,6 +152,20 @@ function getUserId($mysqli, $name){
     }
 }
 
+function getUserNameFromId($mysqli, $iduser){
+    if($stmt = $mysqli->prepare("SELECT username FROM user WHERE iduser=?;")){
+        $stmt->bind_param("i", $iduser);
+        if($stmt->execute()){
+            if($row = $stmt->get_result()->fetch_array(MYSQLI_ASSOC)){
+                return $row["username"];
+            } else{
+                return -1;
+            }
+        }
+        $stmt->close();
+    }
+}
+
 function groupNameInGroups($groupNameIn, $groups){
     foreach($groups as $groupName => $group){
         if($groupName == $groupNameIn){
@@ -135,6 +173,24 @@ function groupNameInGroups($groupNameIn, $groups){
         }
     }
     return false;
+}
+
+function getGroupById($id, $groups){
+    foreach($groups as $groupName => $group){
+        if($id == $group["idgroup"]){
+            return $group;
+        }
+    }
+    return -1;
+}
+
+function getGroupByName($name, $groups){
+    foreach($groups as $groupName => $group){
+        if($name == $group["name"]){
+            return $group;
+        }
+    }
+    return -1;
 }
 
 function getGroupId($groupNameIn, $groups){
@@ -179,7 +235,7 @@ function userGroupRelationExists($mysqli, $userId, $groupId){
     return false;
 }
 
-function doesGroupExist($mysqli, $idgroup){
+function doesGroupExistById($mysqli, $idgroup){
     $stmt = $mysqli->prepare("SELECT * FROM `group` WHERE idgroup=?;");
     if($stmt->bind_param("i", $idgroup)){
         if($stmt->execute()){
@@ -190,11 +246,28 @@ function doesGroupExist($mysqli, $idgroup){
             printf("Error message: %s\n", $mysqli->error);
         }
     }
+    $stmt->close();
+    return false;
+}
+
+function doesGroupExistByName($mysqli, $groupName){
+    $stmt = $mysqli->prepare("SELECT * FROM `group` WHERE name=?;");
+    if($stmt->bind_param("s", $groupName)){
+        if($stmt->execute()){
+            $result = $stmt->get_result();
+            $out = $result->num_rows > 0;
+            $stmt->close();
+            return $out;
+        } else{
+            printf("Error message: %s\n", $mysqli->error);
+        }
+    }
+    $stmt->close();
     return false;
 }
 
 function deleteGroup($mysqli, $idgroup){
-    if(doesGroupExist($mysqli, $idgroup)){
+    if(doesGroupExistById($mysqli, $idgroup)){
         deleteAllGroupConstraints($mysqli, $idgroup);
         $stmt = $mysqli->prepare("DELETE FROM `group` WHERE idgroup=?;");
         if($stmt->bind_param("i", $idgroup)){
@@ -202,7 +275,7 @@ function deleteGroup($mysqli, $idgroup){
                 $stmt->close();
                 return true;
             } else{
-                printf("Error message: %s\n", $mysqli->error);
+                printf("Error message: cant delete group. groupId: $idgroup %s\n", $mysqli->error);
                 return false;
             }
         }
@@ -222,6 +295,24 @@ function deleteAllGroupConstraints($mysqli, $idgroup){
         }
     }
     $stmt = $mysqli->prepare("DELETE FROM group_has_admin WHERE group_idgroup=?;");
+    if($stmt->bind_param("i", $idgroup)){
+        if($stmt->execute()){
+            $stmt->close();
+        } else{
+            $success = false;
+            printf("Error message: %s\n", $mysqli->error);
+        }
+    }
+    $stmt = $mysqli->prepare("DELETE FROM training_has_group WHERE group_idgroup=?;");
+    if($stmt->bind_param("i", $idgroup)){
+        if($stmt->execute()){
+            $stmt->close();
+        } else{
+            $success = false;
+            printf("Error message: %s\n", $mysqli->error);
+        }
+    }
+    $stmt = $mysqli->prepare("DELETE FROM kalenderNote_has_group WHERE group_idgroup=?;");
     if($stmt->bind_param("i", $idgroup)){
         if($stmt->execute()){
             $stmt->close();
@@ -281,14 +372,51 @@ function getGroupList($mysqli){
     if($result = $mysqli->query("SELECT * FROM `group`;")) {
         while($row = $result->fetch_array(MYSQLI_ASSOC)){
             $groupName = $row["name"];
-            $group = json_decode('{"idgroup":"'.$row["idgroup"].'", "users":[]}', true);
-            $group["users"] = getUsersFromGroupId($mysqli, $row["idgroup"]);
+            $group = [
+                "idgroup" => $row["idgroup"],
+                "users" => getUsersFromGroupId($mysqli, $row["idgroup"]),
+                "name" => $row["name"],
+                "isDefaultGroup" => getDefaulGroupName() == $row["name"]
+            ];
             $groups[$groupName] = $group;
         }
         $result->close();
     } else{
         printf("Error message: %s\n", $mysqli->error);
     }
+    return $groups;
+}
+
+function getGroupListForUserName($mysqli, $username){
+    return getGroupListForUserId($mysqli, getUserId($mysqli, $username));
+}
+
+function getGroupListForUserId($mysqli, $iduser){
+    $groups = array();
+    $stmt = $mysqli->prepare("SELECT grp.*
+        FROM group_has_user
+        join `group` as grp ON grp.idgroup = group_has_user.group_idgroup
+        WHERE group_has_user.user_iduser=?;");
+    if($stmt->bind_param("i", $iduser)){
+        if($stmt->execute()) {
+            $result = $stmt->get_result();
+            while($row = $result->fetch_array(MYSQLI_ASSOC)){
+                $group = [
+                    "idgroup" => $row["idgroup"],
+                    "users" => getUsersFromGroupId($mysqli, $row["idgroup"]),
+                    "name" => $row["name"],
+                    "isDefaultGroup" => false
+                ];
+                $groups[$row["name"]] = $group;
+            }
+            $result->close();
+        } else{
+            printf("Error message: %s\n", $mysqli->error);
+        }
+    }
+    $stmt->close();
+    // $defaultGroup = getDefaultGroup($mysqli);
+    // $groups[$defaultGroup["name"]][""];
     // print_r($groups);
     return $groups;
 }
@@ -312,6 +440,17 @@ function getUsersFromGroupId($mysqli, $idgroup){
     }
     $stmt->close();
     return $users;
+}
+
+function isUserAdminInAllGroups($mysqli, $iduser, $groupNames){
+    $groups = getGroupList($mysqli);
+    for ($i=0; $i < sizeof($groupNames); $i++) {
+        $idgroup = getGroupId($groupNames[$i], $groups);
+        if(!isUserAdminInGroup($mysqli, $iduser, $idgroup)){
+            return false;
+        }
+    }
+    return true;
 }
 
 function isUserAdminInGroup($mysqli, $iduser, $idgroup){

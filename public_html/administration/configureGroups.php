@@ -7,7 +7,7 @@
     }
 ?>
     <main>
-        <h1>Administration - Configure Users</h1>
+        <h1>Administration - Configure groups</h1>
         <hr>
         <?php include "../users/userList.html"?>
     </main>
