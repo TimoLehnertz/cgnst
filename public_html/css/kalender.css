@@ -942,6 +942,7 @@ i{
     .kalender__entry__name{
         height: 2rem;
         line-height: 1rem;
+        white-space: normal;
         text-overflow: ellipsis;
     }
 
