@@ -1038,6 +1038,11 @@ i{
         overflow: auto;
     }
 
+    .day__name{
+        line-height: 1.5rem;
+        color: black;
+    }
+
     .kalender__day{
         min-width: 3rem;
         min-height: 3rem;
