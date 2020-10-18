@@ -257,6 +257,7 @@ main{
     width: 600px;
     height: calc(100vh - 80px);
     left: 50%;
+    width: 600px;
     margin-left: -300px;
     top: 50px;
     position: fixed;
@@ -912,5 +913,15 @@ i{
         width: 10px;
         height: 10px;
         margin: 5px;
+    }
+
+    html{
+        font-size: 20pt;
+    }
+
+    .kalender__enter--maximized{
+        left: 50%;
+        width: 800px;
+        margin-left: -400px;
     }
 }
