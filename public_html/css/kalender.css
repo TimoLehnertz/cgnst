@@ -223,7 +223,7 @@ main{
     top: 0;
     left: 100px;
     transition: left 0.2s;
-    font-size: 15pt;
+    font-size: 1.2rem;
     font-weight: 600;
 }
 
@@ -923,7 +923,7 @@ i{
     }
 
     html{
-        font-size: 20pt;
+        font-size: 25pt;
     }
 
     .kalender__enter--maximized{
@@ -940,8 +940,9 @@ i{
     }
 
     .kalender__entry__name{
+        font-size: 0.66rem;
         height: 2rem;
-        line-height: 1rem;
+        line-height: 0.66rem;
         white-space: normal;
         text-overflow: ellipsis;
     }
@@ -955,5 +956,36 @@ i{
     .loading-circle{
         height: 70px;
         width: 70px;
+    }
+
+    .kalender__aside{
+        width: 400px;
+    }
+
+    .kalender__enter{
+        height: 120px;
+        width: 120px;
+    }
+    
+    .kalender__enter__img{
+        margin-left: 20px;
+        margin-top: 20px;
+        width: 80px;
+        height: 80px;
+    }
+    
+    .kalender__enter__text{
+        line-height: 120px;
+        left: 140px;
+        font-size: 2rem;
+    }
+    
+    .kalender__enter--minimized:hover, .kalender__enter--bigger{
+        width: 220px;
+        opacity: 1;
+    }
+    
+    .kalender__enter--minimized:hover .kalender__enter__text, .kalender__enter--bigger .kalender__enter__text{
+        left: 100px;
     }
 }
