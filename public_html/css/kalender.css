@@ -558,6 +558,7 @@ i{
 */
 
 .kalender__entry{
+    position: relative;
     height: 1.5rem;
     line-height: 1.5rem;
     padding-left: 5px;
@@ -666,9 +667,13 @@ i{
 }
 
 .kalender__entry__name{
-    position: relative;
+    position: absolute;
     overflow: hidden;
+    height: 1.5rem;
+    width: 100%;
     text-shadow: 2px 3px 6px #303030;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .kalender__entry-info__date{
@@ -932,6 +937,12 @@ i{
         line-height: 1rem;
         padding-left: 5px;
         font-size: 1rem;
+    }
+
+    .kalender__entry__name{
+        height: 2rem;
+        line-height: 1rem;
+        text-overflow: ellipsis;
     }
 
     .enter__enter-btn{
