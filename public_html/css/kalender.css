@@ -10,6 +10,8 @@ main{
 }
 
 .kalender{
+    min-height: 500px;
+    max-height: 50vw;
     height: 100%;
     flex-direction: column;
     margin-top: 10px;
