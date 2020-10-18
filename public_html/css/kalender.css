@@ -915,12 +915,12 @@ i{
     }
     
     .kalender__entry-info__close-button{
-        font-size: 2rem;
+        font-size: 1.9rem;
     }
     .kalender__more-optios__dot{
         width: 10px;
         height: 10px;
-        margin: 8px;
+        margin: 9px;
     }
 
     html{
@@ -928,7 +928,7 @@ i{
     }
 
     .kalender__entry{
-        height: 1.25rem;
+        height: 1.3rem;
         padding-left: 5px;
     }
 
@@ -1061,5 +1061,12 @@ i{
         margin-left: auto;
         margin-right: auto;
         text-align: center;
+    }
+
+    .kalender__aside--hidden{
+        padding: 0;
+        width: 0;
+        left: -200px;
+        overflow: hidden;
     }
 }
