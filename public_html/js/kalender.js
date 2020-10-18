@@ -705,6 +705,7 @@ function loadEnterChoice(element){
 }
 
 function changeEnterContent(newElement, toRight){
+    toRight = true;
     if(!(newElement.attr("visible") == "true")){
         $('.kalender__enter__content > div[visible="true"]').animate({
             left: toRight ? "50%" : "-50%",
