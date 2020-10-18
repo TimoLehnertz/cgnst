@@ -979,13 +979,4 @@ i{
         left: 140px;
         font-size: 2rem;
     }
-    
-    .kalender__enter--minimized:hover, .kalender__enter--bigger{
-        width: 220px;
-        opacity: 1;
-    }
-    
-    .kalender__enter--minimized:hover .kalender__enter__text, .kalender__enter--bigger .kalender__enter__text{
-        left: 100px;
-    }
 }
