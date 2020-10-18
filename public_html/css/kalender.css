@@ -1039,8 +1039,12 @@ i{
     }
 
     .day__name{
-        line-height: 3rem;
         color: black;
+    }
+
+    .kalender__day{
+        min-width: 2rem;
+        min-height: 3rem;
     }
 
     .day__name, .day__number{
