@@ -971,7 +971,7 @@ i{
     .kalender__enter__text{
         line-height: 120px;
         left: 140px;
-        font-size: 1.5rem;
+        font-size: 1.2rem;
     }
 
     .kalender__enter--minimized:hover, .kalender__enter--bigger{
