@@ -913,13 +913,14 @@ i{
         left: 10vw !important;
         font-size: 3rem;
     }
+    
     .kalender__entry-info__close-button{
-        font-size: 3rem;
+        font-size: 2rem;
     }
     .kalender__more-optios__dot{
         width: 10px;
         height: 10px;
-        margin: 5px;
+        margin: 8px;
     }
 
     html{
@@ -1027,5 +1028,13 @@ i{
     .kalender__entry-info__content{
         padding-left: 100px;
         margin-top: 20px;
+    }
+
+    .comment{
+        width: 100%;
+        height: 100%;
+        line-height: 1rem;
+        font-size: 1rem;
+        overflow: auto;
     }
 }
