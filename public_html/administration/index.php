@@ -1,13 +1,10 @@
 <?php
-    include "../header.php";
-    if(!isset($_SESSION["permission_administration"])){
-        header("location: /index.php");
-        exit();
-    }
+    $dependency = ["titleimg"];
+    include_once "../header.php";
+    requirePermission("permission_administration");
 ?>
     <main>
         <h1>Administration</h1>
-        <hr>
 
         <a href="configureGroups.php">Group konfiguration</a>
     </main>

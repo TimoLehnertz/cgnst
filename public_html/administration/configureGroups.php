@@ -1,16 +1,15 @@
 <?php
-    $dependency = ["user-list"];
-    include "../header.php";
-    if(!isset($_SESSION["permission_administration"])){
-        header("location: /index.php");
-        exit();
-    }
+    $dependency = ["group-user-dragndrop", "titleimg"];
+    include_once "../header.php";
+    requirePermission("permission_administration");
 ?>
     <main>
-        <h1>Administration - Configure groups</h1>
-        <hr>
-        <?php include "../users/userList.html"?>
+        <section>
+            <h1>Administration - Configure groups</h1>
+            <hr>
+            <?php include "../users/group-user-dragndrop.html"?>
+        </section>
     </main>
 <?php
-    #include "../footer.php";
+    include "../footer.php";
 ?>

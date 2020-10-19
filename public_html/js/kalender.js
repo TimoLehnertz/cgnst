@@ -97,7 +97,10 @@ function loadEntries(){
     $.ajax({
         url: "/kalender/kalenderAPI.php?getEntries=1",
         success: function(result){
+            console.log("reloading");
+            console.log(result);
             entries = prepareEntries(JSON.parse(result));
+            console.log(entries);
             reloadPage();
         }
     });
@@ -141,7 +144,7 @@ function loadGroups(){
 
 function loadTrainingsBlueprints(){
     $.ajax({
-        url: "/training/getTrainingsBlueprints.php?getAvailableTrainingsBlueprints=1",
+        url: "/training/trainingsAPI.php?getAvailableTrainingsBlueprints=1",
         success: function(result){
             if(result.includes("Error message")){
                 trainingsBlueprints = [];
@@ -337,6 +340,11 @@ function getEntryElement(entry, date, kalenderView){
 function crateEntryInfoElement(){
     $("main").append($(`<div class="kalender__entry-info">
         <div class="kalender__entry-info__header">
+            <div class="participate">
+                <button class="remember-btn">Merken</button>
+                <button class="participate-btn">Teilnehmen</button>
+                <button class="no-participate-btn">Nichtmehr teilnehmen</button>
+            </div>
             <div class="kalender__more-options kalender_interactive-shadow">
                 <div class="kalender__more-optios__dot"></div>
                 <div class="kalender__more-optios__dot"></div>
@@ -356,6 +364,21 @@ function crateEntryInfoElement(){
             </div>
         </div>
     </div>`));
+    $(".no-participate-btn").click(function(){
+        $(this).empty();
+        $(this).append(getLoadingCircle());
+        setParticipating(0);
+    });
+    $(".remember-btn").click(function(){
+        $(this).empty();
+        $(this).append(getLoadingCircle());
+        setParticipating(1);
+    });
+    $(".participate-btn").click(function(){
+        $(this).empty();
+        $(this).append(getLoadingCircle());
+        setParticipating(2);
+    });
     $(".kalender__entry-info__close-button").click((e)=>{hideInfoElement(); hideMoreOptionsElement(); e.stopPropagation();});
     $(".kalender__entry-info").click((e)=>{e.stopPropagation();hideMoreOptionsElement();});
     $(".entry-expand-btn").click(function(){
@@ -367,6 +390,36 @@ function crateEntryInfoElement(){
         e.stopPropagation();
     })
 }
+// 0 not
+// 1 remember
+// 2 participating
+function setParticipating(state){
+    console.log('setParticipating=' + state + "&idtraining=" + infoElementEntry.refId.split(":")[1]);
+    $.ajax({
+        type: "GET",
+        url: '/kalender/kalenderAPI.php?setParticipating=' + state + "&idtraining=" + infoElementEntry.refId.split(":")[1],
+        dataType: 'text',
+        success: function (response) {
+            console.log(response);
+            if(response.includes("Error")){
+                console.log(response);
+            } else{
+                if(state == 0){$(".no-participate-btn").empty().append(`<i class="fas fa-check"></i>`);}
+                if(state == 2){$(".participate-btn").empty().append(`<i class="fas fa-check"></i>`);}
+                if(state == 1){$(".remember-btn").empty().append(`<i class="fas fa-check"></i>`);}
+                window.setTimeout(()=>{setParticipatingState(state)}, 500);
+            }
+            loadEntries();
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR.status);
+            console.log(textStatus);
+            console.log(errorThrown);
+        }
+    });
+}
+
+
 
 function toggleMaximizeEntryinfo(){
     if($(".entry-expand-btn").hasClass("entry-expand-btn--expanded")){
@@ -412,7 +465,6 @@ function deleteEntry(entry){
         dataType: 'text',
         data: JSON.stringify(entry),
         success: function (response) {
-            console.log(response);
             $(".more-options__delete").html('<i class="fas fa-check"></i>');
             window.setTimeout(()=>{
                 $(".more-options__delete").html('Löschen');
@@ -452,9 +504,52 @@ function moreOptionsElemeAt(xPos, yPos){
     }, 60, "swing");
 }
 
+function getParticipatingState(entry){
+    if(entry.type == "training"){
+        for (const i of entry.participating) {
+            if(i.username == username){
+                return i.participates + 1;
+            }
+        }
+    }
+    return 0;
+}
+
 let lastClickedEntry;
 
 let lastEntryElement;
+
+function setParticipatingState(state){
+    if(state == 0){
+        $(".no-participate-btn").hide();
+        $(".remember-btn").show();
+        $(".participate-btn").show();
+        $(".participate-btn").html("Teilnehmen");
+        $(".remember-btn").html("Merken");
+    } else if(state == 1){
+        $(".no-participate-btn").show();
+        $(".participate-btn").show();
+        $(".remember-btn").hide();
+        $(".participate-btn").html("Teilnehmen");
+        $(".no-participate-btn").html("Nicht mehr merken");
+    }
+    else if(state == 2){
+        $(".no-participate-btn").show();
+        $(".participate-btn").hide();
+        $(".remember-btn").hide();
+        $(".no-participate-btn").html("Nicht mehr Teilnehmen");
+    }
+}
+
+function hideParticipating(){
+    $(".no-participate-btn").hide();
+    $(".participate-btn").hide();
+    $(".remember-btn").hide();
+}
+
+function dateInPast(date){
+    return date < new Date() && !compareDatesDayly(date, new Date());
+}
 
 function blendInfoElementIn(entry, entryElement){
     if(enterMaximized){
@@ -465,7 +560,16 @@ function blendInfoElementIn(entry, entryElement){
     lastClickedEntry = entry;
     infoElementEntry = entry;
     infoElementEntryElement = entryElement;
+    const participatingState = getParticipatingState(entry);
+    setParticipatingState(participatingState)
+    if(dateInPast(entry.startDate)){
+        hideParticipating();
+    }
     $(".kalender__entry-info").stop(true, false);
+    $(".kalender__entry-info").find(".participate").hide();
+    if(entry.type == "training"){
+        $(".kalender__entry-info").find(".participate").show();
+    }
     const width = 400;
     var rect = entryElement.offset();
     let right = window.innerWidth - (rect.left);
@@ -621,31 +725,22 @@ function getPage(date){
 
 function kalender__header_Html(){
     const html = `<div class="kalender__header">
-        <div class="kalender__header__left">
-            <label class="kalender__burger-label kalender_interactive-shadow" for="kalender__burger-input">
-                <span class="kalender__burger-line"></span>
-                <span class="kalender__burger-line"></span>
-                <span class="kalender__burger-line"></span>
-            </label>
-            <input type="checkbox" id="kalender__burger-input">
-            <h3 class="kalender__header__headline">Kalender</h3>
-            <div class="kalender__header__month">
-                <button type="button" class="kalender__header__month__backwards kalender_interactive-shadow"><</button>
-                <button type="button" class="kalender__header__month__forewards kalender_interactive-shadow">></button>
-                <span class="kalender__header__current-month">Januar 2020</span>
-            </div>
+        <label class="kalender__burger-label" for="kalender__burger-input">
+            <span class="kalender__burger-line"></span>
+            <span class="kalender__burger-line"></span>
+            <span class="kalender__burger-line"></span>
+        </label>
+        <input type="checkbox" id="kalender__burger-input">
+        <div class="kalender__header__month">
+            <button type="button" class="kalender__header__month__backwards kalender_interactive-shadow"><</button>
+            <button type="button" class="kalender__header__month__forewards kalender_interactive-shadow">></button>
+            <span class="kalender__header__current-month">Januar 2020</span>
         </div>
-        <div class="kalender__header__right">
-            <div class="kalender__search">
-            <input type="text" class="kalender__search-input kalender_interactive-shadow" id="kalender__search-input" placeholder="Suchen...">
-                <img class="kalender__search-button kalender_interactive-shadow" src="/img/search-icon.svg" width="30px" alt="Suchen">
-            </div>
-            <select name="kalender-view" class="kalender__view-dropdown kalender_interactive-shadow">
-                <option value="day">Tag</option>
-                <option value="week">Woche</option>
-                <option value="month" selected>Monat</option>
-            </select>
-        </div>
+        <select name="kalender-view" class="kalender__view-dropdown kalender_interactive-shadow">
+            <option value="day">Tag</option>
+            <option value="week">Woche</option>
+            <option value="month" selected>Monat</option>
+        </select>
     </div>`;
     return html;
 }
@@ -832,6 +927,14 @@ function getPropertyJson(propertieElem){
     const comment = propertieElem.find(".comment-input").val();
     const groups = [];
 
+    const trainer = [];
+
+    let trainerAttr = propertieElem.find(".trainer").attr("trainer").split(",");
+
+    for (const attr of trainerAttr) {
+        trainer.push(parseInt(attr));
+    }
+
     if(idTrainingsBlueprint.length == 0){
         idTrainingsBlueprint = "-";
     };
@@ -861,7 +964,8 @@ function getPropertyJson(propertieElem){
         idTrainingsBlueprint: idTrainingsBlueprint,
         groups: groups,
         comment: comment,
-        idtrainingFacility: "-"
+        idtrainingFacility: "-",
+        trainer: trainer
     }
     return json;
 }
@@ -949,6 +1053,7 @@ function enterTrainingContent(){
     arr.push(getTimeSelector("Bis"));
     arr.push(getTrainingsBlueprintSelectElem(false));
     arr.push(getGroupSelectElem(true, false, false, "In Gruppen teilen", undefined, false));
+    arr.push(getTrainerSelector());
     arr.push(getCommentElem());
     arr.push(getEnterEnterSection());
     return arr;
@@ -987,7 +1092,76 @@ function reloadEnterContent(){
     initTrainingsBlueprintSelectors();
 }
 
-reloadEnterContent();
+function getTrainerSelector(){
+    const elem = $(`<div class="trainer kalender_interactive-shadow" trainer="">
+        <div class="trainer__header"><i class="fas fa-id-card-alt"></i>Trainer hinzufügen<span class="trainer__delimiter"></span><span class="trainer__selected"></span>
+    </div>
+    <div class="trainer__content"></div>`);
+    elem.find(".trainer__header").click(()=>{
+        elem.find(".trainer__content").toggleClass("trainer__content--visible");
+    })
+    let trainer = [];
+    elem.find(".trainer__content").append(getUserListElement(
+        function(user){
+            const userelem = $(`<div class="user-list__user kalender_interactive-shadow">${user.username}</div>`);
+            userelem.on("click", function(){
+                name = $(this).text();
+                if(usernameInUsers(name, trainer)){
+                    trainer.splice(indexOfusernameInUsers(name, trainer), 1);
+                } else{
+                    trainer.push(cloneUser(user));
+                }
+                updateTrainer(trainer, elem);
+            })
+            return userelem;
+        }));
+    return elem;
+}
+
+function updateTrainer(trainer, elem){
+    let attrString = "";
+    for (const tr of trainer) {
+        attrString += tr.iduser + ",";
+    }
+    attrString = attrString.substring(0, attrString.length - 1);
+
+    let nameString = "";
+    for (const tr of trainer) {
+        nameString += tr.username + ", ";
+    }
+    nameString = nameString.substring(0, nameString.length - 2);
+    if(nameString.length == 0){
+        elem.find(".trainer__delimiter").text("");
+    } else{
+        elem.find(".trainer__delimiter").text(":  ");
+    }
+    elem.attr("trainer", attrString);
+    elem.find(".trainer__selected").text(nameString);
+}
+
+function cloneUser(user){
+    return {username: user.username, iduser: user.iduser};
+}
+
+function usernameInUsers(username, users){
+    for (const user of users) {
+        if(username == user.username){
+            return true;
+        }
+    }
+    return false;
+}
+
+function indexOfusernameInUsers(username, users){
+    let counter = 0;
+    for (const user of users) {
+        if(username == user.username){
+            return counter;
+        }
+        counter++;
+    }
+    return -1;
+}
 
 function getCommentElem(){
     const elem = $(`<div class="comment kalender_interactive-shadow">

@@ -3,6 +3,10 @@
         header("location: /index.php");
         exit(0);
     }
+    if(isset($_SESSION["username"])){
+        header("location: /index.php");
+        exit();
+    }
 ?>
 <!DOCTYPE html>
 <html>

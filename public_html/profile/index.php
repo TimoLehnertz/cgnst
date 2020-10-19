@@ -1,5 +1,6 @@
 <?php
-    include "../header.php"
+    $dependency = ["titleimg"];
+    include_once "../header.php"
 ?>
     <main>
         <?php
@@ -11,5 +12,5 @@
         ?>
     </main>
 <?php
-    include "../footer.php"
+    include "../footer.php";
 ?>

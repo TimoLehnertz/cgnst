@@ -1,5 +1,6 @@
 <?php
 include_once "../users/userAPI.php";
+include_once "../training/trainingsAPI.php";
 
 // Example entry
 // $entry = [
@@ -20,6 +21,8 @@ if(isset($_GET["submitEntry"])){
 } else if(isset($_GET["deleteEntry"])){
     $data = json_decode(file_get_contents('php://input'), true);
     deleteEntry($mysqli, $data);
+} else if(isset($_GET["setParticipating"]) && isset($_GET["idtraining"]) && $_SESSION["username"]){
+    setParticipatingForUserInTraining($mysqli, $_SESSION["userId"], intval($_GET["idtraining"]), intval($_GET["setParticipating"]));
 }
 
 function deleteEntry($mysqli, $entry){
@@ -28,29 +31,6 @@ function deleteEntry($mysqli, $entry){
         case "training": deleteTraining($mysqli, $id);
         case "note": deleteNoteEntry($mysqli, $id);
     }
-}
-
-function deleteTraining($mysqli, $idtraining){
-    $success = true;
-    $stmt = $mysqli->prepare("DELETE FROM training_has_group WHERE training_idtraining=?;");
-    if($stmt->bind_param("i", $idtraining)){
-        if($stmt->execute()){
-            $stmt->close();
-        } else{
-            $success = false;
-            printf("Error message: %s\n", $mysqli->error);
-        }
-    }
-    $stmt = $mysqli->prepare("DELETE FROM training WHERE idtraining=?;");
-    if($stmt->bind_param("i", $idtraining)){
-        if($stmt->execute()){
-            $stmt->close();
-        } else{
-            $success = false;
-            printf("Error message: %s\n", $mysqli->error);
-        }
-    }
-    return $success;
 }
 
 function deleteNoteEntry($mysqli, $idkalenderNote){
@@ -107,7 +87,7 @@ function push_array_in_array(&$arr1, $arr2){
 function getTrainingsEntriesForGroupId($mysqli, $idgroup, $groups){
     $entries = array();
     $trainings = getTrainingsForGroupId($mysqli, $idgroup);
-    for ($i=0; $i < sizeof($trainings); $i++) { 
+    for ($i=0; $i < sizeof($trainings); $i++) {
         $entry = [
             "refId" => "idtraining:".$trainings[$i]["idtraining"],
             "name" => $trainings[$i]["name"],
@@ -116,7 +96,8 @@ function getTrainingsEntriesForGroupId($mysqli, $idgroup, $groups){
             "initiator" => getUserNameFromId($mysqli, $trainings[$i]["uploadUser"]),
             "type" => "training",
             "groups" => [0 => getGroupById($idgroup, $groups)["name"]],
-            "comment" => $trainings[$i]["comment"]
+            "comment" => $trainings[$i]["comment"],
+            "participating" => $trainings[$i]["participating"]
         ];
         $entries[] = $entry;
     }
@@ -165,27 +146,6 @@ function filterRedundantEntries($entries){
         }
     }
     return array_values($newEntries);
-}
-
-function getTrainingsForGroupId($mysqli, $idgroup){
-    $stmt = $mysqli->prepare("SELECT training.* FROM training_has_group
-        JOIN training ON training.idtraining=training_has_group.training_idtraining
-        WHERE training_has_group.group_idgroup=?;");
-    if($stmt->bind_param("i", $idgroup)){
-        if($stmt->execute()){
-            $result = $stmt->get_result();
-            $trainings = array();
-            while($row = $result->fetch_array(MYSQLI_ASSOC)){
-                $trainings[] = $row;
-            }
-            $result->close();
-            $stmt->close();
-            return $trainings;
-        }
-    }
-    printf("Error message: %s\n", $mysqli->error);
-    $stmt->close();
-    return false;
 }
 
 function getKalenderNotesForGroupId($mysqli, $idnote){
@@ -261,11 +221,18 @@ function processTraining($mysqli, $data){
     $comment = $data["comment"];
     $groupNames = $data["groups"];
     $name = $data["title"];
+    $trainers = $data["trainer"];
+    print_r($trainers);
     if(isUserAdminInAllGroups($mysqli, $iduser, $groupNames)){
         $idtraining = insertTraining($mysqli, $startDate, $endDate, $idtrainingsfacility, $idblueprint, $comment, $iduser, $name);
         $groups = getGroupList($mysqli);
         for ($i=0; $i < sizeof($groupNames); $i++) { 
             insertTrainingGroupRelation($mysqli, $idtraining, getGroupId($groupNames[$i], $groups));
+        }
+        for ($i=0; $i < sizeof($trainers); $i++) {
+            if(isset($trainers[$i])){
+                insertTraininTrainerRelation($mysqli, $idtraining, $trainers[$i]);
+            }
         }
     } else{
         echo "Error: Ungenügende Berechtigungen :(";
@@ -316,33 +283,6 @@ function insertNote($mysqli, $startDate, $endDate, $comment, $iduser, $name){
 function insertNoteGroupRelation($mysqli, $idkalenderNote, $idgroup){
     $stmt = $mysqli->prepare("INSERT INTO kalenderNote_has_group(kalenderNote_idkalenderNote, group_idgroup) VALUES(?,?);");
     if($stmt->bind_param("ii", $idkalenderNote, $idgroup)){
-        if($stmt->execute()){
-            $stmt->close();
-            return true;
-        }
-    }
-    printf("Error message: %s\n", $mysqli->error);
-    $stmt->close();
-    return false;
-}
-
-function insertTraining($mysqli, $startDate, $endDate, $idtrainingsfacility, $idblueprint, $comment, $iduser, $name){
-    $stmt = $mysqli->prepare("INSERT INTO training(startDate, endDate, comment, trainingsBlueprint_idtrainingsBlueprint1, trainingFacility_idtrainingFacility, uploadUser, name) VALUES(?,?,?,?,?,?,?);");
-    if($stmt->bind_param("sssiiis", $startDate, $endDate, $comment, $idblueprint, $idtrainingsfacility, $iduser, $name)){
-        if($stmt->execute()){
-            $idtraining = $mysqli->insert_id;
-            $stmt->close();
-            return $idtraining;
-        }
-    }
-    printf("Error message: %s\n", $mysqli->error);
-    $stmt->close();
-    return false;
-}
-
-function insertTrainingGroupRelation($mysqli, $idtraining, $idgroup){
-    $stmt = $mysqli->prepare("INSERT INTO training_has_group(training_idtraining, group_idgroup) VALUES(?,?);");
-    if($stmt->bind_param("ii", $idtraining, $idgroup)){
         if($stmt->execute()){
             $stmt->close();
             return true;

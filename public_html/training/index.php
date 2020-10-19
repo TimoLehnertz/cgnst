@@ -1,10 +1,10 @@
 <?php
-    $dependency = ["kalender"];
-    include_once "../header.php"
+    $dependency = ["titleimg"];
+    include_once "../header.php";
 ?>
     <main>
-        <div class="kalender"></div>
+        <h1>Training</h1>
     </main>
 <?php
-    #include "../footer.php"
+    include "../footer.php";
 ?>

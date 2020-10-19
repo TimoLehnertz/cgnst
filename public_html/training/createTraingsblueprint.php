@@ -45,7 +45,7 @@
             <label for="selectBlueprint">Vorlage laden</label>
             <select name="selectBlueprint" id="selectBlueprint">
                 <?php
-                    include "getTrainingsBlueprints.php";
+                    include "trainingsAPI.php";
                     $blueprints = getAllAvailableTrainingsBlueprints($conn);
                     for ($i=0; $i < sizeof($blueprints); $i++) {
                         echo "<option value='".$blueprints[$i]["idtrainingsBlueprint"]."'>".$blueprints[$i]["name"]."</option>";
@@ -93,7 +93,7 @@
                 let blueprintId =  $("#selectBlueprint").val();
                 $.ajax({
                     type: "GET",
-                    url: 'getTrainingsBlueprints.php?getTrainingsBlueprintJsonById=' + blueprintId,
+                    url: 'trainingsAPI.php?getTrainingsBlueprintJsonById=' + blueprintId,
                     dataType: 'text',
                     async: true,
                     success: function (response) {
@@ -119,12 +119,12 @@
                     $("#blueprintName").removeClass("errorClass");
                     $.ajax({
                         type: "POST",
-                        url: 'submitTrainingsBlueprint.php',
+                        url: 'trainingsAPI.php?submitTrainingsBlueprint=1',
                         dataType: 'text',
                         async: true,
                         data: JSON.stringify(trainingsBlueprint),
                         success: function (response) {
-                            // console.log(response);
+                            console.log(response);
                         },
                         error: function(jqXHR, textStatus, errorThrown) {
                             console.log(jqXHR.status);

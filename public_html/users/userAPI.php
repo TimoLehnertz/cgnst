@@ -1,6 +1,8 @@
 <?php
 
-session_start();
+if(session_status() != PHP_SESSION_ACTIVE){
+    session_start();
+}
 
 include_once "../includes/dbh.inc.php";
 
@@ -27,6 +29,10 @@ function getUsername(){
     }
 }
 
+function amILoggedIn(){
+    return isset($_SESSION["username"]);
+}
+
 /*
     Group Element:
     {"idgroup" : "", "users" : [], "name" : ""}
@@ -36,12 +42,12 @@ function getUsername(){
 */
 
 
-function getDefaulGroupName(){
+function getDefaultGroupName(){
     return "--Public--";//Default not to be ever changed!
 }
 
 function getDefaultGroup($mysqli){
-    $defaultName = getDefaulGroupName();
+    $defaultName = getDefaultGroupName();
     $groups = getGroupList($mysqli);
     if(!doesGroupExistByName($mysqli, $defaultName)){
         addGroup($mysqli, $defaultName);
@@ -376,7 +382,7 @@ function getGroupList($mysqli){
                 "idgroup" => $row["idgroup"],
                 "users" => getUsersFromGroupId($mysqli, $row["idgroup"]),
                 "name" => $row["name"],
-                "isDefaultGroup" => getDefaulGroupName() == $row["name"]
+                "isDefaultGroup" => getDefaultGroupName() == $row["name"]
             ];
             $groups[$groupName] = $group;
         }
@@ -415,8 +421,8 @@ function getGroupListForUserId($mysqli, $iduser){
         }
     }
     $stmt->close();
-    // $defaultGroup = getDefaultGroup($mysqli);
-    // $groups[$defaultGroup["name"]][""];
+    $defaultGroup = getDefaultGroup($mysqli);
+    $groups[$defaultGroup["name"]] = $defaultGroup;
     // print_r($groups);
     return $groups;
 }
@@ -464,6 +470,46 @@ function isUserAdminInGroup($mysqli, $iduser, $idgroup){
     }
     $stmt->close();
     return false;
+}
+
+function isUserMemberInOneOfGroupIds($mysqli, $iduser, $idgroups){
+    for ($i=0; $i < sizeof($idgroups); $i++) { 
+        if(isUserMemberInGroup($mysqli, $iduser, $idgroups[$i])){
+            return true;
+        }
+    }
+    return false;
+}
+
+function isUserMemberInGroup($mysqli, $iduser, $idgroup){
+    $stmt = $mysqli->prepare("SELECT * FROM group_has_user WHERE group_idgroup=? AND user_iduser=?;");
+    if($stmt->bind_param("ii", $idgroup, $iduser)){
+        if($stmt->execute()){
+            return $stmt->get_result()->num_rows > 0;
+        } else{
+            printf("Error message: %s\n", $mysqli->error);
+        }
+    }
+    $stmt->close();
+    return false;
+}
+
+function isUserAdminInOneOfGroupIds($mysqli, $iduser, $idgroups){
+    for ($i=0; $i < sizeof($idgroups); $i++) { 
+        if(isUserAdminInGroup($mysqli, $iduser, $idgroups[$i])){
+            return true;
+        }
+    }
+    return false;
+}
+
+function isUserAdminInOneOfGroupNames($mysqli, $iduser, $groupNames){
+    $idgroups = array();
+    $groups = getGroupList($mysqli);
+    for ($i=0; $i < sizeof($groupNames); $i++) { 
+        $idgroups[] = getGroupId($groupNames[$i], $groups);
+    }
+    return isUserAdminInOneOfGroupIds($mysqli, $iduser, $idgroups);
 }
 
 function setUserAdminInGroup($mysqli, $iduser, $idgroup, $isAdmin){

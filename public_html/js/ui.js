@@ -45,4 +45,6 @@ function resizeAccordions(){
 
 function functionInitAll(){
     setAccordionEvents();
+    const location = window.location.pathname.substring(1, window.location.pathname.indexOf("/", 1) == -1 ? undefined : window.location.pathname.indexOf("/", 1));
+    $(`a[href="${location.length == 0 ? "/index.php" : "/" + location}"]`).addClass("nav-now").prop("href", "#");
 }
