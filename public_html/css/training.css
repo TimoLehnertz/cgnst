@@ -102,4 +102,13 @@ aside {
   height: 100px;
   width: 200px;
 }
+
+@media (hover: none) and (pointer: coarse) {
+  section {
+    padding-left: 150px;
+  }
+  i {
+    left: -90px;
+  }
+}
 /*# sourceMappingURL=training.css.map */
