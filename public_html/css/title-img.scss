@@ -9,10 +9,6 @@
     color: white;
 }
 
-html{
-    font-size: 18pt;
-}
-
 main{
     width: 80vw;
     margin-top: 30vh;
@@ -94,5 +90,16 @@ h1{
     } to{
         transform: translateY(0);
         opacity: 1;
+    }
+}
+
+@media (hover: none) and (pointer: coarse) {
+    html{
+        font-size: 23pt;
+    }
+
+    main{
+        width: 100vw;
+        margin-top: 20vh;
     }
 }
