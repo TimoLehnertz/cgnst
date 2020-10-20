@@ -54,8 +54,8 @@ section::after {
 }
 
 section > * :not(i) {
-  -webkit-animation: blend-in-from-bottom 0.5s both;
-          animation: blend-in-from-bottom 0.5s both;
+  -webkit-animation: blend-in-from-bottom 2s both;
+          animation: blend-in-from-bottom 2s both;
 }
 
 h1 {
