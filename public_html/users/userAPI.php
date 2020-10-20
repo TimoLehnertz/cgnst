@@ -397,7 +397,7 @@ function getGroupListForThisUser($mysqli){
     if(isset($_SESSION["username"])){
         return getGroupListForUserId($mysqli, $_SESSION["userId"]);
     } else{
-        return [0 => getDefaultGroup()];
+        return [0 => getDefaultGroup($mysqli)];
     }
 }
 
