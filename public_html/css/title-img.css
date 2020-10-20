@@ -8,6 +8,7 @@
           animation: blend-in 8s 0.5s both cubic-bezier(0.075, 0.82, 0.165, 1);
   background-size: cover;
   color: white;
+  will-change: top;
 }
 
 main {
@@ -21,6 +22,7 @@ main {
 section {
   background: white;
   padding-top: 0;
+  padding-bottom: 20px;
   z-index: 10;
   margin-top: 50px;
   min-height: 100vh;
