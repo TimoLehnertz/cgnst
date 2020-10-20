@@ -393,6 +393,14 @@ function getGroupList($mysqli){
     return $groups;
 }
 
+function getGroupListForThisUser($mysqli){
+    if(isset($_SESSION["username"])){
+        return getGroupListForUserId($mysqli, $_SESSION["userId"]);
+    } else{
+        return [0 => getDefaultGroup()];
+    }
+}
+
 function getGroupListForUserName($mysqli, $username){
     return getGroupListForUserId($mysqli, getUserId($mysqli, $username));
 }
@@ -423,7 +431,6 @@ function getGroupListForUserId($mysqli, $iduser){
     $stmt->close();
     $defaultGroup = getDefaultGroup($mysqli);
     $groups[$defaultGroup["name"]] = $defaultGroup;
-    // print_r($groups);
     return $groups;
 }
 

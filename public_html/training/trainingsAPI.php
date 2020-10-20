@@ -554,7 +554,7 @@ function getExerciseByGroupId($mysqli, $idgroup){
     return false;
 }
 
-function doesBlueprintExistForTRainingsId($mysqli, $idtraining){
+function doesBlueprintExistForTrainingsId($mysqli, $idtraining){
     $training = getTrainingsForId($mysqli, $idtraining);
     return isset($training["trainingsBlueprint_idtrainingsBlueprint1"]);
 }
@@ -564,7 +564,7 @@ function getTrainingsBlueprintHtml($mysqli, $idtraining){
     if(isset($training["trainingsBlueprint_idtrainingsBlueprint1"])){
         $blueprint = getTrainingsBLueprintById($mysqli, intval($training["trainingsBlueprint_idtrainingsBlueprint1"]));
         // print_r($blueprint);
-        for ($i=0; $i < sizeof($blueprint["exerciseGroups"]); $i++) { 
+        for ($i=0; $i < sizeof($blueprint["exerciseGroups"]); $i++) {
             echo "<div><span class='header'>".($i + 1).": ".$blueprint["exerciseGroups"][$i]["name"]."</span>";
             for ($l=0; $l < sizeof($blueprint["exerciseGroups"][$i]["exercises"]); $l++) { 
                 echo  "<div class='exercise'><span class='header'>".($l + 1).": ".$blueprint["exerciseGroups"][$i]["exercises"][$l]["name"]."</span>";
@@ -580,4 +580,19 @@ function getTrainingsBlueprintHtml($mysqli, $idtraining){
     } else{
         return "<p>Es liegt noch kein Trainingsplan Vor</p>";
     }
+}
+
+function push_array_in_array(&$arr1, $arr2){
+    for ($i=0; $i < sizeof($arr2); $i++) {
+        $arr1[] = $arr2[$i];
+    }
+}
+
+function getTrainingsForThisUser($mysqli){
+    $groups = getGroupListForThisUser($mysqli);
+    $trainings = array();
+    foreach ($groups as $groupName => $group) {
+        push_array_in_array($trainings, getTrainingsForGroupId($mysqli, $group["idgroup"]));
+    }
+    return $trainings;
 }

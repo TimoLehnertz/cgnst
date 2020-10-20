@@ -14,7 +14,7 @@
             header("location: /training/");
             exit();
         } else{
-            if(!hasThisUserWritePermissionOnTrainingsId($mysqli, $idtraining)){
+            if(!hasThisUserReadPermissionOnTrainingsId($mysqli, $idtraining)){
                 header("location: /training/");
                 exit();
             }
@@ -71,11 +71,11 @@
                             }
                         ?>
                     </ul>
+                    <p class="trainings-plan__header"><i class="fas fa-list"></i>Trainingsplan:</p>
                 </div>
-                <p><i class="fas fa-list"></i>Trainingsplan:</p>
-                <div class="trainings-blueprint">
-                    <?php echo getTrainingsBlueprintHtml($mysqli, $idtraining)?>
-                </div>
+            </div>
+            <div class="trainings-blueprint">
+                <?php echo getTrainingsBlueprintHtml($mysqli, $idtraining)?>
             </div>
         </section>
     </main>

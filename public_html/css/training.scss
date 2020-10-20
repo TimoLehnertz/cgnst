@@ -1,9 +1,6 @@
-section{
-    padding-left: 100px;
-}
-
 .training-content{
     flex-grow: 10;
+    padding-left: 100px;
 }
 
 i{
@@ -61,7 +58,13 @@ i{
     overflow: auto;
 }
 
+.trainings-plan__header{
+    margin-top: 30px;
+}
+
 .trainings-blueprint{
+    left: 0;
+    width: 100%;
     display: flex;
     justify-content: space-evenly;
     margin-top: 30px;
