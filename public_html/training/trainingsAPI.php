@@ -6,6 +6,7 @@ if(session_status() != PHP_SESSION_ACTIVE){
 
 include_once "../includes/dbh.inc.php";
 include_once "../users/userAPI.php";
+include_once "../includes/utils.inc.php";
 
 if(isset($_GET["submitTrainingsBlueprint"])){
     $data = json_decode(file_get_contents('php://input'), true);
@@ -579,12 +580,6 @@ function getTrainingsBlueprintHtml($mysqli, $idtraining){
         }
     } else{
         return "<p>Es liegt noch kein Trainingsplan Vor</p>";
-    }
-}
-
-function push_array_in_array(&$arr1, $arr2){
-    for ($i=0; $i < sizeof($arr2); $i++) {
-        $arr1[] = $arr2[$i];
     }
 }
 

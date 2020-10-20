@@ -1,6 +1,7 @@
 <?php
 include_once "../users/userAPI.php";
 include_once "../training/trainingsAPI.php";
+include_once "../includes/utils.inc.php";
 
 // Example entry
 // $entry = [
@@ -76,12 +77,6 @@ function getEntriesForGroupId($mysqli, $idgroup, $groups){
     push_array_in_array($entries, getKalenderNoteEntriesForGroupId($mysqli, $idgroup, $groups));
 //  etc..
     return $entries;
-}
-
-function push_array_in_array(&$arr1, $arr2){
-    for ($i=0; $i < sizeof($arr2); $i++) {
-        $arr1[] = $arr2[$i];
-    }
 }
 
 function getTrainingsEntriesForGroupId($mysqli, $idgroup, $groups){
