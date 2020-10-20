@@ -4,8 +4,7 @@ $(function(){
 });
 
 function scroll(){
-    $(".title-img").css("top", -window.scrollY / 2);
-    $("h1").css("top", -window.scrollY / 3 + 100);
+    $(".title-img").css("top", -window.scrollY / 4);
 }
 
 function throttle (callback, limit) {
