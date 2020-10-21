@@ -37,13 +37,14 @@
                     
                 <?php }?>
             </aside>
-            <div class="training-content">
+            <div class="icon-lines">
                 <h2 class="title"><?=$training["name"]?></h2>
                 <p class="date"><i class="far fa-calendar-alt"></i><?=date("D, d. M, Y H:i",strtotime($training["startDate"]))?></p>
                 <?php
                     if(sizeof($trainers) > 0){?>
                 <p class="trainer"><i class="fas fa-id-card-alt"></i>Trainer: <?php echo implode(", " , $trainers)?></p>
                 <?php }?>
+                <p class="groups"></p>
                 <div class="comment">
                     <div class="comment__header"><i class="far fa-comment"></i>Comment</div>
                     <p class="komment__body"><?=$training["comment"]?></p>

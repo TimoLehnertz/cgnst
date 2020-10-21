@@ -1,0 +1,272 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@600;700&display=swap');
+
+:root {
+    --color-1-1: rgb(5, 163, 202);
+    --color-1-2: rgb(0, 95, 119);
+}
+
+*{
+    padding: 0;
+    margin: 0;
+}
+
+body{
+    font-family: 'Open Sans', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #EEE;
+}
+
+/*
+    Header
+*/
+
+header{
+    font-weight: 600;
+    height: 50px;
+    width: 100%;
+    top: 0;
+    position: fixed;
+    background-color: #333;
+    border-bottom: 5px solid var(--color-1-1);
+    z-index: 100;
+ }
+
+header nav{
+    float: left;
+    display: flex;
+    justify-content: space-around;
+    height: 100%;
+}
+
+header a{
+    text-align: center;
+    display: inline-block;
+    padding: 0 10px;
+    height: 100%;
+    line-height: 50px;
+    color: #CCC;
+    background-color: #333;
+    text-decoration: none;
+    border-radius: 2px;
+    transition: background-color 0.2s, border 0.2s, font-size 0.2s;
+    border-top: 0px solid white;
+    box-sizing: content-box;
+    border-left: 5px solid #333;
+    border-right: 5px solid #333;
+    font-size: 12pt;
+}
+
+header a:hover:not(.nav-now){
+    font-size: 13pt;
+    border-top: 10px solid white;
+    border-left: 5px solid white;
+    border-right: 5px solid white;
+    /*color: #333;
+    background-color: #CCC;*/
+}
+
+.nav-now{
+    background: #AAA;
+    color: #333;
+    font-size: 1rem;
+    border: none;
+    position: relative;
+    z-index: 10;
+    height: 100%;
+}
+
+.nav-now:hover::after, .nav-now:hover::before{
+    bottom: -30px;
+}
+
+.nav-now::after{
+    transition: all 0.2s;
+    content: "";
+    position: absolute;
+    top: -100px;
+    bottom: -10px;
+    left: 50%;
+    right: 0;
+    background: var(--color-1-1);
+    transform: skewY(-15deg);
+    z-index: -1;
+}
+
+.nav-now::before{
+    transition: all 0.2s;
+    content: "";
+    position: absolute;
+    top: -100px;
+    bottom: -10px;
+    left: 0;
+    right: 49%;
+    background: var(--color-1-1);
+    transform: skewY(15deg);
+    z-index: -1;
+}
+
+header div{
+    float: right;
+    height: 100%;
+}
+
+header div *{
+    display: inline;
+}
+
+header #signIn-sign-Out-form button{
+    width: 100px;
+    height: 80%;
+    background-color: #FFF;
+    border: none;
+    font-size: 15pt;
+    margin-right: 10px;
+}
+
+.rectShadow{
+    transform: translateX(0) translateY(0);
+    transition: box-shadow 200ms, transform 200ms;
+    box-shadow: 1px 1px 0px #999,
+                2px 2px 0px #999,
+                3px 3px 0px #999,
+                4px 4px 0px #999,
+                5px 5px 0px #999,
+                6px 6px 0px #999;
+}
+
+.rectShadow:hover{
+    transform: translateX(5px) translateY(5px);
+    box-shadow: 0px 0px 0px #999,
+                0px 0px 0px #999,
+                0px 0px 0px #999,
+                0px 0px 0px #999,
+                0px 0px 0px #999,
+                0px 0px 0px #999;
+}
+
+/*
+    Main
+*/
+
+main{
+    background-color: #FFF;
+    padding-top: 80px;
+}
+
+main form{
+    margin: auto;
+    width: 20%;
+}
+
+main form *{
+    width: 100%;
+    display: block;
+}
+
+main form input{
+    padding: 10px;
+    background: #EEE;
+    border: none;
+    border: 1px solid gray;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+main form button{
+    padding: 20px;
+    text-align: center;
+    color: white;
+    background-color: #333;
+    border-radius: 5px;
+    border: none;
+    margin: 0;
+    font-size: 14pt;
+    width: 100%;
+    margin-left: 10px;
+}
+
+.signupError{
+    color: rgb(153, 37, 37);
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.signupSuccess{
+    color: rgb(15, 94, 61);
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+footer{
+    text-align: center;
+    color: gray;
+    padding: 50px;
+    margin-top: 40px;
+}
+
+/*
+    Fade out
+*/
+
+.shrinkable{
+    box-sizing: content-box;
+    overflow: auto;
+    height: 150px;
+    transition: width 0.2s, height 0.2s, padding 0.2s;
+}
+
+.shrinkToTop{
+    overflow: hidden;
+    height: 0 !important;
+    padding: 0 !important;
+}
+
+.shrinkToLeft{
+    overflow: hidden;
+    width: 0 !important;
+    padding: 0 !important;
+}
+
+.shrinkToTop::before{
+    width: 0 !important;
+}
+
+/*
+    Tips
+*/
+
+.closeTipButton{
+    position: absolute;
+    top: 0; 
+    right: 0;
+    padding: 15px;
+    border: none;
+    background-color: rgb(160, 152, 45);
+    color: white;
+    float: right;
+    display: block;
+    transition: background-color 0.1s;
+}
+
+.closeTipButton:hover{
+    background-color: blue;
+}
+
+.tip{
+    position: relative;
+    background-color: rgb(80, 148, 238);
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.tip::before{
+    content: "Tip:";
+    position: relative;
+    display: block;
+    width: 100%;
+    background: rgb(45, 122, 141);
+    transition: width, 0.2s;
+    padding: 2px;
+    text-align: center;
+    overflow: hidden;
+}

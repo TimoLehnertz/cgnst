@@ -4,8 +4,8 @@
 ?>
 <main>
     <div id="maininner" class="grid-box" style="padding: 40px;">
-        <h1 class="title">Impressum</h1>
         <section id="content">
+            <h1 class="title">Impressum</h1>
             <div class="grid-block">
                 <div id="system-message-container">
                 </div>

@@ -1,10 +1,12 @@
 $(function(){
-    window.addEventListener("scroll", throttle(scroll, 10));
-    scroll();
+    if(!isMobile()){
+        window.addEventListener("scroll", throttle(scroll, 10));
+        scroll();
+    }
 });
 
 function scroll(){
-    $(".title-img").css("top", -window.scrollY / 4);
+    $(".title-img").css("top", -window.scrollY / 3);
 }
 
 function throttle (callback, limit) {
