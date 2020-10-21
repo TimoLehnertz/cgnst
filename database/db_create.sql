@@ -14,7 +14,7 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- -----------------------------------------------------
 -- Schema cgnst
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `cgnst` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4 ;
+CREATE SCHEMA IF NOT EXISTS `cgnst` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci ;
 USE `cgnst` ;
 
 -- -----------------------------------------------------
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `cgnst`.`user` (
 ENGINE = InnoDB
 AUTO_INCREMENT = 18
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4;
+COLLATE = utf8mb4_general_ci;
 
 
 -- -----------------------------------------------------
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `cgnst`.`artikel` (
     REFERENCES `cgnst`.`user` (`iduser`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4;
+COLLATE = utf8mb4_general_ci;
 
 
 -- -----------------------------------------------------
@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS `cgnst`.`discipline` (
   PRIMARY KEY (`iddiscipline`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4;
+COLLATE = utf8mb4_general_ci;
 
 
 -- -----------------------------------------------------
@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS `cgnst`.`exercise` (
 ENGINE = InnoDB
 AUTO_INCREMENT = 268
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4;
+COLLATE = utf8mb4_general_ci;
 
 
 -- -----------------------------------------------------
@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS `cgnst`.`exerciseGroup` (
 ENGINE = InnoDB
 AUTO_INCREMENT = 223
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4;
+COLLATE = utf8mb4_general_ci;
 
 
 -- -----------------------------------------------------
@@ -128,7 +128,7 @@ CREATE TABLE IF NOT EXISTS `cgnst`.`exercise_has_exerciseGroup` (
     REFERENCES `cgnst`.`exerciseGroup` (`idexerciseGroup`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4;
+COLLATE = utf8mb4_general_ci;
 
 
 -- -----------------------------------------------------
@@ -145,7 +145,7 @@ CREATE TABLE IF NOT EXISTS `cgnst`.`group` (
 ENGINE = InnoDB
 AUTO_INCREMENT = 101
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4;
+COLLATE = utf8mb4_general_ci;
 
 
 -- -----------------------------------------------------
@@ -167,7 +167,7 @@ CREATE TABLE IF NOT EXISTS `cgnst`.`group_has_admin` (
     REFERENCES `cgnst`.`user` (`iduser`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4;
+COLLATE = utf8mb4_general_ci;
 
 
 -- -----------------------------------------------------
@@ -189,7 +189,7 @@ CREATE TABLE IF NOT EXISTS `cgnst`.`group_has_user` (
     REFERENCES `cgnst`.`user` (`iduser`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4;
+COLLATE = utf8mb4_general_ci;
 
 
 -- -----------------------------------------------------
@@ -212,7 +212,7 @@ CREATE TABLE IF NOT EXISTS `cgnst`.`kalenderNote` (
 ENGINE = InnoDB
 AUTO_INCREMENT = 6
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4;
+COLLATE = utf8mb4_general_ci;
 
 
 -- -----------------------------------------------------
@@ -233,7 +233,7 @@ CREATE TABLE IF NOT EXISTS `cgnst`.`kalenderNote_has_group` (
     REFERENCES `cgnst`.`group` (`idgroup`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4;
+COLLATE = utf8mb4_general_ci;
 
 
 -- -----------------------------------------------------
@@ -255,7 +255,7 @@ CREATE TABLE IF NOT EXISTS `cgnst`.`kalenderNotes` (
     REFERENCES `cgnst`.`user` (`iduser`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4;
+COLLATE = utf8mb4_general_ci;
 
 
 -- -----------------------------------------------------
@@ -274,7 +274,7 @@ CREATE TABLE IF NOT EXISTS `cgnst`.`permissionGroup` (
 ENGINE = InnoDB
 AUTO_INCREMENT = 4
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4;
+COLLATE = utf8mb4_general_ci;
 
 
 -- -----------------------------------------------------
@@ -291,7 +291,7 @@ CREATE TABLE IF NOT EXISTS `cgnst`.`race` (
   PRIMARY KEY (`idrace`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4;
+COLLATE = utf8mb4_general_ci;
 
 
 -- -----------------------------------------------------
@@ -306,7 +306,7 @@ CREATE TABLE IF NOT EXISTS `cgnst`.`trainingFacility` (
   PRIMARY KEY (`idtrainingFacility`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4;
+COLLATE = utf8mb4_general_ci;
 
 
 -- -----------------------------------------------------
@@ -328,7 +328,7 @@ CREATE TABLE IF NOT EXISTS `cgnst`.`race_has_trainingFacility` (
     REFERENCES `cgnst`.`trainingFacility` (`idtrainingFacility`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4;
+COLLATE = utf8mb4_general_ci;
 
 
 -- -----------------------------------------------------
@@ -351,7 +351,7 @@ CREATE TABLE IF NOT EXISTS `cgnst`.`race_has_user` (
     REFERENCES `cgnst`.`user` (`iduser`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4;
+COLLATE = utf8mb4_general_ci;
 
 
 -- -----------------------------------------------------
@@ -375,7 +375,7 @@ CREATE TABLE IF NOT EXISTS `cgnst`.`trackRecords` (
     REFERENCES `cgnst`.`user` (`iduser`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4;
+COLLATE = utf8mb4_general_ci;
 
 
 -- -----------------------------------------------------
@@ -395,7 +395,7 @@ CREATE TABLE IF NOT EXISTS `cgnst`.`trainingsBlueprint` (
 ENGINE = InnoDB
 AUTO_INCREMENT = 37
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4;
+COLLATE = utf8mb4_general_ci;
 
 
 -- -----------------------------------------------------
@@ -432,7 +432,7 @@ CREATE TABLE IF NOT EXISTS `cgnst`.`training` (
 ENGINE = InnoDB
 AUTO_INCREMENT = 55
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4;
+COLLATE = utf8mb4_general_ci;
 
 
 -- -----------------------------------------------------
@@ -454,7 +454,7 @@ CREATE TABLE IF NOT EXISTS `cgnst`.`trainingFacility_has_trackRecords` (
     REFERENCES `cgnst`.`trainingFacility` (`idtrainingFacility`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4;
+COLLATE = utf8mb4_general_ci;
 
 
 -- -----------------------------------------------------
@@ -478,7 +478,7 @@ CREATE TABLE IF NOT EXISTS `cgnst`.`training_has_athletes` (
     REFERENCES `cgnst`.`user` (`iduser`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4;
+COLLATE = utf8mb4_general_ci;
 
 
 -- -----------------------------------------------------
@@ -500,7 +500,7 @@ CREATE TABLE IF NOT EXISTS `cgnst`.`training_has_group` (
     REFERENCES `cgnst`.`training` (`idtraining`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4;
+COLLATE = utf8mb4_general_ci;
 
 
 -- -----------------------------------------------------
@@ -523,7 +523,7 @@ CREATE TABLE IF NOT EXISTS `cgnst`.`training_has_group_has_user` (
     REFERENCES `cgnst`.`training` (`idtraining`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4;
+COLLATE = utf8mb4_general_ci;
 
 
 -- -----------------------------------------------------
@@ -545,7 +545,7 @@ CREATE TABLE IF NOT EXISTS `cgnst`.`training_has_trainer` (
     REFERENCES `cgnst`.`user` (`iduser`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4;
+COLLATE = utf8mb4_general_ci;
 
 
 -- -----------------------------------------------------
@@ -567,7 +567,7 @@ CREATE TABLE IF NOT EXISTS `cgnst`.`trainingsBlueprint_has_exerciseGroup` (
     REFERENCES `cgnst`.`trainingsBlueprint` (`idtrainingsBlueprint`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4;
+COLLATE = utf8mb4_general_ci;
 
 
 -- -----------------------------------------------------
@@ -584,7 +584,7 @@ CREATE TABLE IF NOT EXISTS `cgnst`.`trainingsCamp` (
   PRIMARY KEY (`idtrainingsCamp`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4;
+COLLATE = utf8mb4_general_ci;
 
 
 -- -----------------------------------------------------
@@ -606,7 +606,7 @@ CREATE TABLE IF NOT EXISTS `cgnst`.`trainingsCamp_has_training` (
     REFERENCES `cgnst`.`trainingsCamp` (`idtrainingsCamp`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4;
+COLLATE = utf8mb4_general_ci;
 
 
 -- -----------------------------------------------------
@@ -630,7 +630,7 @@ CREATE TABLE IF NOT EXISTS `cgnst`.`trainingsCamp_has_user` (
     REFERENCES `cgnst`.`user` (`iduser`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4;
+COLLATE = utf8mb4_general_ci;
 
 
 -- -----------------------------------------------------
@@ -645,7 +645,7 @@ CREATE TABLE IF NOT EXISTS `cgnst`.`trainingsGroup` (
   UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4;
+COLLATE = utf8mb4_general_ci;
 
 
 -- -----------------------------------------------------
@@ -667,7 +667,7 @@ CREATE TABLE IF NOT EXISTS `cgnst`.`trainingsGroup_has_user` (
     REFERENCES `cgnst`.`user` (`iduser`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4;
+COLLATE = utf8mb4_general_ci;
 
 
 -- -----------------------------------------------------
@@ -689,7 +689,7 @@ CREATE TABLE IF NOT EXISTS `cgnst`.`users_are_friends` (
     REFERENCES `cgnst`.`user` (`iduser`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4;
+COLLATE = utf8mb4_general_ci;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
