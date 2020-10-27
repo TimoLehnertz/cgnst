@@ -29,8 +29,6 @@
         <title>Cologne Speet team</title>
         <link rel="icon" type="image/gif" href="/img/rolle2.gif">
         <link rel="stylesheet" href="/css/style.css">
-        <link rel="stylesheet" href="/css/ui.css">
-        <link rel="stylesheet" href="/css/normalize.css">
         <script src="/js/jquery-3.5.1.js"></script>
         <script src="/js/ui.js"></script>
         <script src="/js/ajaxAPI.js"></script>
@@ -40,20 +38,26 @@
             $loadedDependencies = array();
             if(isset($dependency)){
                 if(in_array("kalender", $dependency)){
-                    loadRawDependency("user-list", $loadedDependencies, $title);
+                    loadRawDependency("lists", $loadedDependencies, $title);
                     loadRawDependency("kalender", $loadedDependencies, $title);
                 }
                 if(in_array("group-user-dragndrop", $dependency)){
                     loadRawDependency("group-user-dragndrop", $loadedDependencies, $title);
                 }
-                if(in_array("user-list", $dependency)){
-                    loadRawDependency("user-list", $loadedDependencies, $title);
+                if(in_array("lists", $dependency)){
+                    loadRawDependency("lists", $loadedDependencies, $title);
                 }
                 if(in_array("training", $dependency)){
                     loadRawDependency("training", $loadedDependencies, $title);
                 }
                 if(in_array("titleimg", $dependency)){
                     loadRawDependency("titleimg", $loadedDependencies, $title);
+                }
+                if(in_array("profile", $dependency)){
+                    loadRawDependency("profile", $loadedDependencies, $title);
+                }
+                if(in_array("group", $dependency)){
+                    loadRawDependency("group", $loadedDependencies, $title);
                 }
             }
 
@@ -73,11 +77,10 @@
                             echo "<script src='/js/group-user-dragndrop.js'></script>"; 
                         }
                         break;
-                    case "user-list":
-                        if(!in_array("user-list", $dependencies)){
-                            $dependencies[] = "user-list";
-                            echo "<link rel='stylesheet' href='/css/user-list.css'>";
-                            echo "<script src='/js/user-list.js'></script>"; 
+                    case "lists":
+                        if(!in_array("lists", $dependencies)){
+                            $dependencies[] = "lists";
+                            echo "<script src='/js/lists.js'></script>"; 
                         }
                         break;
                     case "training":
@@ -85,6 +88,20 @@
                             $dependencies[] = "training";
                             echo "<link rel='stylesheet' href='/css/training.css'>";
                             echo "<script src='/js/training.js'></script>"; 
+                        }
+                        break;
+                    case "profile":
+                        if(!in_array("profile", $dependencies)){
+                            $dependencies[] = "training";
+                            echo "<link rel='stylesheet' href='/css/profile.css'>";
+                            echo "<script src='/js/profile.js'></script>"; 
+                        }
+                    break;
+                    case "group":
+                        if(!in_array("group", $dependencies)){
+                            $dependencies[] = "training";
+                            echo "<link rel='stylesheet' href='/css/group.css'>";
+                            echo "<script src='/js/group.js'></script>"; 
                         }
                         break;
                     case "titleimg":
@@ -111,6 +128,13 @@
                         }
                         break;
                 }
+            }
+            if(isset($_SESSION["username"])){
+                $username = $_SESSION["username"];
+                $userId = $_SESSION["userId"];
+                echo "<script> const username = '$username'; const userId = '$userId'; const userLoggedIn = true;</script>";
+            } else{
+                echo "<script> const username = undefined; const userId = undefined; const userLoggedIn = false;</script>";
             }
         ?>
     </head>

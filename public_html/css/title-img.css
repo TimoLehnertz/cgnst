@@ -1,3 +1,115 @@
+header {
+  font-weight: 600;
+  height: 50px;
+  width: 100%;
+  top: 0;
+  position: fixed;
+  background-color: #333;
+  border-bottom: 5px solid #05a3ca;
+  z-index: 100;
+}
+
+header nav {
+  float: left;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  height: 100%;
+}
+
+header a {
+  text-align: center;
+  display: inline-block;
+  padding: 0 10px;
+  height: 100%;
+  line-height: 50px;
+  color: #CCC;
+  background-color: #333;
+  text-decoration: none;
+  border-radius: 2px;
+  -webkit-transition: background-color 0.2s, border 0.2s, font-size 0.2s;
+  transition: background-color 0.2s, border 0.2s, font-size 0.2s;
+  border-top: 0px solid white;
+  -webkit-box-sizing: content-box;
+          box-sizing: content-box;
+  border-left: 5px solid #333;
+  border-right: 5px solid #333;
+  font-size: 12pt;
+}
+
+header a:hover:not(.nav-now) {
+  font-size: 13pt;
+  border-top: 10px solid white;
+  border-left: 5px solid white;
+  border-right: 5px solid white;
+  /*color: #333;
+    background-color: #CCC;*/
+}
+
+.nav-now {
+  background: #AAA;
+  color: #333;
+  font-size: 1rem;
+  border: none;
+  position: relative;
+  z-index: 10;
+  height: 100%;
+}
+
+.nav-now:hover::after, .nav-now:hover::before {
+  bottom: -30px;
+}
+
+.nav-now::after {
+  -webkit-transition: all 0.2s;
+  transition: all 0.2s;
+  content: "";
+  position: absolute;
+  top: -100px;
+  bottom: -10px;
+  left: 50%;
+  right: 0;
+  background: #05a3ca;
+  -webkit-transform: skewY(-15deg);
+          transform: skewY(-15deg);
+  z-index: -1;
+}
+
+.nav-now::before {
+  -webkit-transition: all 0.2s;
+  transition: all 0.2s;
+  content: "";
+  position: absolute;
+  top: -100px;
+  bottom: -10px;
+  left: 0;
+  right: 49%;
+  background: #05a3ca;
+  -webkit-transform: skewY(15deg);
+          transform: skewY(15deg);
+  z-index: -1;
+}
+
+header div {
+  float: right;
+  height: 100%;
+}
+
+header div * {
+  display: inline;
+}
+
+header #signIn-sign-Out-form button {
+  width: 100px;
+  height: 80%;
+  background-color: #FFF;
+  border: none;
+  font-size: 15pt;
+  margin-right: 10px;
+}
+
 .title-img {
   width: 100vw;
   height: 100vh;
@@ -19,15 +131,21 @@ main {
   background: transparent;
 }
 
+section:not(section section) {
+  min-height: 100vh;
+  -webkit-box-shadow: 10px 10px 93px -15px rgba(0, 0, 0, 0.49);
+          box-shadow: 10px 10px 93px -15px rgba(0, 0, 0, 0.49);
+}
+
+section + section {
+  margin-top: 50px;
+}
+
 section {
+  padding: 10px;
   background: white;
   padding-top: 0;
   padding-bottom: 20px;
-  z-index: 10;
-  margin-top: 50px;
-  min-height: 100vh;
-  -webkit-box-shadow: 10px 10px 93px -15px rgba(0, 0, 0, 0.49);
-  box-shadow: 10px 10px 93px -15px rgba(0, 0, 0, 0.49);
   position: relative;
 }
 
@@ -55,7 +173,7 @@ section::after {
   top: initial;
 }
 
-section > * :not(i) {
+section:only-child {
   -webkit-animation: blend-in-from-bottom 2s both;
           animation: blend-in-from-bottom 2s both;
 }

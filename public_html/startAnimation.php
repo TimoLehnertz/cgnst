@@ -1,6 +1,7 @@
 <?php
-    if(!isset($_COOKIE["firstLoad"])){
-        setcookie("firstLoad", "1");
+    // if(!isset($_COOKIE["firstLoad"])){
+    //     setcookie("firstLoad", "1");
+    if(false){
 ?>
 <style>
     header a{

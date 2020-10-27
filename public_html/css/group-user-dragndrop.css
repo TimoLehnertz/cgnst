@@ -1,3 +1,7 @@
+.group-user, .group-user *, .group-user-dragndrop__user, .group-list__group{
+    animation-duration: 0.1s;
+}
+
 .user-group-config{
     display: flex;
 }

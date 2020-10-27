@@ -1,16 +1,36 @@
 <?php
-    $dependency = ["titleimg"];
+    if(session_status() != PHP_SESSION_ACTIVE){
+        session_start();
+    }
+    if (!isset($_SESSION["username"])) {
+        header("location: /index.php");
+        exit();
+    }
+    $username = $_SESSION["username"];
+    $dependency = ["titleimg", "lists", "profile"];
     include_once "../header.php"
 ?>
     <main>
-        <?php
-            if (isset($_SESSION["username"])) {
-                echo "<h2>Willkommen bei deinem profil, ".$_SESSION["username"]."!</h2><p>Bald wirst du hier deine persöhnlichen einstellungen verwalten können</p><hr>=)";
-            } else{
-                echo "<p>Du bist ausgeloggt!</p>";
-            }
-        ?>
+        <section>
+            <section class="user-section">
+                <p>Willkommen <?=$username?></p>
+            </section>
+            <section class="group-section">
+                <h2>Gruppen</h2>
+                <p>Hier siest du deine Gruppen</p>
+                <script>
+                    const groupList1 = getGroupListElement((group)=>{
+                        if(!group.isDefaultGroup){
+                            return $(`<a href="groupx.php?id=${group.idgroup}" class="group-row">
+                                <div>${group.name}</div><div>${isAdminInGroup(group) ? "Gruppenadmin" : "Mitglied"}</div>
+                            </a>`);
+                        }
+                    });
+                    $(".group-section").append(groupList1);
+                </script>
+            </section>
+        </section>
     </main>
 <?php
-    include "../footer.php";
+    include_once "../footer.php";
 ?>

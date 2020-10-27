@@ -65,7 +65,6 @@ $(function(){
     $(window).resize(kalenderResize);
     loadEntries();
     loadGroups();
-    loadUsername();
     hideMoreOptionsElement();
     loadTrainingsBlueprints();
     reloadPage();
@@ -80,27 +79,21 @@ const colorTrainingslager = "gray";
 
 let enableddGroups = [];
 
-let username;
 let groups;
 let trainingsBlueprints;
 
-let userLoggedIn = false;
-
 const interval = window.setInterval(function(){
-    if(username != undefined && groups != undefined && trainingsBlueprints != undefined){
+    if(groups != undefined && trainingsBlueprints != undefined){
         ajaxDataLoaded();
         clearInterval(interval);
     }
-});
+}, 100);
 
 function loadEntries(){
     $.ajax({
         url: "/kalender/kalenderAPI.php?getEntries=1",
         success: function(result){
-            console.log("reloading");
-            console.log(result);
             entries = prepareEntries(JSON.parse(result));
-            console.log(entries);
             reloadPage();
         }
     });
@@ -113,21 +106,6 @@ function prepareEntries(entries){
     }
     calcEntriesOffset(entries);
     return entries;
-}
-
-function loadUsername(){
-    $.ajax({
-        url: "/users/userAPI.php?getUsername=1",
-        success: function(result){
-            if(result.includes("NOT LOGGED IN YET")){
-                username = "";
-                userLoggedIn = false;
-            } else{
-                username = result;
-                userLoggedIn = true;
-            }
-        }
-    });
 }
 
 function loadGroups(){
@@ -169,7 +147,10 @@ let hasBeenMaximized = false;
 
 let enterMaximized = false;
 
-function maximizeEnter(){
+function maximizeEnter(date){
+    if(date != undefined){
+        setEnterDate(date);
+    }
     enterMaximized = true;
     hideMoreOptionsElement();
     hideInfoElement();
@@ -185,6 +166,10 @@ function maximizeEnter(){
     } else{
         alert("Loggen sie sich ein, um Termine einzutragen");
     }
+}
+
+function setEnterDate(date){
+    setDateForDateSelectorElement($(".kalender__date-selector__date"), date)
 }
 
 function minimizeEnter(){
@@ -394,13 +379,11 @@ function crateEntryInfoElement(){
 // 1 remember
 // 2 participating
 function setParticipating(state){
-    console.log('setParticipating=' + state + "&idtraining=" + infoElementEntry.refId.split(":")[1]);
     $.ajax({
         type: "GET",
         url: '/kalender/kalenderAPI.php?setParticipating=' + state + "&idtraining=" + infoElementEntry.refId.split(":")[1],
         dataType: 'text',
         success: function (response) {
-            console.log(response);
             if(response.includes("Error")){
                 console.log(response);
             } else{
@@ -927,9 +910,14 @@ function getPropertyJson(propertieElem){
     const comment = propertieElem.find(".comment-input").val();
     const groups = [];
 
+    console.log($(propertieElem.find(".kalender__date-selector")[0]).attr("date"));
+
     const trainer = [];
 
-    let trainerAttr = propertieElem.find(".trainer").attr("trainer").split(",");
+    let trainerAttr = [];
+    if(entryType == "training"){
+        trainerAttr = propertieElem.find(".trainer").attr("trainer").split(",");
+    }
 
     for (const attr of trainerAttr) {
         trainer.push(parseInt(attr));
@@ -942,6 +930,7 @@ function getPropertyJson(propertieElem){
     startDate.setHours(startTime.getHours());
     startDate.setMinutes(startTime.getMinutes());
 
+    console.log(startDate.toLocaleDateString());
 
     if(isNaN(endDate.getTime())){
         endDate = new Date(startDate);
@@ -1176,6 +1165,8 @@ function getEnterEnterSection(){
         <button class="enter__enter-btn">Eintragen</button>
     </div`);
     elem.find("button").click(()=>{
+        console.log(elem.parent())
+        console.log($(elem.parent().find(".kalender__date-selector")[0]).attr("date"));
         if(validateNewEntry(getPropertyJson(elem.parent()))){
             elem.find("button").html("");
             elem.find("button").append(getLoadingCircle());
@@ -1319,11 +1310,17 @@ function getDateSelector(name){
         e.stopPropagation();
         const rect = selector.offset();
         dateSelectorFieldAt(rect.left, rect.top + selector.height() + 30, (date)=>{
-            selector.find(".kalender__date-selector__date").text(getDateStringAllDay(date));
-            selector.attr("date", date.getTime());
+            // selector.find(".kalender__date-selector__date").text(getDateStringAllDay(date));
+            // selector.attr("date", date.getTime());
+            setDateForDateSelectorElement(selector.find(".kalender__date-selector__date"), date)
         });
     });
     return selector;
+}
+
+function setDateForDateSelectorElement(elem, date){
+    $(elem).text(getDateStringAllDay(date));
+    $(elem).attr("date", date.getTime());
 }
 
 function getTerminTitelElement(){
@@ -1521,12 +1518,17 @@ function getDayElement(date, month, register){
     if(month == undefined){
         month = date.getMonth();
     }
+    const datecpy = new Date(date);
     const day = $(`<div class="kalender__day${date.getMonth() == month ? "" : " kalender__day--out-of-month"}${compareDatesDayly(new Date(), date) ? " kalender__today" : ""}">
         <div class="day__name">${date.getDay() == 0 ? "<b>" : ""}${daysShort[date.getDay()]}${date.getDay() == 0 ? "<b>" : ""}</div>
         <div class="day__number">${date.getDate()}</div>
     </div>`);
     if(register){
         currentElements.push({date: new Date(date), element: day});
+        day.on("click", function(e){
+            maximizeEnter(datecpy);
+            e.stopPropagation();
+        });
     } else{
         dateRegisterSelectorField.push({date: new Date(date), element: day});
     }

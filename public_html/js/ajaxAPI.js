@@ -1,10 +1,14 @@
 "use strict";
 
 let userList = undefined;
+let userListCallbacks = [];
 
-loadUserList();
+let groupList = undefined;
+let groupListCallbacks = [];
 
-function loadUserList(){
+load();
+
+function load(){
     $.ajax({
         url: "/users/userAPI.php?getUserList=1",
         success: function(result){
@@ -14,13 +18,40 @@ function loadUserList(){
             }
         }
     });
+    $.ajax({
+        url: "/users/userAPI.php?getGroupList=1",
+        success: function(result){
+            groupList = JSON.parse(result);
+            for (const callback of groupListCallbacks) {
+                callback(groupList);
+            }
+        }
+    });
 }
 
-let userListCallbacks = [];
 function getUserList(callback){
     if(userList != undefined){
         callback(userList);
     } else{
         userListCallbacks.push(callback);
     }
+}
+
+function getGroupList(callback){
+    if(groupList != undefined){
+        callback(groupList);
+    } else{
+        groupListCallbacks.push(callback);
+    }
+}
+
+// group Helper
+
+function isAdminInGroup(group){
+    for (const user of group.users) {
+        if(user.username == username && user.isAdmin){
+            return true;
+        }
+    }
+    return false;
 }

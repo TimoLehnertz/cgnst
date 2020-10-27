@@ -1,3 +1,6 @@
+@import "theme";
+@import "header";
+
 .title-img{
     width: 100vw;
     height: 100vh;
@@ -18,16 +21,20 @@ main{
     background: transparent;
 }
 
+section:not(section section){
+    min-height: 100vh;
+    box-shadow: 10px 10px 93px -15px rgba(0,0,0,0.49);
+}
+
+section + section{
+    margin-top: 50px;
+}
+
 section{
+    padding: 10px;
     background: white;
     padding-top: 0;
     padding-bottom: 20px;
-    z-index: 10;
-    margin-top: 50px;
-    min-height: 100vh;
-    -webkit-box-shadow: 10px 10px 93px -15px rgba(0,0,0,0.49);
-    -moz-box-shadow: 10px 10px 93px -15px rgba(0,0,0,0.49);
-    box-shadow: 10px 10px 93px -15px rgba(0,0,0,0.49);
     position: relative;
 }
 
@@ -51,16 +58,11 @@ section::after{
     top: initial;
 }
 
-section > * :not(i){
+section:only-child{
     animation: blend-in-from-bottom 2s both;
 }
+
 h1{
-//     text-shadow: 2px 5px 20px rgba(0,0,0,0.89);
-    // color: white;
-//     text-align: center;
-//     position: fixed;
-//     top: 15vh;
-//     left: 0;
     width: 100%;
     text-align: center;
     font-size: 3rem;
