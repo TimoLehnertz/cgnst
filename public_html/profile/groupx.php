@@ -44,16 +44,25 @@ include_once "../header.php";
         </div>
         <div class="entries">
             <?php
-                print_r($entries);
+                // print_r($entries);
             ?>
         </div>
         <div class="members">
             <h3>Mitglieder</h3>
             <?php
-                for ($i=0; $i < sizeof($members); $i++) { 
-                    echo "<div class='member-row'>
-                    <div>".($members[$i]["iduser"] == $_SESSION["userId"] ? "Du" : $members[$i]["username"])."</div><div>".($members[$i]["isAdmin"] ? "Gruppenadmin" : "Mitglied")."</div>
-                    </div>";
+                for ($i=0; $i < sizeof($members); $i++) {
+                    if($members[$i]["isAdmin"]){
+                        echo "<div class='member-row'>
+                            <div>".($members[$i]["iduser"] == $_SESSION["userId"] ? "Du" : $members[$i]["username"])."</div><div>".($members[$i]["isAdmin"] ? "Gruppenadmin" : "Mitglied")."</div>
+                        </div>";
+                    }
+                }
+                for ($i=0; $i < sizeof($members); $i++) {
+                    if(!$members[$i]["isAdmin"]){
+                        echo "<div class='member-row'>
+                            <div>".($members[$i]["iduser"] == $_SESSION["userId"] ? "Du" : $members[$i]["username"])."</div><div>".($members[$i]["isAdmin"] ? "Gruppenadmin" : "Mitglied")."</div>
+                        </div>";
+                    }
                 }
             ?>
         </div>
