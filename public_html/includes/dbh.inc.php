@@ -1,9 +1,10 @@
 <?php
 
+
+// $serverName = "localhost";
+// $dBUsername = "root";
+// $dBPwd = "12345678";
 $serverName = "cgnst.ddns.net";
-//$serverName = "localhost";
-//$dBUsername = "root";
-//$dBPwd = "12345678";
 $dBUsername = "php";
 $dBPwd = "!YouDontKnow!";
 $dBName = "cgnst";
