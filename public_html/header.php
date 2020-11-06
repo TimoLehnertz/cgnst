@@ -109,7 +109,6 @@
                     case "titleimg":
                         if(!in_array("titleimg", $dependencies)){
                             $dependencies[] = "titleimg";
-                            echo "<link rel='stylesheet' href='/css/title-img.css'>";
                             echo "<script src='/js/title.js'></script>";
                             $path = new SplFileInfo(__FILE__);
                             $path = $path->getRealPath();
@@ -158,23 +157,31 @@
                     <li><a href="/training">Training</a></li>
                     <li><a href="/timing">Timing</a></li>
                     <li><a href="/kontakt">Kontakt</a></li>
+                    <li><a href="/wm">Wm Database</a></li>
                     <?php if(hasPermission("permission_administration")){echo '<li><a href="/administration">Administration</a></li>';}?>
                 </ul>
             </nav>
             <h1>
                 CST
             </h1>
+            <?php
+            if(isset($_SESSION["username"])){
+            ?>
             <div class="profile">
-                <?php if (isset($_SESSION["username"])) {//Signed in?>
-                    <?php echo $_SESSION["username"];?>
-                    <form id='signIn-sign-Out-form' action='/includes/logout.inc.php' method='POST'>
-                        <button class='rectShadow' type='submit' name='login-submit'>Logout</button>
-                    </form>
-                <?php } else{//not signed in?>
-                    <form id='signIn-sign-Out-form' action='/login.php' method='POST'>
-                        <button class='rectShadow' type='submit' name='login-submit'>Login</button>
+                <div class="profile__header">
+                    <?php echo $_SESSION["username"].'<i class="far fa-user-circle"></i>';?>
+                </div>
+                    <div class="profile__content">
+                        <a href="/profile">Zu deinem Profil   </a><i class="fas fa-angle-right"></i>
+                        <form action='/includes/logout.inc.php' method='POST'>
+                            <button class='logout btn slide vertical' type='submit' name='logout-submit'>Logout<i class="fas fa-sign-out-alt"></i></button>
+                        </form>
+                    </div>
+            </div>
+                <?php } else{?>
+                    <form class="login-form" action='/login.php' method='POST'>
+                        <button class='login btn slide vertical' type='submit' name='login-submit'>Login</button>
                     </form>
                 <?php }?>
-            </div>
         </header>
         <?=$title?>

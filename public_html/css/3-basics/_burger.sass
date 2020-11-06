@@ -1,16 +1,20 @@
 .burger
     cursor: pointer
 
+
     div
         width: 2rem
         height: 0.2rem
         background-color: #CCC
         margin: 0.53rem
         transition: all 0.2s
-        transform: scaleX(1)
+        transform: translateX(0)
         
-    &:hover .line
-        transform: scaleX(1.3)
+    &:hover .line1
+        transform: translateX(5px)
+
+    &:hover .line3
+        transform: translateX(-5px)
 
     &.toggle .line1
         transform-origin: right

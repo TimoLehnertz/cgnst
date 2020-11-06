@@ -353,7 +353,7 @@ body {
   background-color: #EEE;
 }
 
-main * + * {
+* + * {
   margin-top: 1em;
 }
 
@@ -378,13 +378,18 @@ button {
   margin: 0.53rem;
   -webkit-transition: all 0.2s;
   transition: all 0.2s;
-  -webkit-transform: scaleX(1);
-          transform: scaleX(1);
+  -webkit-transform: translateX(0);
+          transform: translateX(0);
 }
 
-.burger:hover .line {
-  -webkit-transform: scaleX(1.3);
-          transform: scaleX(1.3);
+.burger:hover .line1 {
+  -webkit-transform: translateX(5px);
+          transform: translateX(5px);
+}
+
+.burger:hover .line3 {
+  -webkit-transform: translateX(-5px);
+          transform: translateX(-5px);
 }
 
 .burger.toggle .line1 {
@@ -407,6 +412,165 @@ button {
           transform: rotate(45deg);
 }
 
+.btn {
+  position: relative;
+  overflow: hidden;
+  -webkit-transition: color 0.2s;
+  transition: color 0.2s;
+  border: none;
+  background: transparent;
+  z-index: 0;
+}
+
+.btn.slide::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: gray;
+  z-index: -2;
+}
+
+.btn.slide::before {
+  content: "";
+  display: block;
+  position: absolute;
+  right: 100%;
+  bottom: 0;
+  height: 100%;
+  width: 200%;
+  background: #444;
+  border-left: 5px solid #333;
+  border-right: 5px solid #333;
+  -webkit-transition: right 0.2s;
+  transition: right 0.2s;
+  -webkit-transform-origin: rightbottom;
+          transform-origin: rightbottom;
+  z-index: -1;
+}
+
+.btn.slide:hover::before {
+  right: 10%;
+}
+
+.btn.slide:focus::before {
+  right: -50%;
+}
+
+.btn.slide:hover {
+  color: white;
+}
+
+.btn.slide.vertical::before {
+  -webkit-transform: skewX(45deg);
+          transform: skewX(45deg);
+}
+
+.btn.slide.vertical.topleft::before {
+  -webkit-transform: skewX(-45deg);
+          transform: skewX(-45deg);
+}
+
+.btn.slide.vertical.bottomleft::before {
+  -webkit-transform: skewX(45deg);
+          transform: skewX(45deg);
+}
+
+.btn.slide.vertical.topright::before {
+  right: -200%;
+}
+
+.btn.slide.vertical.topright:hover::before {
+  right: -110%;
+}
+
+.btn.slide.vertical.topright::before {
+  -webkit-transform: skewX(45deg);
+          transform: skewX(45deg);
+}
+
+.btn.slide.vertical.topright:focus::before {
+  right: -50%;
+}
+
+.btn.slide.vertical.bottomright::before {
+  right: -200%;
+}
+
+.btn.slide.vertical.bottomright:hover::before {
+  right: -110%;
+}
+
+.btn.slide.vertical.bottomright::before {
+  -webkit-transform: skewX(-45deg);
+          transform: skewX(-45deg);
+}
+
+.btn.slide.vertical.bottomright:focus::before {
+  right: -50%;
+}
+
+.flex {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-line-pack: center;
+      align-content: center;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+}
+
+.flex.row {
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+
+.flex.column {
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.loading.circle {
+  height: 50px;
+  width: 50px;
+  -webkit-animation: rotate infinite 1s linear;
+          animation: rotate infinite 1s linear;
+  border-right: 3px solid #FFF;
+  border-radius: 50%;
+  margin-left: auto;
+  margin-right: auto;
+  overflow: hidde;
+}
+
+@-webkit-keyframes rotate {
+  from {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+
+@keyframes rotate {
+  from {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+
 body {
   display: -ms-grid;
   display: grid;
@@ -425,11 +589,17 @@ main {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  min-height: 3rem;
+  height: 3rem;
   background-color: #333;
   position: fixed;
   width: 100%;
   z-index: 99999999;
+  -webkit-box-shadow: 4px 3px 33px 0px rgba(0, 0, 0, 0.4);
+          box-shadow: 4px 3px 33px 0px rgba(0, 0, 0, 0.4);
+}
+
+.header > * {
+  margin-top: 0;
 }
 
 .header .burger {
@@ -469,6 +639,7 @@ main {
 }
 
 .header .nav-links li {
+  margin-top: 0;
   list-style: none;
   position: relative;
   padding: 10px;
@@ -494,7 +665,7 @@ main {
   content: "";
   display: block;
   position: absolute;
-  top: 0;
+  top: 5;
   left: 0;
   right: 0;
   height: 2px;
@@ -591,6 +762,9 @@ main {
     -webkit-box-direction: normal;
         -ms-flex-direction: column;
             flex-direction: column;
+    -webkit-box-pack: start;
+        -ms-flex-pack: start;
+            justify-content: flex-start;
     -webkit-box-align: center;
         -ms-flex-align: center;
             align-items: center;
@@ -637,6 +811,75 @@ main {
     -webkit-transform: translate(0, 0);
             transform: translate(0, 0);
   }
+}
+
+.header .login-form {
+  height: 100%;
+}
+
+.header .login-form .login {
+  height: 100%;
+  width: 150px;
+}
+
+.header .profile {
+  -ms-flex-item-align: start;
+      align-self: flex-start;
+  height: 100%;
+  color: white;
+  -webkit-transition: height 0.1s;
+  transition: height 0.1s;
+  overflow: hidden;
+  background-color: #444;
+}
+
+.header a {
+  text-decoration: none;
+  color: white;
+}
+
+.header .profile__header {
+  cursor: pointer;
+  font-size: 1.3rem;
+  height: 3rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 0 15px;
+}
+
+.header .profile__header i {
+  margin-left: 20px;
+}
+
+.header .profile__content {
+  padding: 20px;
+  padding-top: 0;
+}
+
+.header .profile__content i {
+  font-size: 1.2rem;
+  margin-left: 10px;
+  line-height: 100%;
+}
+
+.header .profile.toggle {
+  height: 180px;
+}
+
+.header .profile.toggle .profile__content {
+  display: block;
+}
+
+.header .logout {
+  padding: 10px;
+  width: 100%;
 }
 
 .footer {

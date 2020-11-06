@@ -55,3 +55,22 @@ function isAdminInGroup(group){
     }
     return false;
 }
+
+function sendWmData(json, callback){
+    $.ajax({
+        url: "/wm/dataAPI.php?insertData=1",
+        type: "POST",
+        dataType: 'text',
+        data: JSON.stringify(json),
+        success: function(response){
+            if(response.includes("succsess")){
+                callback();
+            } else{
+                console.log(response);
+            }
+        },
+        error: function(){
+            alert("Server fehler :(");
+        }
+    });
+}

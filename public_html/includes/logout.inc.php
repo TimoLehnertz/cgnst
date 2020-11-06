@@ -1,5 +1,5 @@
 <?php
-    if(!isset($_POST["login-submit"])){
+    if(!isset($_POST["logout-submit"])){
         header("location: ../index.php");
         exit();
     } else{
