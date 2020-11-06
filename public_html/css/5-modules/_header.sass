@@ -97,7 +97,7 @@ main
         .nav-links li + li
             margin-left: 0
 
-    @media (pointer: coarse)
+    @media screen and (max-width: 1000px), (pointer: coarse)
         body
             overflow-x: hidden
         
@@ -131,12 +131,3 @@ main
         to
             opacity: 1
             transform: translate(0, 0)
-    
-    .toggle .line1
-        transform: rotate(-45deg) translate(-5px, 6px)
-
-    .toggle .line2
-        opacity: 0
-
-    .toggle .line3
-        transform: rotate(45deg) translate(-5px, -6px)

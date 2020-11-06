@@ -372,10 +372,10 @@ button {
 }
 
 .burger div {
-  width: 25px;
-  height: 3px;
+  width: 2rem;
+  height: 0.2rem;
   background-color: #CCC;
-  margin: 5px;
+  margin: 0.53rem;
   -webkit-transition: all 0.2s;
   transition: all 0.2s;
   -webkit-transform: scaleX(1);
@@ -385,6 +385,26 @@ button {
 .burger:hover .line {
   -webkit-transform: scaleX(1.3);
           transform: scaleX(1.3);
+}
+
+.burger.toggle .line1 {
+  -webkit-transform-origin: right;
+          transform-origin: right;
+  -webkit-transform: rotate(-45deg);
+          transform: rotate(-45deg);
+}
+
+.burger.toggle .line2 {
+  opacity: 0;
+  -webkit-transform: rotate(-45deg);
+          transform: rotate(-45deg);
+}
+
+.burger.toggle .line3 {
+  -webkit-transform-origin: right;
+          transform-origin: right;
+  -webkit-transform: rotate(45deg);
+          transform: rotate(45deg);
 }
 
 body {
@@ -555,7 +575,7 @@ main {
   }
 }
 
-@media (pointer: coarse) {
+@media screen and (max-width: 1000px), (pointer: coarse) {
   .header body {
     overflow-x: hidden;
   }
@@ -617,20 +637,6 @@ main {
     -webkit-transform: translate(0, 0);
             transform: translate(0, 0);
   }
-}
-
-.header .toggle .line1 {
-  -webkit-transform: rotate(-45deg) translate(-5px, 6px);
-          transform: rotate(-45deg) translate(-5px, 6px);
-}
-
-.header .toggle .line2 {
-  opacity: 0;
-}
-
-.header .toggle .line3 {
-  -webkit-transform: rotate(45deg) translate(-5px, -6px);
-          transform: rotate(45deg) translate(-5px, -6px);
 }
 
 .footer {

@@ -2,12 +2,24 @@
     cursor: pointer
 
     div
-        width: 25px
-        height: 3px
+        width: 2rem
+        height: 0.2rem
         background-color: #CCC
-        margin: 5px
+        margin: 0.53rem
         transition: all 0.2s
         transform: scaleX(1)
         
     &:hover .line
         transform: scaleX(1.3)
+
+    &.toggle .line1
+        transform-origin: right
+        transform: rotate(-45deg)
+
+    &.toggle .line2
+        opacity: 0
+        transform: rotate(-45deg)
+
+    &.toggle .line3
+        transform-origin: right
+        transform: rotate(45deg)
