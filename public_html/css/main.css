@@ -549,7 +549,7 @@ main {
   }
 }
 
-@media screen and (max-width: 768px) {
+@media (pointer: coarse) {
   .header body {
     overflow-x: hidden;
   }
