@@ -1,0 +1,14 @@
+@mixin arrow($left)
+    content: ""
+    position: absolute
+    @if $left
+        right: 50%
+        left: -10px
+    @else
+        left: 49%
+        right: -10px
+    top: 100%
+    background-color: $color-bg-bright-2
+    height: 22px
+    transform-origin: if($left, lefttop , righttop)
+    transform: skewY(if($left, 10deg, -10deg))

@@ -26,9 +26,11 @@
     <head>
         <meta charset="UTF-8">
         <meta name="Cologne Speed Team" content="width=device-width, initial-scale=1">
-        <title>Cologne Speet team</title>
+        <title>Cologne Speed Team</title>
         <link rel="icon" type="image/gif" href="/img/rolle2.gif">
-        <link rel="stylesheet" href="/css/style.css">
+        <link rel="stylesheet" href="/css/main.css">
+        <link href="https://fonts.googleapis.com/css2?family=Carter+One&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap" rel="stylesheet">
         <script src="/js/jquery-3.5.1.js"></script>
         <script src="/js/ui.js"></script>
         <script src="/js/ajaxAPI.js"></script>
@@ -142,28 +144,37 @@
         <?php
             include "startAnimation.php";
         ?>
-        <header>
-            <nav>
-                <a href="/index.php">Home</a>
-                <a href="/kalender">Kalender</a>
-                <?php if(isset($_SESSION["username"])){echo '<a href="/profile">Profil</a>';}?>
-                <a href="/training">Training</a>
-                <a href="/timing">Timing</a>
-                <a href="/kontakt">Kontakt</a>
-                <!-- <a href="/index.php">About us</a> -->
-                <?php if(hasPermission("permission_administration")){echo '<a href="/administration">Administration</a>';}?>
+        <header class="header">
+            <div class="burger">
+                <div class="line1"></div>
+                <div class="line2"></div>
+                <div class="line3"></div>
+            </div>
+            <nav class="nav">
+                <ul class="nav-links">
+                    <li><a href="/index.php">Home</a></li>
+                    <li><a href="/kalender">Kalender</a></li>
+                    <?php if(isset($_SESSION["username"])){echo '<li><a href="/profile">Profil</a></li>';}?>
+                    <li><a href="/training">Training</a></li>
+                    <li><a href="/timing">Timing</a></li>
+                    <li><a href="/kontakt">Kontakt</a></li>
+                    <?php if(hasPermission("permission_administration")){echo '<li><a href="/administration">Administration</a></li>';}?>
+                </ul>
             </nav>
-            <div>
-            <?php if (isset($_SESSION["username"])) {//Signed in?>
-                <?php echo $_SESSION["username"];?>
-                <form id='signIn-sign-Out-form' action='/includes/logout.inc.php' method='POST'>
-                    <button class='rectShadow' type='submit' name='login-submit'>Logout</button>
-                </form>
-            <?php } else{//not signed in?>
-                <form id='signIn-sign-Out-form' action='/login.php' method='POST'>
-                    <button class='rectShadow' type='submit' name='login-submit'>Login</button>
-                </form>
-            <?php }?>
+            <h1>
+                CST
+            </h1>
+            <div class="profile">
+                <?php if (isset($_SESSION["username"])) {//Signed in?>
+                    <?php echo $_SESSION["username"];?>
+                    <form id='signIn-sign-Out-form' action='/includes/logout.inc.php' method='POST'>
+                        <button class='rectShadow' type='submit' name='login-submit'>Logout</button>
+                    </form>
+                <?php } else{//not signed in?>
+                    <form id='signIn-sign-Out-form' action='/login.php' method='POST'>
+                        <button class='rectShadow' type='submit' name='login-submit'>Login</button>
+                    </form>
+                <?php }?>
             </div>
         </header>
         <?=$title?>

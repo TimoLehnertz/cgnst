@@ -1,0 +1,142 @@
+main
+    margin-top: 5rem
+
+.header
+    display: flex
+    justify-content: space-around
+    align-items: center
+    min-height: 3rem
+    background-color: $color-bg-dark-1
+    position: fixed
+    width: 100%
+    z-index: 99999999
+
+    .burger
+        display: none
+        z-index: 1000
+
+    h1
+        letter-spacing: 15px
+        font-size: 3rem
+        font-family: 'Carter One', cursive
+        margin: 0
+
+    .nav
+        display: flex
+        justify-content: space-around
+        align-items: center
+
+    .nav-links
+        display: flex
+        justify-content: space-around
+        width: 10%
+        transition: width 0.4s, transform 0.2s
+
+        li
+            list-style: none
+            position: relative
+            padding: 10px
+            transition: margin 0.4s
+
+        a
+            display: inline-block
+            line-height: 3rem
+            z-index: 200
+            position: relative
+            transition: color 0.2s
+            height: 100%
+        
+        li + li
+            margin-left: 30px
+
+        li:before
+            content: ""
+            display: block
+            position: absolute
+            top: 0
+            left: 0
+            right: 0
+            height: 2px
+            background: $color-bg-bright-2
+            transform: scaleX(0)
+            transition: transform 0.2s, height, 0.1s
+
+        li:hover::before
+            transform: scaleX(1)
+        
+        li:active::before
+            height: 100%
+
+        li:active
+            a
+                color: $color-bg-dark-1
+
+        .nav-now
+            background-color: $color-bg-bright-2
+            
+            a
+                color: $color-bg-dark-1
+                position: relative
+
+            & a::before
+               +arrow(true)
+            
+            & a::after
+               +arrow(false)
+
+        a
+            color: white
+            text-decoration: none
+            letter-spacing: 3px
+            font-weight: 500
+            font-size: 1rem
+    h1
+        color: white
+
+    @media screen and (max-width:1500px)
+        .nav-links li + li
+            margin-left: 0
+
+    @media screen and (max-width:768px)
+        body
+            overflow-x: hidden
+        
+        .nav-links
+            position: absolute
+            top: 0
+            left: 0
+            background-color: $color-bg-dark-2
+            display: flex
+            flex-direction: column
+            align-items: center
+            width: 50%
+            transform: translateX(-100%)
+            min-width: 200px
+            height: 100vh
+        
+        .nav-links li
+            opacity: 0
+        
+        .burger
+            display: block
+    
+    
+    .nav-active
+        transform: translateX(0)
+
+    @keyframes navLinksFade
+        from
+            opacity: 0
+            transform: translate(-50px, -10px)
+        to
+            opacity: 1
+            transform: translate(0, 0)
+    
+    .toggle .line1
+        transform: rotate(-45deg) translate(-5px, 6px)
+
+    .toggle .line2
+        opacity: 0
+
+    .toggle .line3
+        transform: rotate(45deg) translate(-5px, -6px)

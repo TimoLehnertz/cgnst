@@ -18,6 +18,48 @@ $(window).ready(()=>{
     functionInitAll();
 });
 
+/**
+ * header nav
+ */
+
+const navSlide = () =>{
+    const burger = $(".header .burger");
+    const nav = $(".header .nav-links");
+    const navLinks = nav.find("li");
+
+    $(window).click(hideNav);
+
+    nav.click((e) => {e.stopPropagation()});
+
+    burger.click((e) => {
+        e.stopPropagation();
+        nav.toggleClass("nav-active");
+
+//      Animation links
+        navLinks.each(function(index){
+            if(this.style.animation){
+                this.style.animation = '';
+            } else{
+                this.style.animation = `navLinksFade 0.5s ease forwards ${index / 15}s`;
+            }
+        });
+        // Burger animation
+        burger.toggleClass("toggle");
+    });
+}
+
+function hideNav(){
+    const burger = $(".header .burger");
+    const nav = $(".header .nav-links");
+    const navLinks = nav.find("li");
+    nav.removeClass("nav-active");
+    navLinks.each(function(index){
+        this.style.animation = '';
+    })
+    burger.removeClass("toggle");
+}
+
+
 
 function setAccordionEvents(){
     document.querySelectorAll(".accordionButton:not(.listener)").forEach(button =>{
@@ -46,7 +88,8 @@ function resizeAccordions(){
 function functionInitAll(){
     setAccordionEvents();
     const location = window.location.pathname.substring(1, window.location.pathname.indexOf("/", 1) == -1 ? undefined : window.location.pathname.indexOf("/", 1));
-    $(`a[href="${location.length == 0 ? "/index.php" : "/" + location}"]`).addClass("nav-now").prop("href", "#");
+    $(`a[href="${location.length == 0 ? "/index.php" : "/" + location}"]`).parent().addClass("nav-now").prop("href", "#");
+    navSlide();
 }
 
 function isMobile() {
