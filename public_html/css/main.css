@@ -361,6 +361,12 @@ button {
   cursor: pointer;
 }
 
+@media (pointer: coarse) {
+  html {
+    font: 15pt;
+  }
+}
+
 .burger {
   cursor: pointer;
 }
