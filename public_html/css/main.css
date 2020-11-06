@@ -363,7 +363,7 @@ button {
 
 @media (pointer: coarse) {
   html {
-    font: 15pt;
+    font-size: 15pt;
   }
 }
 
