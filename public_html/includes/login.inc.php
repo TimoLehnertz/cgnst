@@ -1,7 +1,8 @@
 <?php
 
 if (isset($_POST["login-submit"])) {
-    include "dbh.inc.php";
+    include_once "dbh.inc.php";
+    include_once "../users/userAPI.php";
 
     $mailUsername = $_POST["mailUsername"];
     $password = $_POST["password"];
@@ -36,7 +37,7 @@ if (isset($_POST["login-submit"])) {
                     session_start();
                     $_SESSION['userId'] = $row['iduser'];
                     $_SESSION['username'] = $row['username'];
-                    $_SESSION['permission_administration'] = $row['administrator'];
+                    $_SESSION['permissions'] = getPermissionsFromUserId($mysqli, $row['iduser']);
                     header("location: ../index.php?login=success$message");
                     exit();
                 } else{

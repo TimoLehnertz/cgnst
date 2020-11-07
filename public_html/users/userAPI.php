@@ -382,7 +382,9 @@ function getGroupList($mysqli){
                 "idgroup" => $row["idgroup"],
                 "users" => getUsersFromGroupId($mysqli, $row["idgroup"]),
                 "name" => $row["name"],
-                "isDefaultGroup" => getDefaultGroupName() == $row["name"]
+                "isDefaultGroup" => getDefaultGroupName() == $row["name"],
+                "permissiopn_admin" => $row["permissiopn_admin"],
+                "permissiopn_wmdata" => $row["permissiopn_wmdata"]
             ];
             $groups[$groupName] = $group;
         }
@@ -415,12 +417,15 @@ function getGroupListForUserId($mysqli, $iduser){
         if($stmt->execute()) {
             $result = $stmt->get_result();
             while($row = $result->fetch_array(MYSQLI_ASSOC)){
-                $group = [
-                    "idgroup" => $row["idgroup"],
+                $group = array("idgroup" => $row["idgroup"],
                     "users" => getUsersFromGroupId($mysqli, $row["idgroup"]),
                     "name" => $row["name"],
-                    "isDefaultGroup" => false
-                ];
+                    "isDefaultGroup" => false);
+                foreach ($row as $key => $value) {
+                    if(strpos($key, "permission") !== FALSE){
+                        $group[$key] = $value;
+                    }
+                }
                 $groups[$row["name"]] = $group;
             }
             $result->close();
@@ -539,4 +544,16 @@ function setUserAdminInGroup($mysqli, $iduser, $idgroup, $isAdmin){
     }
     $stmt->close();
     return false;
+}
+
+function getPermissionsFromUserId($mysqli, $iduser){
+    $groups = getGroupListForUserId($mysqli, $iduser);
+    $permissions = array();
+    foreach ($groups as $groupname => $group) {
+        foreach ($group as $key => $value) {
+            if(strpos($key, "permission") !== FALSE){
+                $permissions[$key] = $value;
+            }
+        }
+    }
 }

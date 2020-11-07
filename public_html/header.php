@@ -157,7 +157,7 @@
                     <li><a href="/training">Training</a></li>
                     <li><a href="/timing">Timing</a></li>
                     <li><a href="/kontakt">Kontakt</a></li>
-                    <li><a href="/wm">Wm Database</a></li>
+                    <li><a href="/wm">Wm Db</a></li>
                     <?php if(hasPermission("permission_administration")){echo '<li><a href="/administration">Administration</a></li>';}?>
                 </ul>
             </nav>
@@ -176,6 +176,7 @@
                         <form action='/includes/logout.inc.php' method='POST'>
                             <button class='logout btn slide vertical' type='submit' name='logout-submit'>Logout<i class="fas fa-sign-out-alt"></i></button>
                         </form>
+                        <?php print_r($_SESSION["permissions"]);?>
                     </div>
             </div>
                 <?php } else{?>
