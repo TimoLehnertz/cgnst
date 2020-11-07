@@ -1,6 +1,7 @@
 <?php
     $dependency = ["titleimg"];
     include_once "header.php";
+    include_once "users/userAPI.php";
 ?>
     <main>
         <section>
@@ -12,6 +13,7 @@
 
                 if (isset($_SESSION["username"])) {
                     echo "<p>Welcome ".$_SESSION["username"]."! You are logged in!</p>";
+                    print_r($_SESSION["permissions"]);
                 } else{
                     echo "<p>You are logged out!</p>";
                 }

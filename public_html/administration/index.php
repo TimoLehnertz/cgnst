@@ -1,7 +1,9 @@
 <?php
+    include "../includes/permissions.inc.php";
+    requirePermission("permission_admin");
     $dependency = ["titleimg"];
     include_once "../header.php";
-    requirePermission("permission_administration");
+    
 ?>
     <main>
         <h1>Administration</h1>

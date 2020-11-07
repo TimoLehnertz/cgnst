@@ -1,10 +1,9 @@
 <?php
+include_once "../includes/permissions.inc.php";
+requirePermission("permission_wmdata");
+
 include_once "../includes/dbh.inc.php";
 include_once "../includes/utils.inc.php";
-
-if(session_status() != PHP_SESSION_ACTIVE){
-    session_start();
-}
 
 if(isset($_GET["insertData"])){
     $data = json_decode(file_get_contents('php://input'), true);

@@ -4,7 +4,7 @@ if(session_status() != PHP_SESSION_ACTIVE){
     session_start();
 }
 
-include_once "../includes/dbh.inc.php";
+include_once $_SERVER['DOCUMENT_ROOT']."/includes/dbh.inc.php";
 
 if(isset($_GET["getUserList"])){
     echo json_encode(getUserList($mysqli));
@@ -378,14 +378,18 @@ function getGroupList($mysqli){
     if($result = $mysqli->query("SELECT * FROM `group`;")) {
         while($row = $result->fetch_array(MYSQLI_ASSOC)){
             $groupName = $row["name"];
-            $group = [
+            $group = array(
                 "idgroup" => $row["idgroup"],
                 "users" => getUsersFromGroupId($mysqli, $row["idgroup"]),
                 "name" => $row["name"],
                 "isDefaultGroup" => getDefaultGroupName() == $row["name"],
-                "permissiopn_admin" => $row["permissiopn_admin"],
-                "permissiopn_wmdata" => $row["permissiopn_wmdata"]
-            ];
+                "permissions" => array()
+            );
+            foreach ($row as $key => $value) {
+                if(strpos($key, "permission") !== FALSE){
+                    $group["permissions"][$key] = $value;
+                }
+            }
             $groups[$groupName] = $group;
         }
         $result->close();
@@ -423,7 +427,7 @@ function getGroupListForUserId($mysqli, $iduser){
                     "isDefaultGroup" => false);
                 foreach ($row as $key => $value) {
                     if(strpos($key, "permission") !== FALSE){
-                        $group[$key] = $value;
+                        $group["permissions"][$key] = $value;
                     }
                 }
                 $groups[$row["name"]] = $group;
@@ -550,10 +554,15 @@ function getPermissionsFromUserId($mysqli, $iduser){
     $groups = getGroupListForUserId($mysqli, $iduser);
     $permissions = array();
     foreach ($groups as $groupname => $group) {
-        foreach ($group as $key => $value) {
-            if(strpos($key, "permission") !== FALSE){
+        foreach ($group["permissions"] as $key => $value) {
+            if(isset($permissions[$key])){
+                if($permissions[$key] < $value){
+                    $permissions[$key] = $value;
+                }
+            } else{
                 $permissions[$key] = $value;
             }
         }
     }
+    return $permissions;
 }

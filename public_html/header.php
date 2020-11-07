@@ -2,24 +2,7 @@
     if(session_status() != PHP_SESSION_ACTIVE){
         session_start();
     }
-
-    function hasPermission($permission){
-        if(isset($_SESSION[$permission])){
-            return $_SESSION[$permission] == TRUE;
-        } else{
-            return FALSE;
-        }
-    }
-
-    function requirePermission($permission){
-        if(!hasPermission($permission)){
-            if(isset($_SESSION["username"])){
-                $_SESSION["error"] = "Du hast keine berechtigung für diesen bereich :(";
-            } 
-            header("location: /index.php");
-            exit(); 
-        }
-    }
+    include_once "includes/permissions.inc.php";
 ?>
 <!DOCTYPE html>
 <html>
@@ -158,7 +141,7 @@
                     <li><a href="/timing">Timing</a></li>
                     <li><a href="/kontakt">Kontakt</a></li>
                     <li><a href="/wm">Wm Db</a></li>
-                    <?php if(hasPermission("permission_administration")){echo '<li><a href="/administration">Administration</a></li>';}?>
+                    <?php if(doIHavePermissionFor("permission_admin")){echo '<li><a href="/administration">Administration</a></li>';}?>
                 </ul>
             </nav>
             <h1>
@@ -176,7 +159,6 @@
                         <form action='/includes/logout.inc.php' method='POST'>
                             <button class='logout btn slide vertical' type='submit' name='logout-submit'>Logout<i class="fas fa-sign-out-alt"></i></button>
                         </form>
-                        <?php print_r($_SESSION["permissions"]);?>
                     </div>
             </div>
                 <?php } else{?>
