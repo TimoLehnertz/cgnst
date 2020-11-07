@@ -209,7 +209,7 @@
                     <h2>CST</h2>
                     <h3>Anmeldung</h3>
                     <p style="text-align: center;">Mit Cst Account anmelden</p>
-                    <input class="innerLabel" id="mailUsername" type='text' name='mailUsername' required>
+                    <input class="innerLabel" id="mailUsername" type='text' name='mailUsername' required autocomplete="off">
                     <div>E-Mail, oder Benutzername</div>
                     <div class="hint"></div>
                     <div class="submitDiv">
@@ -221,7 +221,7 @@
                     <h2>CST</h2>
                     <h3 id="welcomeMsg">Willkommen</h3>
                     <p style="text-align: center;">Mit Cst Account anmelden</p>
-                    <input class="innerLabel" id="password" type='password' name='password' required>
+                    <input class="innerLabel" id="password" type='password' name='password' required autocomplete="off">
                     <div>Password</div>
                     <div class="hint"></div>
                     <div class="submitDiv">

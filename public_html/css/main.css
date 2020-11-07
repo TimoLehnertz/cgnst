@@ -655,6 +655,7 @@ main {
   -webkit-transition: color 0.2s;
   transition: color 0.2s;
   height: 100%;
+  white-space: nowrap;
 }
 
 .header .nav-links li + li {
