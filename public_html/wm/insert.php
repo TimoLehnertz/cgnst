@@ -104,6 +104,7 @@
                                 rowJson.seconds = millis * 0.001 + seconds + minutes * 60;
                             } else{
                                 warning += `Zeit ist im Falschen format(MM:ss,mmm)bei zeile ${i}, spalte ${c}. gegeben: ${elem}\n`
+                                // warning += `${i}\n`;
                             }
                         break;
                     }
