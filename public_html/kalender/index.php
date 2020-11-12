@@ -2,7 +2,7 @@
     $dependency = ["kalender"];
     include_once "../header.php";
 ?>
-    <main>
+    <main class="main">
         <div class="kalender"></div>
     </main>
 <?php

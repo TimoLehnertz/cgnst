@@ -4,7 +4,7 @@
     $dependency = ["group-user-dragndrop", "titleimg"];
     include_once "../header.php";
 ?>
-    <main>
+    <main class="main">
         <section>
             <h1>Administration - Configure groups</h1>
             <hr>

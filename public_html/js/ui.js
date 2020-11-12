@@ -16,7 +16,17 @@ $(window).ready(()=>{
     setAccordionEvents();
     window.addEventListener('resize', resizeAccordions);
     functionInitAll();
+    $("main").click(hideOutsideMain);
 });
+
+function hideOutsideMain(){
+    console.log("main")
+    collapseProfile();
+}
+
+function collapseProfile(){
+    $(".profile").removeClass("toggle");
+}
 
 /**
  * header nav

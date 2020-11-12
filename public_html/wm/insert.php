@@ -4,8 +4,8 @@
     $dependency = ["titleimg"];
     include_once "../header.php";
 ?>
-    <main>
-        <section>
+    <main class="main">
+        <section class="section">
             <h1>Wm Datenbank</h1>
             <p>Beispiel:<hr>
                 "ID";"Jahr";"Ort";"Klasse";"gesch";"strecke";"platz";"zeit";"Nachname";"Land";"Vorname";"Zeit_Kon";"zeit1";"Feld13";"Feld14"

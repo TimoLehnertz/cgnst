@@ -10,7 +10,7 @@
     $dependency = ["titleimg", "lists", "profile"];
     include_once "../header.php"
 ?>
-    <main>
+    <main class="main">
         <section>
             <h2>Erstelle eine neue Gruppe!</h2>
             <form action="#" methode="POST">

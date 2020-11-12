@@ -2,8 +2,8 @@
     $dependency = ["titleimg"];
     include_once "../header.php";
 ?>
-    <main>
-        <section>
+    <main class="main">
+        <section class="section">
             <h1>Wm Datenbank</h1>
             <a href="insert.php">Neue daten einfügen</a>
         </section>

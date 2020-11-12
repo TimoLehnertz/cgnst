@@ -35,7 +35,7 @@ $myState = isUserAdminInGroup($mysqli, $_SESSION["userId"], $idgroup) ? "Gruppen
 $dependency = ["titleimg", "group"];
 include_once "../header.php";
 ?>
-<main>
+<main class="main">
     <section>
         <div class="headline">
             <h2><?=$groupName?></h2>

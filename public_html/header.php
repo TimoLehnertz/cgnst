@@ -122,7 +122,7 @@
             }
         ?>
     </head>
-    <body id="body">
+    <body class="body">
         <?php
             include "startAnimation.php";
         ?>
@@ -145,7 +145,7 @@
                 </ul>
             </nav>
             <h1>
-                CST
+                <a href="/index.php">CST</a>
             </h1>
             <?php
             if(isset($_SESSION["username"])){

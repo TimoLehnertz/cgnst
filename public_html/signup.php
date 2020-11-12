@@ -1,7 +1,7 @@
 <?php
     require "header.php";
 ?>
-    <main>
+    <main class="main">
         <form action="includes/signup.inc.php" method="POST">
             <h2>Signup</h2>
             <?php

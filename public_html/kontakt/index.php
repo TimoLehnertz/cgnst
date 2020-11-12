@@ -2,7 +2,7 @@
     $dependency = ["titleimg"];
     include_once "../header.php";
 ?>
-<main>
+<main class="main">
     <div id="maininner" class="grid-box" style="padding: 40px;">
         <section id="content">
             <h1 class="title">Impressum</h1>

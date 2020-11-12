@@ -10,7 +10,7 @@
     $dependency = ["titleimg", "lists", "profile"];
     include_once "../header.php"
 ?>
-    <main>
+    <main class="main">
         <section>
             <section class="user-section">
                 <p>Willkommen <?=$username?></p>

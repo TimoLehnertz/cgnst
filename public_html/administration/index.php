@@ -5,7 +5,7 @@
     include_once "../header.php";
     
 ?>
-    <main>
+    <main class="main">
         <h1>Administration</h1>
 
         <a href="configureGroups.php">Group konfiguration</a>
