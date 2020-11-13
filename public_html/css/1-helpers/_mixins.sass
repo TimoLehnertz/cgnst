@@ -13,27 +13,6 @@
     transform-origin: if($left, lefttop , righttop)
     transform: skewY(if($left, 10deg, -10deg))
 
-// @mixin shearCap($top)
-//     content: ""
-//     position: absolute
-//     left: 0
-//     right: 0
-//     @if $top
-//         top: 0
-//     @else
-//         bottom: 0
-//     height: 25px
-//     background-color: white
-//     animation: skeyIn 1s forwards
-//     transform-origin: if($top, left, right)
-
-
-//     @keyframes skeyIn
-//         from
-//             transform: skewY(0)
-//         to
-//             transform: skewY(-2deg)
-
 
 @mixin clipCap()
     padding-top: 40px

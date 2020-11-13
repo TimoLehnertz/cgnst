@@ -356,7 +356,7 @@ body {
 }
 
 * + * {
-  margin-top: 1em;
+  margin-top: 0em;
 }
 
 .h1 {
@@ -631,6 +631,11 @@ button {
 
 .layout.basic .aside {
   min-width: 200px;
+  height: auto;
+}
+
+.layout.basic .aside h1, .layout.basic .section h1, .layout.basic .aside h2, .layout.basic .section h2 {
+  text-align: center;
 }
 
 .header {
@@ -954,6 +959,7 @@ button {
   background-color: white;
   padding: 20px;
   position: relative;
+  margin-top: 0;
   padding-top: 40px;
   padding-bottom: 40px;
   -webkit-animation: clipIn 1s forwards;
