@@ -10,17 +10,21 @@
     $dependency = ["titleimg", "lists", "profile"];
     include_once "../header.php"
 ?>
-    <main class="main">
-        <section>
-            <h2>Erstelle eine neue Gruppe!</h2>
-            <form action="#" methode="POST">
-                <p>
-                    <label for="name">Name: </label>
-                    <input type="text" id="name">
-                </p>
-            </form>
-        </section>
-    </main>
+    <div class="layout simple">
+        <main class="main">
+            <section class="section">
+                <h2 class="headline">Erstelle eine neue Gruppe!</h2>
+                <div class="content">
+                    <form action="#" methode="POST">
+                        <p>
+                            <label for="name">Gruppenname: </label>
+                            <input type="text" id="name">
+                        </p>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
 <?php
     include_once "../footer.php";
 ?>

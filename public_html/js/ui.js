@@ -20,7 +20,6 @@ $(window).ready(()=>{
 });
 
 function hideOutsideMain(){
-    console.log("main")
     collapseProfile();
 }
 
@@ -50,7 +49,7 @@ const navSlide = () =>{
             if(this.style.animation){
                 this.style.animation = '';
             } else{
-                this.style.animation = `navLinksFade 0.5s ease forwards ${index / 15}s`;
+                this.style.animation = `navLinksFade 0.5s ease forwards ${index / 30}s`;
             }
         });
         // Burger animation

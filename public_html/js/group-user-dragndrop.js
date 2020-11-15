@@ -15,7 +15,7 @@ $(document).ready(()=>{
     $.ajax({
         url: "/users/userAPI.php?getGroupList=1",
         success: function(result){
-            console.log(result);
+            console.log(JSON.parse(result));
             if(result.includes("Error message")){
                 $(".error-message").text(result);
             }
@@ -64,10 +64,12 @@ function redo(){
 }
 
 function addGroupUi(){
-    const groupName = $(".add-group-input").val();
+    const groupName = $(".add-group-name-input").val();
+    const groupDescription = $(".add-group-description-input").val();
+    groupDescription.replaceAll('"', '');
     if(groupNameValid(groupName)){
         let obj = {};
-        obj[groupName] = {users:[]};
+        obj[groupName] = {users:[], description: groupDescription};
         addGroupsToList(obj);
     }
 }
@@ -117,7 +119,8 @@ function submit(){
 function getStruct(){
     let groups = {};
     $(".group-list__group").each((i, e)=>{
-        let group = {users:[]};
+        let group = {users:[], description: ""};
+        group.description = $(e).attr("description");
         $(e).find(".group-user-dragndrop__user").each((i, userElement)=>{
             let user = {
                 username: $(userElement).find(".group-user-dragndrop__user__name").text(),
@@ -127,6 +130,7 @@ function getStruct(){
         })
         groups[$(e).find(".group-name").text()] = group;
     })
+    console.log(groups);
     return groups;
 }
 
@@ -156,9 +160,6 @@ function addGroupsToList(groups){
             $(".add-group-section").prepend(getGroupElement(groups[key], key));
         }
     }
-    // for (const group of groups) {
-    //     $(".add-group-section").prepend(getGroupElement(group));
-    // }
 }
 
 function getDeleteButton(element){
@@ -191,8 +192,11 @@ function getAdminDiv(element, isAdmin){
 function getGroupElement(group, groupName){
     const element = $(`
     <div class="group-list__group">
-        <div class="group-list__group__header"><span class="group-name">${groupName}</span></div>
+        <div class="group-list__group__header"><span class="group-name">${groupName}</span>
+            ${group.idgroup != undefined ? `<a href="/profile/groupx.php?id=${group.idgroup}"><i class="fas fa-link"></i></a>` : ""}
+        </div>
     </div>`);
+    element.attr("description", group.description);
     element.find(".group-list__group__header").append(getDeleteButton(element));
     let content = $(`<div class="group-list__group__content"></div>`);
     element.append(content);

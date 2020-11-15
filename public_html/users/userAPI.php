@@ -101,7 +101,11 @@ function updateGroup($conn, $mysqli, $data, $trackUndo){
         
         $groupNames[] = $groupName;
         if(!groupNameInGroups($groupName, $groups)){
-            addGroup($mysqli, $groupName);
+            $groupDescription  = "";
+            if(isset($group["description"])){
+                $groupDescription = $group["description"];
+            }
+            addGroup($mysqli, $groupName, $groupDescription);
             $groups = getGroupList($mysqli);
         }
         $idgroup = getGroupId($groupName, $groups);
@@ -335,19 +339,29 @@ function deleteUserGroupRelation($mysqli, $userId, $groupId){
     if($stmt->bind_param("ii", $groupId, $userId)){
         if($stmt->execute()){
             $stmt->close();
-            return true;
         } else{
             printf("Error message: %s\n", $mysqli->error);
+            $stmt->close();
+            return false;
         }
-        $stmt->close();
-        return false;
     }
+    $stmt = $mysqli->prepare("DELETE FROM group_has_admin WHERE group_idgroup=? AND user_iduser=?;");
+    if($stmt->bind_param("ii", $groupId, $userId)){
+        if($stmt->execute()){
+            $stmt->close();
+        } else{
+            printf("Error message: %s\n", $mysqli->error);
+            $stmt->close();
+            return false;
+        }
+    }
+    return true;
     $stmt->close();
 }
 
-function addGroup($mysqli, $name){
-    $stmt = $mysqli->prepare("INSERT INTO `group`(name) VALUES(?);");
-    if($stmt->bind_param("s", $name)){
+function addGroup($mysqli, $name, $description){
+    $stmt = $mysqli->prepare("INSERT INTO `group`(name, description) VALUES(?, ?);");
+    if($stmt->bind_param("ss", $name, $description)){
         if($stmt->execute()){
             $stmt->close();
             return true;
@@ -382,6 +396,7 @@ function getGroupList($mysqli){
                 "idgroup" => $row["idgroup"],
                 "users" => getUsersFromGroupId($mysqli, $row["idgroup"]),
                 "name" => $row["name"],
+                "description" => $row["description"],
                 "isDefaultGroup" => getDefaultGroupName() == $row["name"],
                 "permissions" => array()
             );
@@ -498,6 +513,10 @@ function isUserMemberInOneOfGroupIds($mysqli, $iduser, $idgroups){
 }
 
 function isUserMemberInGroup($mysqli, $iduser, $idgroup){
+    $defaultGroup = getDefaultGroup($mysqli);
+    if($defaultGroup["idgroup"] == $idgroup){
+        return true;
+    }
     $stmt = $mysqli->prepare("SELECT * FROM group_has_user WHERE group_idgroup=? AND user_iduser=?;");
     if($stmt->bind_param("ii", $idgroup, $iduser)){
         if($stmt->execute()){

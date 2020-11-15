@@ -13,11 +13,21 @@
             flex-direction: column
         
         .section
-            width: 60vw
+            width: 70vw
 
         .aside
-            min-width: 200px
-            height: auto
+            width: 25vw
 
         .aside h1, .section h1, .aside h2, .section h2
             text-align: center
+
+        @media only screen and (max-width: 800px)
+            &.basic
+                flex-direction: column
+            
+            .section
+                width: 100vw
+
+            .aside
+                margin-top: 10px
+                width: 100%

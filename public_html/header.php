@@ -58,7 +58,6 @@
                     case "group-user-dragndrop":
                         if(!in_array("group-user-dragndrop", $dependencies)){
                             $dependencies[] = "group-user-dragndro";
-                            echo "<link rel='stylesheet' href='/css/group-user-dragndrop.css'>";
                             echo "<script src='/js/group-user-dragndrop.js'></script>"; 
                         }
                         break;
@@ -71,22 +70,18 @@
                     case "training":
                         if(!in_array("training", $dependencies)){
                             $dependencies[] = "training";
-                            echo "<link rel='stylesheet' href='/css/training.css'>";
                             echo "<script src='/js/training.js'></script>"; 
                         }
                         break;
                     case "profile":
                         if(!in_array("profile", $dependencies)){
-                            $dependencies[] = "training";
-                            echo "<link rel='stylesheet' href='/css/profile.css'>";
+                            $dependencies[] = "profile";
                             echo "<script src='/js/profile.js'></script>"; 
                         }
                     break;
                     case "group":
                         if(!in_array("group", $dependencies)){
-                            $dependencies[] = "training";
-                            echo "<link rel='stylesheet' href='/css/group.css'>";
-                            echo "<script src='/js/group.js'></script>"; 
+                            $dependencies[] = "group";
                         }
                         break;
                     case "titleimg":
@@ -123,9 +118,6 @@
         ?>
     </head>
     <body class="body">
-        <?php
-            include "startAnimation.php";
-        ?>
         <header class="header">
             <div class="burger">
                 <div class="line1"></div>

@@ -4,25 +4,25 @@
     $dependency = ["titleimg"];
     include_once "../header.php";
 ?>
-    <main class="main">
-        <section class="section">
-            <h1>Wm Datenbank</h1>
-            <p>Beispiel:<hr>
-                "ID";"Jahr";"Ort";"Klasse";"gesch";"strecke";"platz";"zeit";"Nachname";"Land";"Vorname";"Zeit_Kon";"zeit1";"Feld13";"Feld14"
-                1;2011,00;"YEOSU";"sen";"w";"500";;"47.688";"Gustafsson";"Schweden";"Helena";;"00:47.688";;
-                2;2011,00;"YEOSU";"sen";"w";"500";;"49.379";"Pedari";"IRI ";"Mahrokh";;"00:49.379";;
-            </p>
-            <div class="loading-area"></div>
-            <button onclick="process()">Einfügen</button>
-            <p id="error" style="padding: 20px; background: white; max-height: 100px; overflow: auto"></p>
-            <label for="insertText">Csv(; seperiert) einfügen</label>
-            <textarea name="insert" id="insertText" cols="100" rows="100">
-            <?php
-                include_once "data.php";
-            ?>
-            </textarea>
-        </section>
-    </main>
+    <div class="layout simple">
+        <main class="main">
+            <section class="section">
+                <h1 class="headline">Wm Datenbank <span class="color secondary"><i class="fas fa-arrow-right margin left right"></i>Daten einfügen</span></h1>
+                <div class="content">
+                    <p>Beispiel:<hr>
+                        "ID";"Jahr";"Ort";"Klasse";"gesch";"strecke";"platz";"zeit";"Nachname";"Land";"Vorname";"Zeit_Kon";"zeit1";"Feld13";"Feld14"
+                        1;2011,00;"YEOSU";"sen";"w";"500";;"47.688";"Gustafsson";"Schweden";"Helena";;"00:47.688";;
+                        2;2011,00;"YEOSU";"sen";"w";"500";;"49.379";"Pedari";"IRI ";"Mahrokh";;"00:49.379";;
+                    </p>
+                    <div class="loading-area"></div>
+                    <button onclick="process()">Einfügen</button>
+                    <p id="error" style="padding: 20px; background: white; max-height: 100px; overflow: auto"></p>
+                    <label for="insertText">Csv(; seperiert) einfügen</label>
+                    <textarea name="insert" id="insertText" cols="90%" rows="10" placeholder="Daten einfügen..."></textarea>
+                </div>
+            </section>
+        </main>
+    </div>
     <script>
         function process(){
             let warning = "";

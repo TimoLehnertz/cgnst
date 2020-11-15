@@ -4,13 +4,19 @@
     --color-border: #BBB;
 }
 
+* + *{
+    margin-top: 0;
+}
+
 main{
+    margin-top: 70px;
     height: calc(100vh - 100px);
 }
 
 .kalender{
     min-height: 500px;
     height: 100%;
+    width: 100vw;
     flex-direction: column;
 }
 
@@ -211,7 +217,7 @@ main{
 .kalender__enter--maximized{
     border-radius: 0;
     width: 600px;
-    height: calc(100vh - 80px);
+    height: calc(100% - 50px);
     left: 50%;
     width: 600px;
     margin-left: -300px;
@@ -335,7 +341,7 @@ main{
 }
 
 .group-select__groups, .trainings-blueprint__blueprints{
-    padding-left: 60px;
+    padding-left: 10px;
     overflow: hidden;
 }
 
@@ -383,7 +389,7 @@ main{
     border-bottom: 1px solid #888;
 }
 
-.enter__enter-btn{
+.enter__enter-btn, .enter__reset-btn{
     margin: 30px;
     float: right;
     border: none;
@@ -396,18 +402,25 @@ main{
     height: 50px;
     width: 150px;
     font-weight: 700;
+    filter: brightness(1);
+    transition: all 0.2s;
 }
 
-.enter__enter-btn:hover{
-    background: #3070E0;
+.enter__reset-btn{
+    background-color: rgb(165, 119, 33) !important;
+    width: 200px;
+}
+
+.enter__enter-btn:hover, .enter__reset-btn:hover{
+    filter: brightness(1.1);
     color: white;
     -webkit-box-shadow: 6px 5px 24px -11px rgba(0,0,0,0.75);
     -moz-box-shadow: 6px 5px 24px -11px rgba(0,0,0,0.75);
     box-shadow: 6px 5px 24px -11px rgba(0,0,0,0.75);
-    transform: scale(1.05   );
+    transform: scale(1.05);
 }
 
-.enter__enter-btn:active{
+.enter__enter-btn:active, .enter__reset-btn:active{
     transform: scale(0.9);
 }
 
@@ -1012,7 +1025,7 @@ i{
     .kalender__enter--maximized{
         border-radius: 0;
         width: 600px;
-        height: calc(100vh - 80px);
+        height: calc(100vh - 200px);
         left: 50%;
         position: fixed;
         overflow: auto;

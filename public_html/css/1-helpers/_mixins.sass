@@ -13,14 +13,11 @@
     transform-origin: if($left, lefttop , righttop)
     transform: skewY(if($left, 10deg, -10deg))
 
-
 @mixin clipCap()
-    padding-top: 40px
-    padding-bottom: 40px
     animation: clipIn 1s forwards
 
     @keyframes clipIn
         from
-            clip-path: polygon(0 20px, 100% 20px, 100% calc(100% - 20px), 0px calc(100% - 20px))
+            clip-path: polygon(0 10px, 100% 10px, 100% calc(100% - 10px), 0px calc(100% - 10px))
         to
-            clip-path: polygon(0 20px, 100% 0, 100% calc(100% - 20px), 0 100%)
+            clip-path: polygon(0 10px, 100% 0, 100% calc(100% - 10px), 0 100%)

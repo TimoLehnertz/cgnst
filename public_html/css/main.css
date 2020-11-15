@@ -356,7 +356,7 @@ body {
 }
 
 * + * {
-  margin-top: 0em;
+  margin-top: 1em;
 }
 
 .h1 {
@@ -543,12 +543,46 @@ button {
           flex-direction: column;
 }
 
+.flex.start {
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: start;
+}
+
+.flex.end {
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: end;
+}
+
+.flex.space-between {
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.flex.space-arround {
+  -webkit-box-pack: space-arround;
+      -ms-flex-pack: space-arround;
+          justify-content: space-arround;
+}
+
+.flex.space-evenly {
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+}
+
+.flex * {
+  margin-top: 0;
+}
+
 .loading.circle {
   height: 50px;
   width: 50px;
   -webkit-animation: rotate infinite 1s linear;
           animation: rotate infinite 1s linear;
-  border-right: 3px solid #FFF;
+  border-right: 3px solid #391;
   border-radius: 50%;
   margin-left: auto;
   margin-right: auto;
@@ -577,24 +611,128 @@ button {
   }
 }
 
-.main {
-  -webkit-filter: drop-shadow(10px 10px 50px rgba(0, 0, 0, 0.4));
-          filter: drop-shadow(10px 10px 50px rgba(0, 0, 0, 0.4));
-}
-
 .header {
   -webkit-box-shadow: 4px 3px 33px 0px rgba(0, 0, 0, 0.4);
           box-shadow: 4px 3px 33px 0px rgba(0, 0, 0, 0.4);
 }
 
 .section {
-  -webkit-box-shadow: 5px 5px 40px -10px rgba(0, 0, 0, 0.5);
-          box-shadow: 5px 5px 40px -10px rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 5px 5px 40px -10px rgba(0, 0, 0, 0.6);
+          box-shadow: 5px 5px 40px -10px rgba(0, 0, 0, 0.6);
 }
 
-.aside {
-  -webkit-box-shadow: 5px 5px 40px -10px rgba(0, 0, 0, 0.5);
-          box-shadow: 5px 5px 40px -10px rgba(0, 0, 0, 0.5);
+.aside__content {
+  -webkit-box-shadow: 5px 5px 40px -10px rgba(0, 0, 0, 0.6);
+          box-shadow: 5px 5px 40px -10px rgba(0, 0, 0, 0.6);
+}
+
+.color.primary {
+  color: black;
+}
+
+.color.secondary {
+  color: #444;
+}
+
+.color.minimal {
+  color: #777;
+}
+
+.font.size.small {
+  font-size: 0.8rem;
+}
+
+.font.size.medium {
+  font-size: 1rem;
+}
+
+.font.size.bigger-medium {
+  font-size: 1.3rem;
+}
+
+.font.size.big {
+  font-size: 1.5rem;
+}
+
+.font.size.bigger {
+  font-size: 2rem;
+}
+
+.alignment.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.alignment.left {
+  mergin-right: auto;
+}
+
+.alignment.right {
+  mergin-right: auto;
+}
+
+.width.max {
+  width: 100%;
+}
+
+.margin.left {
+  margin-left: 1rem;
+}
+
+.margin.top {
+  margin-top: 1rem;
+}
+
+.margin.right {
+  margin-right: 1rem;
+}
+
+.margin.bottom {
+  margin-bottom: 1rem;
+}
+
+.padding.left {
+  padding-left: 1rem;
+}
+
+.padding.top {
+  padding-top: 1rem;
+}
+
+.padding.right {
+  padding-right: 1rem;
+}
+
+.padding.bottom {
+  padding-bottom: 1rem;
+}
+
+.table {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;
+  overflow-wrap: break-word;
+}
+
+.table tr:first-child {
+  border-bottom: 5px solid #444;
+}
+
+.table tr:first-child td {
+  border: none;
+  text-align: center;
+}
+
+.table td {
+  padding: 5px 10px;
+}
+
+.table td + td {
+  border-left: 1px solid #AAA;
+}
+
+.table .zebra {
+  background-color: #CCC;
 }
 
 .layout {
@@ -626,16 +764,31 @@ button {
 }
 
 .layout.basic .section {
-  width: 60vw;
+  width: 70vw;
 }
 
 .layout.basic .aside {
-  min-width: 200px;
-  height: auto;
+  width: 25vw;
 }
 
 .layout.basic .aside h1, .layout.basic .section h1, .layout.basic .aside h2, .layout.basic .section h2 {
   text-align: center;
+}
+
+@media only screen and (max-width: 800px) {
+  .layout.basic.basic {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+  }
+  .layout.basic .section {
+    width: 100vw;
+  }
+  .layout.basic .aside {
+    margin-top: 10px;
+    width: 100%;
+  }
 }
 
 .header {
@@ -927,7 +1080,7 @@ button {
 }
 
 .header .profile.toggle {
-  height: 300px;
+  height: 180px;
 }
 
 .header .profile.toggle .profile__content {
@@ -957,56 +1110,130 @@ button {
 
 .section {
   background-color: white;
-  padding: 20px;
   position: relative;
-  margin-top: 0;
-  padding-top: 40px;
-  padding-bottom: 40px;
-  -webkit-animation: clipIn 1s forwards;
-          animation: clipIn 1s forwards;
+  -webkit-transition: all 0.1s;
+  transition: all 0.1s;
 }
 
-@-webkit-keyframes clipIn {
+.section .content {
+  padding: 20px;
+}
+
+.section .content > * {
+  -webkit-animation: content-fadeIn 0.9s forwards;
+          animation: content-fadeIn 0.9s forwards;
+}
+
+@-webkit-keyframes content-fadeIn {
   from {
-    -webkit-clip-path: polygon(0 20px, 100% 20px, 100% calc(100% - 20px), 0px calc(100% - 20px));
-            clip-path: polygon(0 20px, 100% 20px, 100% calc(100% - 20px), 0px calc(100% - 20px));
+    opacity: 0;
+    -webkit-transform: translateY(-20px);
+            transform: translateY(-20px);
   }
   to {
-    -webkit-clip-path: polygon(0 20px, 100% 0, 100% calc(100% - 20px), 0 100%);
-            clip-path: polygon(0 20px, 100% 0, 100% calc(100% - 20px), 0 100%);
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+    opacity: 1;
   }
 }
 
-@keyframes clipIn {
+@keyframes content-fadeIn {
   from {
-    -webkit-clip-path: polygon(0 20px, 100% 20px, 100% calc(100% - 20px), 0px calc(100% - 20px));
-            clip-path: polygon(0 20px, 100% 20px, 100% calc(100% - 20px), 0px calc(100% - 20px));
+    opacity: 0;
+    -webkit-transform: translateY(-20px);
+            transform: translateY(-20px);
   }
   to {
-    -webkit-clip-path: polygon(0 20px, 100% 0, 100% calc(100% - 20px), 0 100%);
-            clip-path: polygon(0 20px, 100% 0, 100% calc(100% - 20px), 0 100%);
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+    opacity: 1;
   }
 }
 
 .aside {
-  background-color: white;
   margin-top: 0;
+  overflow: hidden;
+}
+
+.aside .content {
+  background-color: white;
   padding: 20px;
-  margin-top: -20px;
-  padding-top: 40px;
-  padding-bottom: 40px;
-  -webkit-animation: clipIn 1s forwards;
-          animation: clipIn 1s forwards;
+}
+
+.user-group-config {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.user-group-config * + * {
+  margin-top: 4px;
+}
+
+.user-group-config .group-list {
+  margin-top: 0;
+}
+
+.user-group-config .group-list__group {
+  -webkit-transition: all 0.1s;
+  transition: all 0.1s;
+  margin-bottom: 10px;
+  background-color: #CCC;
+  border-radius: 10px;
+  padding: 5px;
+}
+
+.user-group-config .group-list__group.dragging {
+  padding-bottom: 20px;
+}
+
+.user-group-config .group-user {
+  margin-left: 20px;
+}
+
+.user-group-config a {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+.headline {
+  padding: 10px 50px;
+  width: 100%;
+  background-color: #CCC;
+  margin-top: 0;
+  -webkit-animation: clipIn 0.6s forwards;
+          animation: clipIn 0.6s forwards;
+}
+
+@-webkit-keyframes clipIn {
+  from {
+    -webkit-filter: invert(80%);
+            filter: invert(80%);
+    -webkit-clip-path: polygon(0% 0%, 100% 0%, 100% calc(100% - 0px), 0% calc(100% - 10px));
+            clip-path: polygon(0% 0%, 100% 0%, 100% calc(100% - 0px), 0% calc(100% - 10px));
+  }
+  to {
+    -webkit-filter: invert(100%);
+            filter: invert(100%);
+    -webkit-clip-path: polygon(0% 0%, 100% 0%, 100% calc(100% - 10px), 0% 100%);
+            clip-path: polygon(0% 0%, 100% 0%, 100% calc(100% - 10px), 0% 100%);
+  }
 }
 
 @keyframes clipIn {
   from {
-    -webkit-clip-path: polygon(0 20px, 100% 20px, 100% calc(100% - 20px), 0px calc(100% - 20px));
-            clip-path: polygon(0 20px, 100% 20px, 100% calc(100% - 20px), 0px calc(100% - 20px));
+    -webkit-filter: invert(80%);
+            filter: invert(80%);
+    -webkit-clip-path: polygon(0% 0%, 100% 0%, 100% calc(100% - 0px), 0% calc(100% - 10px));
+            clip-path: polygon(0% 0%, 100% 0%, 100% calc(100% - 0px), 0% calc(100% - 10px));
   }
   to {
-    -webkit-clip-path: polygon(0 20px, 100% 0, 100% calc(100% - 20px), 0 100%);
-            clip-path: polygon(0 20px, 100% 0, 100% calc(100% - 20px), 0 100%);
+    -webkit-filter: invert(100%);
+            filter: invert(100%);
+    -webkit-clip-path: polygon(0% 0%, 100% 0%, 100% calc(100% - 10px), 0% 100%);
+            clip-path: polygon(0% 0%, 100% 0%, 100% calc(100% - 10px), 0% 100%);
   }
 }
 /*# sourceMappingURL=main.css.map */

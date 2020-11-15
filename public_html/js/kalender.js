@@ -69,7 +69,6 @@ $(function(){
     loadTrainingsBlueprints();
     reloadPage();
 });
-
 // Colors
 
 const colorTraining = "green";
@@ -89,12 +88,14 @@ const interval = window.setInterval(function(){
     }
 }, 100);
 
-function loadEntries(){
+function loadEntries(callback){
     $.ajax({
         url: "/kalender/kalenderAPI.php?getEntries=1",
         success: function(result){
             entries = prepareEntries(JSON.parse(result));
-            reloadPage();
+            if(callback){
+                callback();
+            }
         }
     });
 }
@@ -258,6 +259,10 @@ function addEntries(entries){
             insertEntry(entry);
         }
     }
+}
+
+function removeAllEntries(){
+    $("kalender__entry").remove();
 }
 
 function isEntryEnabledByGroup(entry){
@@ -456,7 +461,7 @@ function deleteEntry(entry){
                 hideMoreOptionsElement();
                 hideInfoElement();
             },300);
-            loadEntries();
+            loadEntries(reloadPage)
         },
         error: function(jqXHR, textStatus, errorThrown) {
             console.log(jqXHR.status);
@@ -642,6 +647,7 @@ function reloadPage(){
     setCurrentDate(currentDate)
     const nextPage = getPage(currentDate);
     $(".kalender__body").append(nextPage).show("fast");
+    removeAllEntries();
     addEntries(calcEntriesOffset(entries));
 }
 
@@ -910,7 +916,6 @@ function getPropertyJson(propertieElem){
     const comment = propertieElem.find(".comment-input").val();
     const groups = [];
 
-    console.log($(propertieElem.find(".kalender__date-selector")[0]).attr("date"));
 
     const trainer = [];
 
@@ -929,8 +934,6 @@ function getPropertyJson(propertieElem){
 
     startDate.setHours(startTime.getHours());
     startDate.setMinutes(startTime.getMinutes());
-
-    console.log(startDate.toLocaleDateString());
 
     if(isNaN(endDate.getTime())){
         endDate = new Date(startDate);
@@ -1067,16 +1070,35 @@ function enterAndereContent(){
 const enterAndereElement = $(`<div class="kalender__enter__properties kalender__enter__andere" entryType="andere"></div`);
 enterAndereElement.append(enterAndereContent());
 
-function reloadEnterContent(){
-    enterTrainingslagerElement.empty();
-    enterWettkampfElement.empty();
-    enterTrainingElement.empty();
-    enterAndereElement.empty();
-
-    enterTrainingslagerElement.append(enterWettkampfContent());
-    enterWettkampfElement.append(enterWettkampfContent());
-    enterTrainingElement.append(enterTrainingContent());
-    enterAndereElement.append(enterAndereContent());
+function reloadEnterContent(type){
+    switch(type){
+        case "training":
+            enterTrainingElement.empty();
+            enterTrainingElement.append(enterTrainingContent());
+            break;
+        case "wettkampf":
+            enterWettkampfElement.empty();
+            enterWettkampfElement.append(enterWettkampfContent());
+            break;
+        case "trainingslager":
+            enterTrainingslagerElement.empty();
+            enterTrainingslagerElement.append(enterWettkampfContent());
+            break;
+        case "andere":
+            enterAndereElement.empty();
+            enterAndereElement.append(enterAndereContent());
+            break;
+        default:
+            enterTrainingslagerElement.empty();
+            enterWettkampfElement.empty();
+            enterTrainingElement.empty();
+            enterAndereElement.empty();
+        
+            enterTrainingslagerElement.append(enterWettkampfContent());
+            enterWettkampfElement.append(enterWettkampfContent());
+            enterTrainingElement.append(enterTrainingContent());
+            enterAndereElement.append(enterAndereContent());;
+    }
     initGroupSelectors();
     initTrainingsBlueprintSelectors();
 }
@@ -1163,10 +1185,13 @@ function getEnterEnterSection(){
     const elem = $(`<div>
         <div class="error-message"></div>
         <button class="enter__enter-btn">Eintragen</button>
+        <button class="enter__reset-btn">Zurücksetzen</button>
     </div`);
-    elem.find("button").click(()=>{
-        console.log(elem.parent())
-        console.log($(elem.parent().find(".kalender__date-selector")[0]).attr("date"));
+    elem.find(".enter__reset-btn").click(function(){
+        let activeEnterSection = $(this).parent().parent().attr("entrytype");
+        reloadEnterContent(activeEnterSection);
+    });
+    elem.find(".enter__enter-btn").click(()=>{
         if(validateNewEntry(getPropertyJson(elem.parent()))){
             elem.find("button").html("");
             elem.find("button").append(getLoadingCircle());
@@ -1310,9 +1335,7 @@ function getDateSelector(name){
         e.stopPropagation();
         const rect = selector.offset();
         dateSelectorFieldAt(rect.left, rect.top + selector.height() + 30, (date)=>{
-            // selector.find(".kalender__date-selector__date").text(getDateStringAllDay(date));
-            // selector.attr("date", date.getTime());
-            setDateForDateSelectorElement(selector.find(".kalender__date-selector__date"), date)
+            setDateForDateSelectorElement(selector, date);
         });
     });
     return selector;
