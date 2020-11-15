@@ -19,18 +19,6 @@
                                 stringFromFilter($presetFilter);
                                 echoTableFromArray(getResultFromFilter($mysqli, $presetFilter));
                             }
-                            function stringFromFilter($filter){
-                                $delimiter = "";
-                                echo "<p class='font size bigger-medium color secondary'><span class='color primary margin right'>Filter: </span>";
-                                foreach ($filter as $key => $value) {
-                                    if($key == "search" || strlen($value == 0)){
-                                        continue;
-                                    }
-                                    echo $delimiter.$key.": ".$value;
-                                    $delimiter = ", ";
-                                }
-                                echo "</p>";
-                            }
                         ?>
                     </div>
                 </div>
@@ -52,9 +40,11 @@
                     <button name="search" class="btn slide font size big margin top width max padding top bottom" type="submit">Finden</button>
                 </form>
             </div>
+            <?php if(doIHavePermissionFor("permission_wmdata")){?>
             <div class="content">
                 <a href="insert.php">Neue daten einfügen</a>
             </div>
+            <?php }?>
         </aside>
     </div>
 <?php
@@ -86,6 +76,18 @@
             echo "<option value='$value'>$value</option>";
         }
         echo "</select></p>";
+    }
+    function stringFromFilter($filter){
+        $delimiter = "";
+        echo "<p class='font size bigger-medium color secondary'><span class='color primary margin right'>Filter: </span>";
+        foreach ($filter as $key => $value) {
+            if($key == "search" || strlen($value == 0)){
+                continue;
+            }
+            echo $delimiter.$key.": ".$value;
+            $delimiter = ", ";
+        }
+        echo "</p>";
     }
     include_once "../footer.php";
 ?>

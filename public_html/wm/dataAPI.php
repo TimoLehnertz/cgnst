@@ -1,14 +1,13 @@
 <?php
 include_once "../includes/permissions.inc.php";
-requirePermission("permission_wmdata");
 
 include_once "../includes/dbh.inc.php";
 include_once "../includes/utils.inc.php";
 include_once "../includes/utils.inc.php";
 
 if(isset($_GET["insertData"])){
+    requirePermission("permission_wmdata");
     $data = json_decode(file_get_contents('php://input'), true);
-    // var_dump($data, $mysqli);
     insertWmData($data, $mysqli);
 }
 
