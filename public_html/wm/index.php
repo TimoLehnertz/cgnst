@@ -81,7 +81,7 @@
         $delimiter = "";
         echo "<p class='font size bigger-medium color secondary'><span class='color primary margin right'>Filter: </span>";
         foreach ($filter as $key => $value) {
-            if($key == "search" || strlen($value == 0)){
+            if($key == "search" || strlen($value) == 0){
                 continue;
             }
             echo $delimiter.$key.": ".$value;

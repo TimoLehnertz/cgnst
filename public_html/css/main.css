@@ -1153,6 +1153,8 @@ button {
 .aside {
   margin-top: 0;
   overflow: hidden;
+  position: -webkit-sticky;
+  position: sticky;
 }
 
 .aside .content {
