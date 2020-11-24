@@ -367,6 +367,12 @@ button {
   cursor: pointer;
 }
 
+.center {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
 @media (pointer: coarse) {
   html {
     font-size: 20pt;
@@ -418,14 +424,36 @@ button {
           transform: rotate(45deg);
 }
 
-.btn {
+.btn.default {
+  text-decoration: none;
+  background-color: #555555;
+  color: #CCC;
+  padding: 10px;
+}
+
+.btn.round {
+  border-radius: 10px;
+  -webkit-transition: border-radius 0.3s, border-width 0.2s;
+  transition: border-radius 0.3s, border-width 0.2s;
+  border: 1px solid #CCC;
+}
+
+.btn.round:hover {
+  border-radius: 40px;
+}
+
+.btn.round:active {
+  border-radius: 0px;
+}
+
+.btn.slide {
+  z-index: 0;
+  border: none;
+  background: transparent;
   position: relative;
   overflow: hidden;
   -webkit-transition: color 0.2s;
   transition: color 0.2s;
-  border: none;
-  background: transparent;
-  z-index: 0;
 }
 
 .btn.slide::after {
@@ -1153,8 +1181,6 @@ button {
 .aside {
   margin-top: 0;
   overflow: hidden;
-  position: -webkit-sticky;
-  position: sticky;
 }
 
 .aside .content {

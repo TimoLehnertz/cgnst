@@ -1,12 +1,28 @@
 .btn
-    position: relative
-    overflow: hidden
-    transition: color 0.2s
-    border: none
-    background: transparent
-    z-index: 0
+    &.default
+        text-decoration: none
+        background-color: #555555
+        color: #CCC
+        padding: 10px
     
+    &.round
+        border-radius: 10px
+        transition: border-radius 0.3s, border-width 0.2s
+        border: 1px solid #CCC
+
+        &:hover
+            border-radius: 40px
+        
+        &:active
+            border-radius: 0px
+
     &.slide
+        z-index: 0
+        border: none
+        background: transparent
+        position: relative
+        overflow: hidden
+        transition: color 0.2s
 
         &::after
             content: ""

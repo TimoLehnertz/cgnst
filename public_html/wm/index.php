@@ -26,6 +26,7 @@
         </main>
         <aside class="aside">
             <div class="content">
+            <a href="500m.php" class="btn slide default center">Zur 500m Auswertung</a>
                 <h2>Suchen</h2>
                 <form action="#">
                     <?php echoSelectorFor($mysqli, "year", "Jahr");?>
@@ -42,7 +43,9 @@
             </div>
             <?php if(doIHavePermissionFor("permission_wmdata")){?>
             <div class="content">
-                <a href="insert.php">Neue daten einfügen</a>
+                <a href="insertWm.php" class="btn slide default center">Wm daten eintragen</a>
+                <hr>
+                <a href="insert500m.php" class="btn slide default center">500m daten eintragen</a>
             </div>
             <?php }?>
         </aside>

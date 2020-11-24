@@ -10,6 +10,87 @@ if(isset($_GET["insertData"])){
     $data = json_decode(file_get_contents('php://input'), true);
     insertWmData($data, $mysqli);
 }
+if(isset($_GET["insert500mData"])){
+    requirePermission("permission_wmdata");
+    $data = json_decode(file_get_contents('php://input'), true);
+    insert500mData($data, $mysqli);
+}
+if(isset($_GET["get500mData"])){
+    echo json_encode(get500mData($mysqli));
+}
+
+function get500mData($mysqli){
+    $data = array();
+    $res = $mysqli->query("SELECT * FROM `500m`;");
+    if($res){
+        while($row = $res->fetch_assoc()){
+            $data[] = $row;
+        }
+    } else{
+        printf("Error message: %s\n", $mysqli->error);
+    }
+    return $data;
+}
+
+function toNum($data) {
+    $val = ord(strtoupper($data)) - ord('A') + 1;
+    if($val < 0){
+        return -1;
+    } else{
+        return $val;
+    }
+}
+
+function insert500mData($data, $mysqli){
+    var_dump($data);
+    if(sizeof($data) == 0){
+        return false;
+    }
+    $types = "";
+    $placeholders = "";
+    $array = array();
+    for ($i=0; $i < sizeof($data); $i++) {
+        $year = intval($data[$i]["year"]);
+        $competition = $data[$i]["competition"];
+        $category = $data[$i]["category"];
+        $sex = $data[$i]["sex"];
+        $link = $data[$i]["link"];
+
+        $afterStart1 = toNum($data[$i]["afterStart1"]);
+        $afterStart2 = toNum($data[$i]["afterStart2"]);
+        $afterStart3 = toNum($data[$i]["afterStart3"]);
+        $afterStart4 = toNum($data[$i]["afterStart4"]);
+
+        $beforeFinish1 = toNum($data[$i]["beforeFinish1"]);
+        $beforeFinish2 = toNum($data[$i]["beforeFinish2"]);
+        $beforeFinish3 = toNum($data[$i]["beforeFinish3"]);
+        $beforeFinish4 = toNum($data[$i]["beforeFinish4"]);
+
+        $finish1 = toNum($data[$i]["finish1"]);
+        $finish2 = toNum($data[$i]["finish2"]);
+        $finish3 = toNum($data[$i]["finish3"]);
+        $finish4 = toNum($data[$i]["finish4"]);
+
+        $types.= "issssiiiiiiiiiiii";
+ 
+        if(strlen($placeholders) > 0){
+            $placeholders.= ",(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        } else{
+            $placeholders.= "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        }
+        push_array_in_array($array, array($year, $competition, $category, $link, $sex, $afterStart1, $afterStart2, $afterStart3, $afterStart4, $beforeFinish1, $beforeFinish2, $beforeFinish3, $beforeFinish4, $finish1, $finish2, $finish3, $finish4));
+    }
+    if($stmt = $mysqli->prepare("INSERT INTO `500m` ( `year`,  `competition`,  category, link, sex,  afterStart1,  afterStart2,  afterStart3,  afterStart4,  beforeFinish1,  beforeFinish2,  beforeFinish3,  beforeFinish4,  finish1,  finish2,  finish3,  finish4) VALUES  $placeholders;")){
+        $stmt->bind_param($types, ...$array);
+        if(!$stmt->execute()){
+            echo "error: ".$mysqli->error;
+        }
+    } else{
+        printf("Error message: %s\n", $mysqli->error);
+    }
+    echo "succsess";
+    return true;
+}
 
 function insertWmData($data, $mysqli){
     if(sizeof($data) == 0){

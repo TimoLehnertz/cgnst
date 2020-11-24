@@ -74,3 +74,33 @@ function sendWmData(json, callback){
         }
     });
 }
+
+function send500mData(json, callback){
+    $.ajax({
+        url: "/wm/dataAPI.php?insert500mData=1",
+        type: "POST",
+        dataType: 'text',
+        data: JSON.stringify(json),
+        success: function(response){
+            if(response.includes("succsess")){
+                callback();
+            }
+        },
+        error: function(){
+            alert("Server fehler :(");
+        }
+    });
+}
+
+function get500mData(callback){
+    $.ajax({
+        url: "/wm/dataAPI.php?get500mData=1",
+        type: "GET",
+        success: function(response){
+            callback(JSON.parse(response));
+        },
+        error: function(){
+            alert("Server fehler :(");
+        }
+    });
+}
