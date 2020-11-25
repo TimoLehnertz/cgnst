@@ -23,8 +23,43 @@ function echoSelectorFor($mysqli, $column, $label){
     echoSelectorForName($mysqli, $column, $label, $column);
 }
 
+function getWinnerTimes($mysqli){
+
+}
+
+function getMedalYearCountries($mysqli, $disciplines){
+    $rlike = "^(";
+    $delimiter = "";
+    foreach ($disciplines as $i => $discipline) {
+        if($discipline == "500"){
+            $rlike .= $delimiter . $discipline;
+        } else{
+            $rlike .= $delimiter . $discipline . "$";
+        }
+        $delimiter = "|";
+    }
+    $rlike .= ")";
+    $data = array();
+    if($result = $mysqli->query("CALL sp_medal_years_country('$rlike');")){
+        while($row = $result->fetch_assoc()){
+            $country = $row["country"];
+            $scores = array();
+            $startYear = 2007;
+            $endYear = 2019;
+            for ($year=$startYear; $year <= $endYear; $year++) { 
+                $scores[] = $row[$year.""];
+            }
+            $data[] = ["country" => $country, "startYear" => $startYear, "scores" => $scores];
+        }
+        $result->close();
+    } else{
+        printf("Error message: %s\n", $mysqli->error);
+    }
+    return $data;
+}
+
 function echoSelectorForName($mysqli, $column, $label, $name){
-    $values = getAvailableWmColumnValues($mysqli, $column, $label);
+    $values = getAvailableWmColumnValues($mysqli, $column);
     $ranId = random_int(0, 100000);
     $selected = isset($_GET[$column]);
     echo "<p><label style='width: 100px' for='$ranId'>$label:</label></p><p>";

@@ -36,9 +36,9 @@
                                 Statistik über die Chance von Position x in Situation x zu gewinnen.
                             </p>
                             <div class="flex row">
-                                <img src="charts/winnerFromStart.PNG" class="img hover" alt="Chart">
-                                <img src="charts/winnerFromAfterStart.PNG" class="img hover" alt="Chart">
-                                <img src="charts/winnerFrombeforeFinish.PNG" class="img hover" alt="Chart">
+                                <img src="charts/winnerFromStart.PNG" class="img hover width third" alt="Chart">
+                                <img src="charts/winnerFromAfterStart.PNG" class="img hover width third" alt="Chart">
+                                <img src="charts/winnerFrombeforeFinish.PNG" class="img hover width third" alt="Chart">
                             </div>
                         </div>
                     </div>

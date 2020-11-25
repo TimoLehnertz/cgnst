@@ -373,6 +373,10 @@ button {
   display: block;
 }
 
+.width.third {
+  width: 33%;
+}
+
 @media (pointer: coarse) {
   html {
     font-size: 20pt;
@@ -552,6 +556,9 @@ button {
   display: flex;
   -ms-flex-line-pack: center;
       align-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   -webkit-box-pack: space-evenly;
       -ms-flex-pack: space-evenly;
           justify-content: space-evenly;
