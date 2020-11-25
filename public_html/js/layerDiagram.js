@@ -38,7 +38,7 @@ function createDiagram(){
     window.onresize=function(e){ reOffset(); }
     $(canvas).mousemove(function(e){handleMouseMove(e);});
     $(canvas).mouseenter(function(){mouseInside=true;});
-    $(canvas).mouseleave(function(){mouseInside=false;});
+    $(canvas).mouseleave(function(){mouseInside=false;updateDiagram();});
     updateDiagram();
 }
 
@@ -87,8 +87,10 @@ function updateDiagram(){
     } else{
         // focusedPlace = -1;
     }
-
-    const hovered = parseInt((mouseY) * 4 / height);
+    let hovered = -2;
+    if(mouseInside){
+        hovered = parseInt((mouseY) * 4 / height);
+    }
     
     
     /**
@@ -164,14 +166,17 @@ function updateDiagram(){
                         if(subHovered){
                             ctx.filter = "opacity(200)";
                             if(mouseDown){
-                                const infos = data[layer] ["posConsistsOf"] [position] [positionBefore] ["infos"];
-                                let html = "<p>Alle rennen, die auf diese Rennsituation passen</p>";
+                                if(layer > 0){
+                                    const infos = data[layer] ["posConsistsOf"] [position] [positionBefore] ["infos"];
+                                let html = `<p>Von Position ${positionBefore + 1} ${layerToSituationAfter(layer - 1)} auf Position ${position + 1} ${layerToSituationAfter(layer)}</p>
+                                <p>Alle rennen, die auf diese Rennsituation passen</p>`;
                                 for (const info of infos) {
                                     html += `<li><a target="_blank" href="${info.link}">${info.competition} ${info.year} ${info.category} ${info.sex == "w" ? "Female" : "Male"}</a></li>`;
                                 }
                                 $(".info").empty();
                                 
-                                $(".info").append(`<ul>${html}</ul>`);
+                                $(".info").append(`<ol>${html}</ol>`);
+                                }
                             }
                         }
                         ctx.fillRect(lStartX[layer], pStartY[position] + usedSpaceInFront, layerWidth, pHeight * percentage);
@@ -336,4 +341,13 @@ function convertName(name){
         return "Ziel";
     }
     return "--";
+}
+
+function layerToSituationAfter(layer){
+    switch(layer){
+        case 0: return "am start";
+        case 1: return "nach dem Start";
+        case 2: return "vor eingang Zielgrade";
+        case 3: return "im Ziel";
+    }
 }

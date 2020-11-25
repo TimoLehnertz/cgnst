@@ -19,6 +19,40 @@ if(isset($_GET["get500mData"])){
     echo json_encode(get500mData($mysqli));
 }
 
+function echoSelectorFor($mysqli, $column, $label){
+    echoSelectorForName($mysqli, $column, $label, $column);
+}
+
+function echoSelectorForName($mysqli, $column, $label, $name){
+    $values = getAvailableWmColumnValues($mysqli, $column, $label);
+    $ranId = random_int(0, 100000);
+    $selected = isset($_GET[$column]);
+    echo "<p><label style='width: 100px' for='$ranId'>$label:</label></p><p>";
+    echo "<select name='$name' id='$ranId'>";
+    if(!$selected){
+        echo "<option selected value=''>Auswählen</option>";
+    } else{
+        echo "<option value=''>Auswählen</option>";
+    }
+    foreach ($values as $i => $value) {
+        if(is_numeric($value)){
+            if($value == 0){
+                continue;
+            }
+        } else if(strlen($value) == 0){
+            continue;
+        }
+        if($selected){
+            if($_GET[$column] == $value){
+                echo "<option value='$value' selected>$value</option>";
+                continue;
+            }
+        }
+        echo "<option value='$value'>$value</option>";
+    }
+    echo "</select></p>";
+}
+
 function get500mData($mysqli){
     $data = array();
     $res = $mysqli->query("SELECT * FROM `500m`;");
@@ -154,6 +188,59 @@ function getTableColumns($mysqli, $tableName){
     }
     $res->close();
     return $columns;
+}
+
+function query_medals_compare($mysqli, $filter){
+    $rlike = "^(";
+    $delimiter = "";
+    if(!isset($filter["init"])){
+        header("location: /wm/evaluation.php");
+        exit();
+    } else if(strlen($filter["init"]) == 0){
+        header("location: /wm/evaluation.php");
+        exit();
+    }
+    if(isset($filter["vgl1"])){
+        if(strlen($filter["vgl1"]) > 0){
+            $rlike .= $delimiter . $filter["vgl1"] . "$";
+            $delimiter = "|";
+        }
+    }
+    if(isset($filter["vgl2"])){
+        if(strlen($filter["vgl2"]) > 0){
+            $rlike .= $delimiter . $filter["vgl2"] . "$";
+            $delimiter = "|";
+        }
+    }
+    if(isset($filter["vgl3"])){
+        if(strlen($filter["vgl3"]) > 0){
+            $rlike .= $delimiter . $filter["vgl3"] . "$";
+            $delimiter = "|";
+        }
+    }
+    $rlike .= ")";
+    if(strlen($rlike) == 3){
+        header("location: /wm/evaluation.php");
+        exit();
+    }
+    $data = array();
+    $avg = 0;
+    $size = 0;
+    if($result = $mysqli->query("CALL sp_medals_compare('".$filter["init"]."','$rlike');")){
+        $data = array();
+        while($row = $result->fetch_assoc()){
+            $data[] = $row;
+            if(is_numeric($row["avg place in reference"])){
+                $avg += $row["avg place in reference"];
+                $size += 1;
+            }
+        }
+    } else{
+        printf("Error message: %s\n", $mysqli->error);
+    }
+    $avg = $avg / $size;
+    echo "<h3 class='headline'>Durchschnittliche Platzierung in referenz Disziplinen: $avg</h3>";
+    return $data;
 }
 
 function getResultFromFilter($mysqli, $filter){

@@ -768,6 +768,23 @@ button {
   background-color: #CCC;
 }
 
+.img.hover {
+  -webkit-transition: border 0.3s, -webkit-transform 0.3s;
+  transition: border 0.3s, -webkit-transform 0.3s;
+  transition: transform 0.3s, border 0.3s;
+  transition: transform 0.3s, border 0.3s, -webkit-transform 0.3s;
+  outline: 0 #555;
+  -webkit-transform: scale(1);
+          transform: scale(1);
+}
+
+.img.hover:hover {
+  -webkit-transform: scale(1.5);
+          transform: scale(1.5);
+  outline: 3px #555;
+  z-index: 10;
+}
+
 .layout {
   width: 98vw;
   min-height: 40vh;

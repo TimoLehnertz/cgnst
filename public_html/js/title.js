@@ -1,12 +1,16 @@
 $(function(){
     if(!isMobile()){
-        window.addEventListener("scroll", throttle(scroll, 10));
+        window.addEventListener("scroll", throttle(scroll, 5));
         scroll();
     }
 });
 
 function scroll(){
-    $(".title-img").css("top", -window.scrollY / 3);
+    $(".title-img").css("top", -window.scrollY / 7);
+    // $(".title-img").stop();
+    // $(".title-img").animate({
+    //     top: -window.scrollY / 3
+    // }, 10);
 }
 
 function throttle (callback, limit) {

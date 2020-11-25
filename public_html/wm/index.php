@@ -9,6 +9,7 @@
             <section class="section">
                 <h1 class="headline">Wm DB<span class="color secondary font size medium margin left">Eine Datenbank <i class="fas fa-arrow-right"></i> Alle WM Sprint Ergebnisse <strong class="font size bigger-medium">seit 2007</strong></span></h2>
                 <div class="content">
+                <p>Alle Daten / Ergebnisse wurden von Hand ausgewertet und wir gehen nicht davon aus, dass diese Auswertungen vollkommen Fehlerfrei sind.</p>
                     <div>
                         <?php
                             if(isset($_GET["search"])){
@@ -27,6 +28,7 @@
         <aside class="aside">
             <div class="content">
             <a href="500m.php" class="btn slide default center">Zur 500m Auswertung</a>
+            <a href="evaluation.php" class="btn slide default center">Zu weiteren Auswertung</a>
                 <h2>Suchen</h2>
                 <form action="#">
                     <?php echoSelectorFor($mysqli, "year", "Jahr");?>
@@ -51,35 +53,6 @@
         </aside>
     </div>
 <?php
-    function echoSelectorFor($mysqli, $column, $label){
-        $values = getAvailableWmColumnValues($mysqli, $column, $label);
-        $ranId = random_int(0, 100000);
-        $selected = isset($_GET[$column]);
-        echo "<p><label style='width: 100px' for='$ranId'>$label:</label></p><p>";
-        echo "<select name='$column' id='$ranId'>";
-        if(!$selected){
-            echo "<option selected value=''>Auswählen</option>";
-        } else{
-            echo "<option value=''>Auswählen</option>";
-        }
-        foreach ($values as $i => $value) {
-            if(is_numeric($value)){
-                if($value == 0){
-                    continue;
-                }
-            } else if(strlen($value) == 0){
-                continue;
-            }
-            if($selected){
-                if($_GET[$column] == $value){
-                    echo "<option value='$value' selected>$value</option>";
-                    continue;
-                }
-            }
-            echo "<option value='$value'>$value</option>";
-        }
-        echo "</select></p>";
-    }
     function stringFromFilter($filter){
         $delimiter = "";
         echo "<p class='font size bigger-medium color secondary'><span class='color primary margin right'>Filter: </span>";
