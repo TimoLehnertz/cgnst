@@ -11,13 +11,20 @@
                 <div class="content">
                     <div>
                         <div class="headline">
+                            <h2 style="display: inline" class="margin right">Grafische übersicht</h2>
                             <button class="btn default round switch-direction"><i class="fas fa-sync-alt margin left right"></i>Richtung Umshalten</button>
                             <button class="btn default round switch-subColors"><i class="fas fa-sync-alt margin left right"></i>Subfarben benutzen</button>
                         </div>
-                        <div class="content">
+                        <div class="content shadow basic">
                             <div class="layerDiagram">
                                 <!-- Layer Diagramm -->
                             </div>
+                        </div>
+                        <div class="headline">
+                            <h3>Statistik in Zahlen</h3>
+                        </div>
+                        <div class="content">
+                            <?php include "winnerTable.html";?>
                         </div>
                     </div>
                 </div>

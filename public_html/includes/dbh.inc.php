@@ -4,7 +4,7 @@
 // $serverName = "localhost";
 // $dBUsername = "root";
 // $dBPwd = "12345678";
-$serverName = "cgnst.ddns.net";
+$serverName = "www.cst-skate.de";
 $dBUsername = "php";
 $dBPwd = "!YouDontKnow!";
 $dBName = "cgnst";

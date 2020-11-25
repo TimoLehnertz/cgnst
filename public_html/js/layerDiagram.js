@@ -6,7 +6,6 @@ let mouseDown = false;
 
 let subColors = true;
 $(()=> {
-    console.log("init")
     get500mData((res)=>{
         data = parseData(res);
         createDiagram();
@@ -47,9 +46,11 @@ let offsetX,offsetY;
 
 function reOffset(){
     if(canvas != null){
+        canvas.width = document.querySelector("main").offsetWidth - (50 + padding);
         var bb=canvas.getBoundingClientRect();
         offsetX=bb.left;
         offsetY=bb.top;
+        updateDiagram();
     }
 }
 
@@ -57,22 +58,27 @@ function reOffset(){
  * Diagram setup
  */
 
-const layerWidth = 50;
-const padding = 20;
+const layerWidth = 100;
+const padding = 0;
 const lineWidth = 2;
-const positionColors = ["MediumSeaGreen", "DodgerBlue", "Orange", "Tomato"];//path
-const layerColors = ["MediumSeaGreen", "CadetBlue", "DarkSlateGray", "Crimson"];//box
+const positionColors = ["DarkGoldenRod", "DarkGray", "Coral", "DarkOliveGreen"];
+const focusColor = "Brown";
+const fontCOlor = "white";
+const background = "#333";
 
 let forewards = true;
 let focusedPlace = -1;
 
 function updateDiagram(){
+    
     const max = getMaxFromData();
     const canvas = document.querySelector(".layerDiagram canvas");
     const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = background;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.lineWidth = 10;
-    
+    ctx.font = "1.2rem Montserrat";
+
     const width = canvas.width - padding * 2;
     const height = canvas.height - padding * 2;
     
@@ -81,6 +87,8 @@ function updateDiagram(){
     } else{
         // focusedPlace = -1;
     }
+
+    const hovered = parseInt((mouseY) * 4 / height);
     
     
     /**
@@ -112,10 +120,20 @@ function updateDiagram(){
         
         let counter = 0;
         while (counter < 4) {
+            ctx.filter = "opacity(100%)";
+            if(focusedPlace != -1){
+                ctx.filter = "opacity(20%)";
+            }
             if(position == focusedPlace){
-                ctx.fillStyle = "red";
+                ctx.filter = "opacity(100%)";
+                ctx.fillStyle = focusColor;
             } else{
                 ctx.fillStyle = positionColors[position];
+            }
+           
+            
+            if(position == hovered){
+                ctx.filter = "opacity(120%)";
             }
             if(!subColors){//simple
                 ctx.fillRect(lStartX[layer], pStartY[position], layerWidth, pHeight);
@@ -128,10 +146,17 @@ function updateDiagram(){
                 let usedSpaceInFront = 0;
                 for (const positionElem of positions) {
                     const percentage = positionElem.positions / max;
+                    if(focusedPlace != -1){
+                        ctx.filter = "opacity(20%)";
+                    }
                     if(positionBefore == focusedPlace){
-                        ctx.fillStyle = "red";
+                        ctx.filter = "opacity(100%)";
+                        ctx.fillStyle = focusColor;
                     } else{
                         ctx.fillStyle = positionColors[forewards ? positionBefore : position];
+                    }
+                    if(positionBefore == hovered){
+                        ctx.filter = "opacity(120%)";
                     }
                     if(subColors){
                         ctx.fillRect(lStartX[layer], pStartY[position] + usedSpaceInFront, layerWidth, pHeight * percentage);
@@ -156,6 +181,24 @@ function updateDiagram(){
             }
             position = (position + 1) % 4;
             counter++;
+        }
+    }
+    // text
+    ctx.filter = "brightness(100%)";
+    for (let layer = 0; layer < 4; layer++) {
+        ctx.fillStyle = "#454";
+        ctx.fillRect(lStartX[layer], 0, 2, height);
+        ctx.fillRect(lStartX[layer] + layerWidth, 0, 2, height);
+        ctx.fillStyle = fontCOlor;
+        ctx.fillText(convertName(layerToName(layer)), lStartX[layer] + 4, 20);
+    }
+    
+    for (let place = 0; place < 5; place++) {
+        ctx.fillStyle = "#454";
+        ctx.fillRect(padding, (height / 4) * place, width, 3);
+        if(place < 4){
+            ctx.fillStyle = fontCOlor;
+            ctx.fillText("Platz " + (place + 1), padding + 2, (height / 4) * (place + 0.5) - 5);
         }
     }
 }
@@ -256,7 +299,7 @@ function nameToLayer(name){
 
 function layerToName(layer){
     switch(layer){
-        case 0: return "start";
+        case 0: return "start1";
         case 1: return "afterStart";
         case 2: return "beforeFinish";
         case 3: return "finish";
@@ -265,6 +308,9 @@ function layerToName(layer){
 }
 
 function convertName(name){
+    if(name.toLowerCase().includes("start1")){
+        return "Start";
+    }
     if(name.toLowerCase().includes("afterstart")){
         return "Nach Start";
     }
@@ -272,7 +318,7 @@ function convertName(name){
         return "Eingang Zielgrade";
     }
     if(name.toLowerCase().includes("finish")){
-        return "Zieleinlauf";
+        return "Ziel";
     }
     return "--";
 }
