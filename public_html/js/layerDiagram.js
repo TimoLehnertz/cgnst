@@ -23,7 +23,7 @@ $(()=> {
             $(this).css("background-color", "gray")
         }
     })
-    $(this).css("background-color", "#493")
+    $(".switch-subColors").css("background-color", "#493");
 });
 
 let canvas;
@@ -111,12 +111,12 @@ function updateDiagram(){
     for (let layer = 0; layer < 4; layer++) {
         const posConsistsOf = data [layer].posConsistsOf;
 
-        let position;
-        if(focusedPlace > -1){
-            position = (focusedPlace) % 4;
-        } else{
-            position = 0;
-        }
+        let position = 0;
+        // if(focusedPlace > -1){
+        //     position = (focusedPlace) % 4;
+        // } else{
+        //     position = 0;
+        // }
         
         let counter = 0;
         while (counter < 4) {
@@ -158,10 +158,25 @@ function updateDiagram(){
                     if(positionBefore == hovered){
                         ctx.filter = "opacity(120%)";
                     }
+                    const filterTmp = ctx.filter;
                     if(subColors){
+                        const subHovered = mouseX > lStartX[layer] && mouseX < lStartX[layer] + layerWidth && mouseY > pStartY[position] + usedSpaceInFront && mouseY < pStartY[position] + usedSpaceInFront + pHeight * percentage;
+                        if(subHovered){
+                            ctx.filter = "opacity(200)";
+                            if(mouseDown){
+                                const infos = data[layer] ["posConsistsOf"] [position] [positionBefore] ["infos"];
+                                let html = "<p>Alle rennen, die auf diese Rennsituation passen</p>";
+                                for (const info of infos) {
+                                    html += `<li><a target="_blank" href="${info.link}">${info.competition} ${info.year} ${info.category} ${info.sex == "w" ? "Female" : "Male"}</a></li>`;
+                                }
+                                $(".info").empty();
+                                
+                                $(".info").append(`<ul>${html}</ul>`);
+                            }
+                        }
                         ctx.fillRect(lStartX[layer], pStartY[position] + usedSpaceInFront, layerWidth, pHeight * percentage);
                     }
-                    
+                    ctx.filter = filterTmp;
                     
                     ctx.beginPath();
 

@@ -33,7 +33,7 @@
         <!-- ASIDE -->
         <aside class="aside">
             <div class="content">
-            <a href="index.php" class="btn slide default center">Zur Wm datenbank</a>
+                <a href="index.php" class="btn slide default center">Zur Wm datenbank</a>
             </div>
             <?php if(doIHavePermissionFor("permission_wmdata")){?>
             <div class="content">
@@ -42,6 +42,12 @@
                 <a href="insert500m.php" class="btn slide default center">500m daten eintragen</a>
             </div>
             <?php }?>
+            <h3 class="headline">Infos</h3>
+            <div class="content info">
+               <p>
+                   Klick eine Subfarbe an um infos zu bekommen
+               </p>
+            </div>
         </aside>
     </div>
     <script src="/js/layerDiagram.js"></script>
