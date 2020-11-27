@@ -23,7 +23,6 @@ function createDiagram(){
 }
 
 function reset(){
-    maxScore = getMaxScore() * 1.2;
     hoverCountry = null;
     searchCountry = undefined;
     updateDiagram();
@@ -77,6 +76,22 @@ function updateDiagram(){
     let hoverDistance = 50;
     let hoverCountry;
     let hoverScore;
+
+    ctx.fillStyle = "white";
+    let lastPxY = height;
+    for (let score = 0; score < maxScore; score++) {
+        const pxY = height - ((score / maxScore) * height);
+        ctx.filter = "opacity(0.2)";
+        ctx.fillRect(0,pxY, width, 1);
+        if(Math.abs(pxY - lastPxY) > 50){
+            ctx.filter = "opacity(1)";
+            ctx.fillText(score, 20 , pxY + 5);
+            lastPxY = pxY;
+        }
+        
+    }
+
+    ctx.filter = "opacity(1)";
     for (const country of countryScores) {
         if(searchCountry){
             if(country != searchCountry){

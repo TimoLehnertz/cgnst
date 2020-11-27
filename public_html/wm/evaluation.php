@@ -72,6 +72,17 @@
                     <div class="country-evolving">
                         <!-- Country evolving lines -->
                     </div>
+                    <div style="max-height: 50vh; overflow: auto;">
+                        <p>
+                            Medaillen rank in Zahlen
+                        </p>
+                    <?php
+                        if($discipline == "100"){
+                            $discipline = "100$";
+                        }
+                        echoTableFromArray(getWinnerTimes($mysqli, $discipline));
+                    ?>
+                    </div>
                 </div>
             </section>
             <section class="section">

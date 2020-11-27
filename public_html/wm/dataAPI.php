@@ -23,8 +23,49 @@ function echoSelectorFor($mysqli, $column, $label){
     echoSelectorForName($mysqli, $column, $label, $column);
 }
 
-function getWinnerTimes($mysqli){
+// CALL sp_medals_compare("(500$|500D)", "1234567");
+function getWinnerTimes($mysqli, $discipline){
+    $data = array();
+    if($stmt = $mysqli->prepare("CALL sp_medals_compare('$discipline', '1234567');")){
+        if($stmt->execute()){
+            if($result = $stmt->get_result()){
+                while($row = $result->fetch_assoc()){
+                    $data[] = $row;
+                }
+                $result->close();
+            } else{
+                printf("Error message: %s\n", $mysqli->error);
+            }
+            $stmt->close();
+        } else{
+            printf("Error message: %s\n", $mysqli->error);
+        }
+    } else{
+        printf("Error message: %s\n", $mysqli->error);
+    }
+    return $data;
+}
 
+function getMedalsForDiscipline($mysqli){
+    $data = array();
+    if($stmt = $mysqli->prepare("CALL sp_best_times();")){
+        if($stmt->execute()){
+            if($result = $stmt->get_result()){
+                while($row = $result->fetch_assoc()){
+                    $data[] = $row;
+                }
+                $result->close();
+            } else{
+                printf("Error message: %s\n", $mysqli->error);
+            }
+            $stmt->close();
+        } else{
+            printf("Error message: %s\n", $mysqli->error);
+        }
+    } else{
+        printf("Error message: %s\n", $mysqli->error);
+    }
+    return $data;
 }
 
 function getBestTimes($mysqli){
