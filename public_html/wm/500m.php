@@ -16,6 +16,8 @@
                             <h2 style="display: inline" class="margin right">Grafische übersicht</h2>
                             <button class="btn default round switch-direction"><i class="fas fa-sync-alt margin left right"></i>Richtung Umshalten</button>
                             <button class="btn default round switch-subColors"><i class="fas fa-sync-alt margin left right"></i>Subfarben benutzen</button>
+                            <button class="btn default round switch-female"><i class="fas fa-sync-alt margin left right"></i>Female</button>
+                            <button class="btn default round switch-male"><i class="fas fa-sync-alt margin left right"></i>male</button>
                         </div>
                         <div class="content shadow basic">
                             <div class="layerDiagram">

@@ -27,6 +27,28 @@ function getWinnerTimes($mysqli){
 
 }
 
+function getBestTimes($mysqli){
+    $data = array();
+    if($stmt = $mysqli->prepare("CALL sp_best_times();")){
+        if($stmt->execute()){
+            if($result = $stmt->get_result()){
+                while($row = $result->fetch_assoc()){
+                    $data[] = $row;
+                }
+                $result->close();
+            } else{
+                printf("Error message: %s\n", $mysqli->error);
+            }
+            $stmt->close();
+        } else{
+            printf("Error message: %s\n", $mysqli->error);
+        }
+    } else{
+        printf("Error message: %s\n", $mysqli->error);
+    }
+    return $data;
+}
+
 function getMedalYearCountries($mysqli, $disciplines){
     $rlike = "^(";
     $delimiter = "";
@@ -40,18 +62,27 @@ function getMedalYearCountries($mysqli, $disciplines){
     }
     $rlike .= ")";
     $data = array();
-    if($result = $mysqli->query("CALL sp_medal_years_country('$rlike');")){
-        while($row = $result->fetch_assoc()){
-            $country = $row["country"];
-            $scores = array();
-            $startYear = 2007;
-            $endYear = 2019;
-            for ($year=$startYear; $year <= $endYear; $year++) { 
-                $scores[] = $row[$year.""];
-            }
-            $data[] = ["country" => $country, "startYear" => $startYear, "scores" => $scores];
+    if($stmt = $mysqli->prepare("CALL sp_medal_years_country('$rlike');")){
+        if($stmt->execute()){
+            if($result = $stmt->get_result()){
+                while($row = $result->fetch_assoc()){
+                    $country = $row["country"];
+                    $scores = array();
+                    $startYear = 2007;
+                    $endYear = 2019;
+                    for ($year=$startYear; $year <= $endYear; $year++) { 
+                        $scores[] = $row[$year.""];
+                    }
+                    $data[] = ["country" => $country, "startYear" => $startYear, "scores" => $scores];
+                }
+                $result->close();
+        } else{
+            printf("Error message: %s\n", $mysqli->error);
         }
-        $result->close();
+        } else{
+            printf("Error message: %s\n", $mysqli->error);
+        }
+        $stmt->close();
     } else{
         printf("Error message: %s\n", $mysqli->error);
     }
@@ -331,21 +362,24 @@ function echoTableFromArray($array){
     if(sizeof($array) == 0){
         return;
     }
-    echo "<table class='table'><tr><td>Id</td>";
+    echo "<table class='table'><tr>";
     foreach ($array[0] as $key => $value) {
         echo "<td>$key</td>";
     }
     echo "</tr>";
     foreach ($array as $i => $value) {
         if($i % 2 == 0){
-            echo "<tr class='zebra'><td>$i</td>";
+            echo "<tr class='zebra'>";
         } else{
-            echo "<tr><td>$i</td>";
+            echo "<tr>";
         }
         foreach ($value as $key => $value) {
             if(is_numeric($value)){
                 if($value == 0){
                     echo "<td style='text-align: center;'>-</td>";
+                    continue;
+                } else{
+                    echo "<td>".round(doubleval($value), 2)."</td>";
                     continue;
                 }
             } else if(strlen($value) ==0){

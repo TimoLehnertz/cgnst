@@ -2,12 +2,17 @@
 
 let data;
 
+let useFemale = true;
+let useMale = true;
+
 let mouseDown = false;
 
 let subColors = true;
+let rawData;
 $(()=> {
     get500mData((res)=>{
-        data = parseData(res);
+        rawData = res;
+        updateData();
         createDiagram();
     });
     $(".switch-direction").click(()=>{
@@ -23,8 +28,40 @@ $(()=> {
             $(this).css("background-color", "gray")
         }
     })
+    $(".switch-female").click(function(){
+        useFemale = !useFemale;
+        if(!(useFemale || useMale)){
+            useFemale = true;
+        }
+        if(useFemale){
+            $(this).css("background-color", "#493")
+        } else{
+            $(this).css("background-color", "gray")
+        }
+        updateData();
+        updateDiagram();
+    });
+    $(".switch-male").click(function(){
+        useMale = !useMale;
+        if(!(useFemale || useMale)){
+            useMale = true;
+        }
+        if(useMale){
+            $(this).css("background-color", "#493")
+        } else{
+            $(this).css("background-color", "gray")
+        }
+        updateData();
+        updateDiagram();
+    });
     $(".switch-subColors").css("background-color", "#493");
+    $(".switch-female").css("background-color", "#493");
+    $(".switch-male").css("background-color", "#493");
 });
+
+function updateData(){
+    data = parseData(rawData);
+}
 
 let canvas;
 
@@ -251,6 +288,12 @@ function parseData(rawData){
         }
      }
      for (const row of rawData) {
+         if(row["sex"] == "m" && !useMale){
+             continue;
+         }
+         if(row["sex"] == "w" && !useFemale){
+            continue;
+        }
         //Track each sportler throoughout the race(1,2,3,4)
         for (let startPosition = 0; startPosition < 4; startPosition++) {
             //track layers(start, afterStart, beforeFinish, finish)

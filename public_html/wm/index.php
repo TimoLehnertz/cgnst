@@ -28,7 +28,7 @@
         <aside class="aside">
             <div class="content">
             <a href="500m.php" class="btn slide default center">Zur 500m Auswertung</a>
-            <a href="evaluation.php" class="btn slide default center">Zu weiteren Auswertung</a>
+            <a href="evaluation.php" class="btn slide default center">Zur Auswertung</a>
                 <h2>Suchen</h2>
                 <form action="#">
                     <?php echoSelectorFor($mysqli, "year", "Jahr");?>

@@ -4,18 +4,20 @@
     include_once "../includes/dbh.inc.php";
     include_once "dataAPI.php";
 ?>
-    <div class="layout basic">
+    <div class="layout simple">
         <main class="main">
             <section class="section">
-                <h1 class="headline">Wm DB<span class="color secondary font size medium margin left">Eine Datenbank <i class="fas fa-arrow-right"></i> Alle WM Sprint Ergebnisse <strong class="font size bigger-medium">seit 2007</strong></span></h2>
+                <h1 class="headline">Hier mehr zur auswertung der mehr als 5.000 Datensätze</h2>
                 <div class="content">
+                    <a href="index.php" class="btn slide default center">Zurück</a>
                     <p>Alle Daten / Ergebnisse wurden von Hand ausgewertet und wir gehen nicht davon aus, dass diese Auswertungen vollkommen Fehlerfrei sind.</p>
-                </div>
-                <h2 class="headline">Hier mehr zur auswertung der mehr als 5.000 Datensätze</h2>
-                <div class="content">
-                    <h3>Strecken vergleich</h3>
                     <p>
-                        Alle ergebnisse sind live aus dem aktuellen stand der Datenbank<br>
+                        Alle ergebnisse sind live aus dem aktuellen stand der Datenbank
+                    </p>
+                </div>
+                <h2 class="headline">Strecken vergleich</h2>
+                <div class="content">
+                    <p>
                         Wähle eine Strecke aus die mit einer oder 3 anderen verglichen werden soll<br>
                         Es werden alle Athleten verglichen, die jemans eine Medaille in der initialstrecke gewonnen haben.
                         Außerdem wird ihr durchschnittliches ergebniss auf den referenz strecken ausgegeben<br>
@@ -63,6 +65,10 @@
                     <?php echoSelectorForName($mysqli, "country", "Land suchen", "search");?>
                     <button class="reset-scale btn slide vertical topleft default">Größe zurücksetzen</button>
                     <button class="view-all btn slide vertical topleft default">Alle anzeigen</button>
+                    <script>
+                        const countryScores = JSON.parse('<?php echo json_encode(getMedalYearCountries($mysqli, [$discipline]));?>');
+                        console.log(countryScores);
+                    </script>
                     <div class="country-evolving">
                         <!-- Country evolving lines -->
                     </div>
@@ -70,20 +76,65 @@
             </section>
             <section class="section">
                 <h3 class="headline">Entwicklung der Siegerzeiten</h3>
-                <div class="content">
-                   
+                <p>
+                    Einige Zeiten sind leider fehlerhaft.. Rot für langsamste zeit, grün für schnellste Zeit
+                </p>
+                <div class="content font size medium winner-times">
+                    <?php
+                        echoTableFromArray(getBestTimes($mysqli));
+                    ?>
+                    <script>
+                        $(".winner-times table tr").each(function(tr){
+                            if(tr > 0){
+                                if(tr % 2 == 0){
+                                    $(this).css("border-bottom", "5px solid #444")
+                                }
+                                let min = 1000;
+                                let max = 0;
+                                let sum = 0;
+                                let amount = 0;
+                                $(this).find("td").each(function(td){
+                                    if(td > 1){
+                                        const val = parseFloat($(this).text());
+                                        if(isNaN(val)){
+                                            return;
+                                        }
+                                        amount++;
+                                        sum += val;
+                                        if(val < min){
+                                            min = val;
+                                        }
+                                        if(val > max){
+                                            max = val;
+                                        }
+                                    }
+                                });
+                                /**
+                                 * avg
+                                 */
+                                console.log(sum);
+                                $(this).append(`<td>${Math.round(sum / amount * 100) / 100}</td>`);
+                                $(this).find("td").each(function(td){
+                                    if(td > 1 && amount > 1){
+                                        const val = parseFloat($(this).text());
+                                        if(val == min && amount > 1){
+                                            $(this).css("background", "Chartreuse");
+                                        }
+                                        if(val == max){
+                                            $(this).css("background", "DarkRed");
+                                            $(this).css("color", "white");
+                                        }
+                                    }
+                                });
+                            } else{
+                                $(this).append("<td>Avg</td>")
+                            }
+                        });
+                    </script>
+                </div>
             </section>
         </main>
-        <aside class="aside">
-            <div class="content">
-                <a href="index.php" class="btn slide default center">Zurück</a>
-            </div>
-        </aside>
     </div>
-    <script>
-        const countryScores = JSON.parse('<?php echo json_encode(getMedalYearCountries($mysqli, [$discipline]));?>');
-        console.log(countryScores);
-    </script>
     <script src="/js/country-evolving.js"></script>
 <?php
     include_once "../footer.php";
