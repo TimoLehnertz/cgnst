@@ -31,12 +31,17 @@ $(()=> {
     $(".switch-female").click(function(){
         useFemale = !useFemale;
         if(!(useFemale || useMale)){
-            useFemale = true;
+            useMale = true;
         }
         if(useFemale){
             $(this).css("background-color", "#493")
         } else{
             $(this).css("background-color", "gray")
+        }
+        if(useMale){
+            $(".switch-male").css("background-color", "#493");
+        } else{
+            $(".switch-male").css("background-color", "gray");
         }
         updateData();
         updateDiagram();
@@ -44,12 +49,17 @@ $(()=> {
     $(".switch-male").click(function(){
         useMale = !useMale;
         if(!(useFemale || useMale)){
-            useMale = true;
+            useFemale = true;
         }
         if(useMale){
             $(this).css("background-color", "#493")
         } else{
             $(this).css("background-color", "gray")
+        }
+        if(useFemale){
+            $(".switch-female").css("background-color", "#493");
+        } else{
+            $(".switch-female").css("background-color", "gray");
         }
         updateData();
         updateDiagram();
