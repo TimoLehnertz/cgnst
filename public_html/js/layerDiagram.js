@@ -143,6 +143,7 @@ function updateDiagram(){
     /**
      * metadata
      */
+    let hoverPercentage = undefined;
     const lStartY = padding;
     const lStartX = [];
     for (let i = 0; i < 4; i++) {
@@ -211,18 +212,19 @@ function updateDiagram(){
                     if(subColors){
                         const subHovered = mouseX > lStartX[layer] && mouseX < lStartX[layer] + layerWidth && mouseY > pStartY[position] + usedSpaceInFront && mouseY < pStartY[position] + usedSpaceInFront + pHeight * percentage;
                         if(subHovered){
+                            hoverPercentage = Math.round(percentage * 100);
                             ctx.filter = "opacity(200)";
                             if(mouseDown){
                                 if(layer > 0){
                                     const infos = data[layer] ["posConsistsOf"] [position] [positionBefore] ["infos"];
-                                let html = `<p>Von Position ${positionBefore + 1} ${layerToSituationAfter(layer - 1)} auf Position ${position + 1} ${layerToSituationAfter(layer)}</p>
-                                <p>Alle rennen, die auf diese Rennsituation passen</p>`;
-                                for (const info of infos) {
-                                    html += `<li><a target="_blank" href="${info.link}">${info.competition} ${info.year} ${info.category} ${info.sex == "w" ? "Female" : "Male"}</a></li>`;
-                                }
-                                $(".info").empty();
-                                
-                                $(".info").append(`<ol>${html}</ol>`);
+                                    let html = `<p>Von Position ${positionBefore + 1} ${layerToSituationAfter(layer - 1)} auf Position ${position + 1} ${layerToSituationAfter(layer)}</p>
+                                    <p>Alle rennen, die auf diese Rennsituation passen</p>`;
+                                    for (const info of infos) {
+                                        html += `<li><a target="_blank" href="${info.link}">${info.competition} ${info.year} ${info.category} ${info.sex == "w" ? "Female" : "Male"}</a></li>`;
+                                    }
+                                    $(".info").empty();
+                                    
+                                    $(".info").append(`<ol>${html}</ol>`);
                                 }
                             }
                         }
@@ -267,6 +269,11 @@ function updateDiagram(){
             ctx.fillStyle = fontCOlor;
             ctx.fillText("Platz " + (place + 1), padding + 2, (height / 4) * (place + 0.5) - 5);
         }
+    }
+    if(hoverPercentage != undefined){
+        ctx.fillStyle = "white";
+        ctx.filter = "opacity(100%)";
+        ctx.fillText(hoverPercentage + "%", mouseX, mouseY);
     }
 }
 
