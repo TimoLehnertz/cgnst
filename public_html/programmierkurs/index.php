@@ -1,7 +1,7 @@
 
 <?php
     if(isset($_POST)){
-        file_put_contents("post.log", print_r($_POST, true));
+        file_put_contents("post.log", print_r($_POST, FILE_APPEND));
     }
 ?>
 <!DOCTYPE html>
