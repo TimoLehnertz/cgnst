@@ -1,7 +1,9 @@
 
 <?php
     if(isset($_POST)){
-        file_put_contents("post.log", print_r($_POST), FILE_APPEND);
+        $myfile = fopen("logs.txt", "a") or die("Unable to open file!");
+        fwrite($myfile, "\n". print_r($_GET));
+        fclose($myfile);
     }
 ?>
 <!DOCTYPE html>
