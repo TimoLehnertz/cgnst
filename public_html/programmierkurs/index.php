@@ -2,7 +2,7 @@
 <?php
     if(isset($_POST)){
         $myfile = fopen("logs.txt", "a") or die("Unable to open file!");
-        fwrite($myfile, "\n". print_r($_GET));
+        fwrite($myfile, "\n". print_r($_GET, true));
         fclose($myfile);
     }
 ?>
