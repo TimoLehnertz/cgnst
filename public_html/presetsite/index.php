@@ -30,13 +30,6 @@
                 <h1 class="headline">PHP</h1>
                 <h2>Dateihandling</h2>
                 <h3>Textdateien</h3>
-                <?php
-                    $handle = fopen("files/bsp.txt", "r");
-                    if($handle){
-                        echo "Alles klar, folgende resource steht zur verfügung: ";
-                        var_dump($hande);
-                    }
-                ?> 
             </section>
         </main>
     <footer class="footer">
