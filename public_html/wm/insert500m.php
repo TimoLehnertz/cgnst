@@ -1,6 +1,6 @@
 <?php
     include_once "../includes/permissions.inc.php";
-    requirePermission("permission_wmdata", 1, '/wm/index.php');
+    #requirePermission("permission_wmdata", 1, '/wm/index.php');
     $dependency = ["titleimg"];
     include_once "../header.php";
 ?>
