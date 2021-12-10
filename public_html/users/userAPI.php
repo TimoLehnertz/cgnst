@@ -50,7 +50,7 @@ function getDefaultGroup($mysqli){
     $defaultName = getDefaultGroupName();
     $groups = getGroupList($mysqli);
     if(!doesGroupExistByName($mysqli, $defaultName)){
-        addGroup($mysqli, $defaultName);
+        addGroup($mysqli, $defaultName, "Bechreibung");
         $groups = getGroupList($mysqli);
     }
     $defraultGroup = getGroupByName($defaultName, $groups);

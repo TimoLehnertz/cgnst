@@ -126,6 +126,7 @@
             $("#error").html(`${warnCount} warnungen | ${nullCount} Felder leer | ${warnCount - nullCount} Formatierungsfehler:<hr><pre>${warning}</pre>`);
             $(".loading-area").empty();
             $(".loading-area").append(getLoadingElem());
+            console.log(json);
             send500mData(json, ()=>{
                 $(".loading-area").empty();
                 $(".loading-area").append(`<i class="fas fa-check"></i>`);

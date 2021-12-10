@@ -123,7 +123,7 @@
 		<label for='matrikelnummer'>
 			<span>Matrikelnummer: </span>
 		</label>
-		<input id='matrikelnummer' type='text' name='matrikelnummer' value='`; SELECT * FROM user;' aria-required='true' aria-invalid='true' />
+		<input id='matrikelnummer' type='text' name='matrikelnummer' value='' aria-required='true' aria-invalid='true' />
 	</p>
 	<p>
 		<label for='passwort'>

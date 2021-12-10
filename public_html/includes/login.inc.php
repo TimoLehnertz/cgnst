@@ -6,6 +6,7 @@ if (isset($_POST["login-submit"])) {
 
     $mailUsername = $_POST["mailUsername"];
     $password = $_POST["password"];
+    $rememberMe = true;
     $rememberMe = $_POST["rememberMe"];
 
     if(empty($mailUsername) || empty($password)){
@@ -34,7 +35,8 @@ if (isset($_POST["login-submit"])) {
                         #setcookie('user', $row['username'], time() + 60 * 60 * 30);
                         #setcookie('userpw', $row['password'], time() + 60 * 60 * 30);
                     }
-                    session_start();
+                    
+                    if(!isset($_SESSION)){session_start();}
                     $_SESSION['userId'] = $row['iduser'];
                     $_SESSION['username'] = $row['username'];
                     $_SESSION['permissions'] = getPermissionsFromUserId($mysqli, $row['iduser']);

@@ -104,7 +104,6 @@ function reOffset(){
 /**
  * Diagram setup
  */
-
 const layerWidth = 100;
 const padding = 0;
 const lineWidth = 2;

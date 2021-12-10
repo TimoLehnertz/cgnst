@@ -19,7 +19,7 @@
                     <p>Hier siest du deine Gruppen</p>
                     <script>
                         const groupList1 = getGroupListElement((group)=>{
-                            if(!group.isDefaultGroup){
+                            if(!group.isDefaultGroup) {
                                 return $(`<a href="groupx.php?id=${group.idgroup}" class="group-row">
                                     <div>${group.name}</div>${isAdminInGroup(group) ? "<div class='admin'>Gruppenadmin" : "<div>"}</div>
                                 </a>`);

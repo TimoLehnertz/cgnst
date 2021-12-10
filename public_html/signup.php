@@ -12,7 +12,7 @@
                             if($_GET['error'] == "emptyFields"){
                                 echo "<p class='signupError'>Please fill in all fields</p>";
                             } else if($_GET['error'] == "userTaken"){
-                                echo "<p class='signupError'>Username is taken :(</p>";
+                                echo "<p class='signupError'>Username or email is taken :(</p>";
                             }else if($_GET['error'] == "invalidEmail"){
                                 echo "<p class='signupError'>Please enter a valid E-mail</p>";
                             }else if($_GET['error'] == "passwordCheck"){
@@ -22,6 +22,8 @@
                             }
                         } else if(isset($_GET['signup'])){
                             if($_GET['signup'] == 'success'){
+                                header("location:/login.php");
+                                exit();
                                 echo "<p class='signupSuccess'>Signup successfull!</p>";
                             }
                         }
